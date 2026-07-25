@@ -138,6 +138,9 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         currentUser = user;
+        if (user) {
+            updateCartBadge();
+        }
     });
 
     // Global listener for bag/cart icons across all pages
@@ -151,3 +154,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+export async function updateCartBadge() {
+    if (!currentUser) return;
+    try {
+        const uSnap = await getDoc(doc(db, 'users', currentUser.uid));
+        if (uSnap.exists()) {
+            const cartObj = uSnap.data().cart || {};
+            const count = Object.values(cartObj).reduce((sum, val) => sum + parseInt(val), 0);
+            
+            document.querySelectorAll('.fa-bag-shopping, .fa-shopping-bag, .action-btn i.fa-bag-shopping').forEach(icon => {
+                const parent = icon.closest('a, button');
+                if (parent) {
+                    let badge = parent.querySelector('.cart-badge-counter');
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'cart-badge-counter';
+                        badge.style.cssText = 'position:absolute; top:-5px; right:-8px; background:var(--danger); color:white; border-radius:50%; width:18px; height:18px; font-size:0.7rem; display:flex; align-items:center; justify-content:center; pointer-events:none; font-family:sans-serif; font-weight:bold;';
+                        parent.style.position = 'relative';
+                        parent.appendChild(badge);
+                    }
+                    badge.textContent = count;
+                    badge.style.display = count > 0 ? 'flex' : 'none';
+                }
+            });
+        }
+    } catch (err) {
+        console.error("Error updating cart badge:", err);
+    }
+}

@@ -10,7 +10,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import {
     doc, getDoc, collection, addDoc, setDoc, updateDoc,
-    deleteDoc, increment, serverTimestamp, query, where, getDocs
+    deleteDoc, increment, serverTimestamp, query, where, getDocs, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const ADMIN_EMAIL = 'lrodricg30@gmail.com';
@@ -246,7 +246,7 @@ async function loadClientData(uid) {
         }
 
         document.querySelectorAll('.delivered-card-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.onclick = () => {
                 const text = btn.dataset.credential;
                 if (text) {
                     navigator.clipboard.writeText(text)
@@ -255,7 +255,7 @@ async function loadClientData(uid) {
                 } else {
                     alert('El administrador está procesando tu entrega.');
                 }
-            });
+            };
         });
 
         if (noticeBox)        noticeBox.style.display       = hasPending  ? 'block' : 'none';
@@ -433,11 +433,20 @@ async function loadAdminData() {
 window.approveRecharge = async function(reqId, uid, amount) {
     if (!confirm(`¿Aprobar $${amount} para este usuario?`)) return;
     try {
-        await updateDoc(doc(db, 'users', uid), { balance: increment(Number(amount)) });
-        await updateDoc(doc(db, 'balance_requests', reqId), { status: 'aprobado' });
+        await runTransaction(db, async (transaction) => {
+            const userRef = doc(db, 'users', uid);
+            const reqRef = doc(db, 'balance_requests', reqId);
+            
+            const reqSnap = await transaction.get(reqRef);
+            if (!reqSnap.exists()) throw new Error("Solicitud no encontrada.");
+            if (reqSnap.data().status !== 'pendiente') throw new Error("La solicitud ya fue procesada.");
+
+            transaction.update(userRef, { balance: increment(Number(amount)) });
+            transaction.update(reqRef, { status: 'aprobado' });
+        });
         alert('Recarga aprobada exitosamente.');
         loadAdminData();
-    } catch(e) { console.error(e); alert('Error al aprobar recarga.'); }
+    } catch(e) { console.error(e); alert('Error al aprobar recarga: ' + e.message); }
 };
 
 window.rejectRecharge = async function(reqId) {

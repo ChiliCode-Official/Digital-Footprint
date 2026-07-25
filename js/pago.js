@@ -208,8 +208,8 @@ async function processRecharge() {
     const methodKey = selectedMethodBtn ? selectedMethodBtn.dataset.method : 'transferencia';
     const methodLabel = methodKey === 'transferencia' ? 'Transferencia SPEI' : 'Efectivo / OXXO';
     
-    if (isNaN(amount) || amount < 15) {
-        showError("El monto mínimo de recarga es de $15 MXN.");
+    if (isNaN(amount) || !Number.isFinite(amount) || amount < 15) {
+        showError("El monto debe ser un número válido mayor o igual a $15 MXN.");
         return;
     }
     
@@ -362,13 +362,20 @@ async function processCartPurchase() {
 
         // Fetch all product data and stock in transaction
         for (const pid of cartItems) {
-            const pQty = cartObj[pid] || 1;
+            const pQty = parseInt(cartObj[pid]);
+            if (isNaN(pQty) || !Number.isFinite(pQty) || pQty <= 0) {
+                throw new Error("Cantidad inválida en el carrito.");
+            }
             const pRef = doc(db, 'products', pid);
             const pSnap = await transaction.get(pRef);
             if (pSnap.exists()) {
                 const p = pSnap.data();
-                calculatedTotal += (p.price * pQty);
-                productsData.push({ id: pid, qty: pQty, ...p });
+                const price = parseFloat(p.price);
+                if (isNaN(price) || !Number.isFinite(price) || price < 0) {
+                    throw new Error(`Precio inválido en producto: ${p.name}`);
+                }
+                calculatedTotal += (price * pQty);
+                productsData.push({ id: pid, qty: pQty, price: price, name: p.name });
             }
         }
         
@@ -443,7 +450,17 @@ async function processSinglePurchase() {
         
         const pData = pSnap.data();
         productName = pData.name;
-        const actualPrice = pData.price * qty;
+        
+        const parsedQty = parseInt(qty);
+        if (isNaN(parsedQty) || !Number.isFinite(parsedQty) || parsedQty <= 0) {
+            throw new Error("Cantidad inválida.");
+        }
+        const parsedPrice = parseFloat(pData.price);
+        if (isNaN(parsedPrice) || !Number.isFinite(parsedPrice) || parsedPrice < 0) {
+            throw new Error("Precio inválido en el producto.");
+        }
+        
+        const actualPrice = parsedPrice * parsedQty;
         
         if (currentBal < actualPrice) throw new Error("Saldo insuficiente.");
 

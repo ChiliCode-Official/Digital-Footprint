@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { updateCartBadge } from './cart.js';
 
 function escapeHtml(str) {
     if (!str) return '';
@@ -167,45 +168,31 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-const addCartBtn = document.getElementById('add-cart-btn');
-if (addCartBtn) {
-    addCartBtn.addEventListener('click', async () => {
-        if (!currentUser) {
-            alert("Debes iniciar sesión para agregar al carrito.");
-            return;
-        }
-        if (!productData) return;
 
-        addCartBtn.disabled = true;
-        addCartBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Agregando...';
-
-        try {
-            const uRef = doc(db, 'users', currentUser.uid);
-            await updateDoc(uRef, { wishlist: arrayUnion(productId) });
-            alert("Producto agregado al carrito con éxito.");
-            addCartBtn.innerHTML = '<i class="fa-solid fa-cart-arrow-down"></i> Agregado';
-            setTimeout(() => {
-                addCartBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Agregar al Carrito';
-                addCartBtn.disabled = false;
-            }, 2000);
-        } catch (e) {
-            console.error(e);
-            alert("Error al agregar al carrito.");
-            addCartBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Agregar al Carrito';
-            addCartBtn.disabled = false;
-        }
-    });
-}
 
 if (btnBuy) {
     btnBuy.addEventListener('click', async () => {
-        if (currentQty === 0) {
+        if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
             if (buyError) {
-                buyError.textContent = "La cantidad seleccionada es 0.";
+                buyError.textContent = "Cantidad inválida.";
                 buyError.style.display = 'block';
             }
             return;
         }
+        
+        if (stockData && stockData.status === 'disponible') {
+            let pool = stockData.credentialsPool || "";
+            let count = pool.split('\n').filter(l => l.trim() !== "").length;
+            if (currentQty > count) {
+                if (buyError) {
+                    buyError.textContent = "La cantidad excede el stock disponible.";
+                    buyError.style.display = 'block';
+                }
+                return;
+            }
+        }
+        
+        if (buyError) buyError.style.display = 'none';
         
         if (!currentUser) {
             window.location.href = 'index.html'; 
@@ -340,9 +327,17 @@ if (btnBuy) {
 const addCartBtn = document.getElementById('add-cart-btn');
 if (addCartBtn) {
     addCartBtn.addEventListener('click', async () => {
-        if (currentQty === 0) {
-            alert("La cantidad seleccionada es 0.");
+        if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
+            alert("Cantidad inválida.");
             return;
+        }
+        if (stockData && stockData.status === 'disponible') {
+            let pool = stockData.credentialsPool || "";
+            let count = pool.split('\n').filter(l => l.trim() !== "").length;
+            if (currentQty > count) {
+                alert("La cantidad excede el stock disponible.");
+                return;
+            }
         }
         if (!currentUser) {
             alert("Debes iniciar sesión para usar el carrito.");
@@ -356,6 +351,7 @@ if (addCartBtn) {
                 let existingQty = currentCart[productId] || 0;
                 currentCart[productId] = existingQty + currentQty;
                 await updateDoc(uRef, { cart: currentCart });
+                updateCartBadge();
                 alert("¡Producto añadido al carrito!");
             }
         } catch(e) {
