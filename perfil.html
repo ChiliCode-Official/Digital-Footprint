@@ -442,46 +442,21 @@
             </div>
         </main>
         
-        <!-- Right Panel (Friends) -->
+        <!-- Right Panel (Friends & Referral Panel) -->
         <aside class="right-panel" id="friends-panel">
             <button type="button" class="panel-collapse-btn" id="friends-panel-toggle" aria-expanded="true" aria-label="Ocultar panel de amigos">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <div class="right-panel__inner">
-                <div class="panel-section">
-                    <h3 class="panel-title">Amigos en línea · 6 / 45</h3>
-                    <div class="list-item">
-                        <div class="list-icon"><img src="https://ui-avatars.com/api/?name=FA" alt="avatar"></div>
-                        <div class="list-info">
-                            <p class="list-name">Fahim Auditor</p>
-                            <p class="list-desc">Apex</p>
-                        </div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-icon"><img src="https://ui-avatars.com/api/?name=KF" alt="avatar"></div>
-                        <div class="list-info">
-                            <p class="list-name">Killer Freake</p>
-                            <p class="list-desc">Dota 2</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-section">
-                    <h3 class="panel-title">Parties</h3>
-                    <div class="list-item glass-panel">
-                        <div class="list-icon" style="background: var(--accent-primary); color: white;"><i class="fa-solid fa-rocket"></i></div>
-                        <div class="list-info">
-                            <p class="list-name">CS2 Match</p>
-                            <p class="list-desc">Buscando +1</p>
-                        </div>
-                    </div>
+            <div class="right-panel__inner" style="padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 1.2rem; height: 100%; overflow-y: auto;">
+                <!-- Panel Header -->
+                <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between;">
+                    <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-users" style="color: var(--accent-primary);"></i> Amigos & Referidos
+                    </h3>
                 </div>
                 
-                <div class="panel-header" style="margin-top: 1rem;">
-                    <h3>Amigos & Referidos</h3>
-                </div>
-                
-                <div class="brutalist-container" style="margin-bottom: 15px; width: 100%;">
+                <!-- Search Input -->
+                <div class="brutalist-container" style="width: 100%; margin-top: 10px;">
                   <input
                     id="search-friend-input"
                     placeholder="TIPO AQUÍ"
@@ -492,17 +467,27 @@
                   <label class="brutalist-label" style="top: -20px; font-size: 10px;">BUSCAR / AÑADIR</label>
                 </div>
 
-                <div class="friends-list" id="friends-list">
-                    <!-- Se llena dinámicamente -->
-                    <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Cargando amigos...</p>
+                <!-- Friends List (Dynamically populated) -->
+                <div class="panel-section" style="flex: 1;">
+                    <h4 class="panel-title" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+                        Miembros de la Comunidad
+                    </h4>
+                    <div class="friends-list" id="friends-list" style="display: flex; flex-direction: column; gap: 8px;">
+                        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando amigos...</p>
+                    </div>
                 </div>
 
-                <div class="referral-box">
-                    <h4>Tu Enlace de Invitación</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">¡Gana 3% en saldo cuando tus amigos compren usando tu link!</p>
-                    <div style="display:flex; gap: 5px;">
-                        <input type="text" id="ref-link-input" readonly value="..." style="flex: 1; padding: 5px; border-radius: 4px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
-                        <button class="btn-primary" id="copy-ref-btn" style="padding: 5px 10px;"><i class="fa-solid fa-copy"></i></button>
+                <!-- Referral Section -->
+                <div class="referral-box" style="background: var(--bg-card); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius-md);">
+                    <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">
+                        <i class="fa-solid fa-gift"></i> Tu Enlace de Invitación
+                    </h4>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                        ¡Gana 3% en saldo cuando tus amigos compren usando tu link!
+                    </p>
+                    <div style="display:flex; gap: 6px;">
+                        <input type="text" id="ref-link-input" readonly value="Inicia sesión para ver tu enlace" style="flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
+                        <button class="btn-primary" id="copy-ref-btn" style="padding: 6px 10px; font-size: 0.8rem;"><i class="fa-solid fa-copy"></i></button>
                     </div>
                 </div>
             </div>

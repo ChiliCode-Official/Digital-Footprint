@@ -43,7 +43,9 @@ async function loadRealFriends(currentUser) {
 
     // Update referral link
     if (currentUser) {
-        const refUrl = `${window.location.origin}/index.html?ref=${currentUser.uid}`;
+        const pathname = window.location.pathname;
+        const basePath = pathname.substring(0, pathname.lastIndexOf('/') + 1);
+        const refUrl = `${window.location.origin}${basePath}index.html?ref=${currentUser.uid}`;
         if (refInput) refInput.value = refUrl;
 
         // Upgrade referral button to Uiverse marcelodolza animated button if not upgraded yet

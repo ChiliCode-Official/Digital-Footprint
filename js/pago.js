@@ -579,7 +579,9 @@ function showAstronautModal(productName, email) {
     if (shareBtn) {
         shareBtn.onclick = (e) => {
             e.preventDefault();
-            const message = `¡Hola! 🎁 Te acabo de regalar *${productName}* en GhostKey.\n\n¡Nos esforzaremos al máximo para que lo recibas super rápido! 🚀✨\n\nVisita GhostKey para ver tus regalos: ${window.location.origin}`;
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const siteUrl = `${window.location.origin}${basePath}`;
+            const message = `¡Hola! 🎁 Te acabo de regalar *${productName}* en GhostKey.\n\n¡Nos esforzaremos al máximo para que lo recibas super rápido! 🚀✨\n\nVisita GhostKey para ver tus regalos: ${siteUrl}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
         };
     }
