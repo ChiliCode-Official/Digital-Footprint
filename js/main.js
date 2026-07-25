@@ -493,11 +493,11 @@ export async function loadReviews() {
             const productBadge = cleanProdName ? `<span style="display:inline-block; font-size:0.75rem; background:var(--accent-primary); color:white; padding:2px 8px; border-radius:12px; margin-bottom:8px; font-weight:600;">${escapeHtml(cleanProdName)}</span>` : '';
             
             card.innerHTML = `
-                <div class="review-stars" style="color: var(--warning); font-size: 1.1rem; margin-bottom: 6px; letter-spacing: 2px;">${starsHtml}</div>
+                <div class="review-stars">${starsHtml}</div>
                 <div class="body">
                     ${productBadge}
-                    <p class="text" style="margin-bottom: 8px;">${escapeHtml(r.text || '')}</p>
-                    <span class="username" style="color: var(--text-muted); font-size: 0.82rem; font-weight: 500;">@${escapeHtml(r.username || 'Usuario')}</span>
+                    <p class="text">${escapeHtml(r.text || '')}</p>
+                    <span class="username">@${escapeHtml(r.username || 'Usuario')}</span>
                     <div class="footer">
                         <div class="like-btn-action ${isLiked ? 'liked' : ''}" data-id="${docId}">
                             <svg fill="${isLiked ? 'var(--danger)' : 'currentColor'}" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-2.5 0 32 32">

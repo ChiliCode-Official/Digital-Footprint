@@ -517,13 +517,25 @@ window.deliverOrder = async function(orderId) {
     } catch(e) { console.error(e); alert('Error al entregar.'); }
 };
 
+function normalizeImageUrl(url) {
+    if (!url) return '';
+    let clean = url.trim();
+    if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
+        const parts = clean.split('/');
+        const id = parts[parts.length - 1].split('.')[0];
+        if (id) return `https://i.imgur.com/${id}.png`;
+    }
+    return clean;
+}
+
 window.createProduct = async function() {
     const name    = document.getElementById('new-prod-name').value.trim();
     const price   = parseFloat(document.getElementById('new-prod-price').value);
     const minQEl  = document.getElementById('new-prod-min-quantity');
     const minQty  = minQEl ? parseInt(minQEl.value) || 1 : 1;
     const category= document.getElementById('new-prod-category').value;
-    const img     = document.getElementById('new-prod-img').value.trim();
+    const rawImg  = document.getElementById('new-prod-img').value.trim();
+    const img     = normalizeImageUrl(rawImg);
     const desc    = document.getElementById('new-prod-desc').value.trim();
     const status  = document.getElementById('new-prod-status').value;
     const featured= document.getElementById('new-prod-featured').checked;
@@ -583,7 +595,8 @@ window.saveEditedProduct = async function() {
     const minQEl  = document.getElementById('edit-prod-min-quantity');
     const minQty  = minQEl ? parseInt(minQEl.value)||1 : 1;
     const category= document.getElementById('edit-prod-category').value;
-    const img     = document.getElementById('edit-prod-img').value.trim();
+    const rawImg  = document.getElementById('edit-prod-img').value.trim();
+    const img     = normalizeImageUrl(rawImg);
     const desc    = document.getElementById('edit-prod-desc').value.trim();
     const status  = document.getElementById('edit-prod-status').value;
     const featured= document.getElementById('edit-prod-featured').checked;

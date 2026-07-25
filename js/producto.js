@@ -77,15 +77,15 @@ async function loadProductDetails() {
                     if (stockData.status === 'disponible') {
                         let pool = stockData.credentialsPool || "";
                         let count = pool.split('\n').filter(l => l.trim() !== "").length;
-                        if(count >= currentQty && count > 0) {
-                            pBadge.textContent = `En stock (${count})`;
-                            pBadge.style.background = 'var(--success)';
+                        if (count > 0) {
+                            pBadge.textContent = count >= currentQty ? `En stock (${count})` : `Bajo pedido (En stock: ${count})`;
+                            pBadge.style.background = count >= currentQty ? 'var(--success)' : 'var(--warning)';
                         } else {
-                            pBadge.textContent = `Stock insuficiente`;
-                            pBadge.style.background = 'var(--danger)';
-                            if (btnBuy) btnBuy.disabled = true;
-                            if (btnGift) btnGift.disabled = true;
+                            pBadge.textContent = `Bajo pedido`;
+                            pBadge.style.background = 'var(--warning)';
                         }
+                        if (btnBuy) btnBuy.disabled = false;
+                        if (btnGift) btnGift.disabled = false;
                     } else if (stockData.status === 'bajo_pedido') {
                         pBadge.textContent = `Bajo pedido`;
                         pBadge.style.background = 'var(--warning)';
