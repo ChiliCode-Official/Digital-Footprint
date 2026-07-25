@@ -50,6 +50,17 @@ if (btnGift) {
     });
 }
 
+function normalizeImageUrl(url) {
+    if (!url) return '';
+    let clean = url.trim();
+    if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
+        const parts = clean.split('/');
+        const id = parts[parts.length - 1].split('.')[0];
+        if (id) return `https://i.imgur.com/${id}.png`;
+    }
+    return clean;
+}
+
 async function loadProductDetails() {
     if (!productId) {
         if (pTitle) pTitle.textContent = "Producto no especificado";
@@ -68,11 +79,20 @@ async function loadProductDetails() {
             if (pTitle) pTitle.textContent = productData.name || 'Producto';
             if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible para este producto.';
             if (pPrice) pPrice.textContent = `$${productData.price || 0}`;
-            if (pImage) pImage.src = productData.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800';
+            
+            if (pImage) {
+                const cleanImg = normalizeImageUrl(productData.image) || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800';
+                pImage.src = cleanImg;
+                pImage.alt = productData.name || 'Producto';
+                pImage.onerror = () => {
+                    pImage.src = 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800';
+                };
+            }
             
             const sSnap = await getDoc(doc(db, 'products_stock', productId));
             if (sSnap.exists()) {
                 stockData = sSnap.data();
+                checkAndDisplayStockNotice();
                 if (pBadge) {
                     if (stockData.status === 'disponible') {
                         let pool = stockData.credentialsPool || "";
@@ -374,10 +394,35 @@ if (addCartBtn) {
     });
 }
 
+function checkAndDisplayStockNotice() {
+    const buyNotice = document.getElementById('buy-notice');
+    if (!buyNotice) return;
+    if (stockData && stockData.status === 'disponible') {
+        let pool = stockData.credentialsPool || "";
+        let count = pool.split('\n').filter(l => l.trim() !== "").length;
+        if (currentQty > count) {
+            const immediate = Math.max(0, count);
+            const pending = currentQty - immediate;
+            buyNotice.style.display = 'block';
+            buyNotice.style.background = 'rgba(234,179,8,0.12)';
+            buyNotice.style.border = '1px solid var(--warning)';
+            buyNotice.style.color = 'var(--warning)';
+            buyNotice.style.padding = '10px 14px';
+            buyNotice.style.borderRadius = '10px';
+            buyNotice.style.fontSize = '0.85rem';
+            buyNotice.style.marginTop = '10px';
+            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
+        } else {
+            buyNotice.style.display = 'none';
+        }
+    } else {
+        buyNotice.style.display = 'none';
+    }
+}
+
 function updateQtyUI() {
     const qtyDisplay = document.getElementById('qty-display');
     const pPrice = document.getElementById('p-price');
-    const minQ = productData ? (productData.minQuantity || 1) : 1;
     
     if(qtyDisplay) qtyDisplay.textContent = currentQty;
     
@@ -385,6 +430,8 @@ function updateQtyUI() {
         const total = productData.price * currentQty;
         pPrice.textContent = `$${total.toFixed(2)}`;
     }
+
+    checkAndDisplayStockNotice();
 }
 
 const btnMinus = document.getElementById('btn-qty-minus');
@@ -404,18 +451,13 @@ if(btnMinus) {
 
 if(btnPlus) {
     btnPlus.addEventListener('click', () => {
-        const minQ = productData ? (productData.minQuantity || 1) : 1;
-        if (currentQty === 0) {
-            currentQty = minQ;
-        } else {
-            currentQty++;
-        }
+        currentQty++;
         updateQtyUI();
     });
 }
 
 async function loadProductReviews(pid) {
-    const container = document.getElementById('product-reviews-container');
+    const container = document.getElementById('reviews-container');
     if (!container) return;
 
     try {
@@ -436,8 +478,8 @@ async function loadProductReviews(pid) {
         container.innerHTML = '';
         snap.forEach(docSnap => {
             const r = docSnap.data();
-            const starsCount = r.rating || 5;
-            const starsHtml = '★'.repeat(starsCount) + '☆'.repeat(5 - starsCount);
+            const ratingVal = Math.min(5, Math.max(1, parseInt(r.rating) || 5));
+            const starsHtml = '★'.repeat(ratingVal) + '☆'.repeat(5 - ratingVal);
 
             const card = document.createElement('div');
             card.className = 'review-card';
@@ -446,7 +488,7 @@ async function loadProductReviews(pid) {
                 <div class="review-stars">${starsHtml}</div>
                 <div class="body">
                     <p class="text">${escapeHtml(r.text || '')}</p>
-                    <span class="username">from: @${escapeHtml(r.username || 'Usuario')}</span>
+                    <span class="username">@${escapeHtml(r.username || 'Usuario')}</span>
                 </div>
             `;
             container.appendChild(card);

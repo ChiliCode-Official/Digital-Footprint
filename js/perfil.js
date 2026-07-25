@@ -261,7 +261,9 @@ async function loadClientData(uid) {
                 if (o.productId) {
                     try {
                         const pDoc = await getDoc(doc(db, 'products', o.productId));
-                        if (pDoc.exists() && pDoc.data().image) prodImg = pDoc.data().image;
+                        if (pDoc.exists() && pDoc.data().image) {
+                            prodImg = normalizeImageUrl(pDoc.data().image) || prodImg;
+                        }
                     } catch(e) {}
                 }
                 const card = document.createElement('div');
@@ -269,9 +271,10 @@ async function loadClientData(uid) {
                 card.innerHTML = `
                     <p class="delivered-tag">ENTREGADO</p>
                     <div class="delivered-wrapper">
-                        <div class="delivered-card-image"><img src="${prodImg}" alt="${escapeHtml(o.productName||'Producto')}"></div>
+                        <div class="delivered-card-image"><img src="${prodImg}" alt="${escapeHtml(o.productName||'Producto')}" onerror="this.src='https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=300'"></div>
                         <div class="delivered-content">
                             <p class="delivered-title">${escapeHtml(o.productName||'Producto')}</p>
+                            <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-bottom:4px;">${dDate}</span>
                             <p class="delivered-title delivered-price">$${o.price||0}</p>
                         </div>
                         <button class="delivered-card-btn" data-credential="${escapeHtml(o.textDelivered||'')}">

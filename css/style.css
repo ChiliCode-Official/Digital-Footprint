@@ -32,12 +32,15 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+html, body {
+  height: 100vh;
+  overflow: hidden;
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  min-height: 100vh;
   display: flex;
-  overflow-x: hidden;
 }
 
 /* Glassmorphism Utilities */
@@ -2953,6 +2956,10 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 768px) {
+  html, body {
+    height: auto !important;
+    overflow-y: auto !important;
+  }
   .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -2965,6 +2972,9 @@ input:focus, select:focus, textarea:focus {
     grid-column: 1 / -1 !important;
     padding: 1rem !important;
     width: 100% !important;
+    height: auto !important;
+    overflow-y: visible !important;
+  }
   }
   .main-container {
     transform: scale(0.82);
