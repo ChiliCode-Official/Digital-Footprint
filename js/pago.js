@@ -99,7 +99,9 @@ function setupPurchaseMode(balance, amount) {
     document.getElementById('btn-confirm-purchase').onclick = processPurchase;
 }
 
-function setupRechargeMode(balance, suggestedAmount) {
+let selectedAccount = null;
+
+async function setupRechargeMode(balance, suggestedAmount) {
     titleEl.innerHTML = '<i class="fa-solid fa-wallet"></i> Depositar Saldo';
     if (from === 'cart' || from === 'product') {
         subEl.innerHTML = `<span style="color:var(--warning);"><i class="fa-solid fa-triangle-exclamation"></i> Saldo insuficiente.</span> Selecciona tu método y monto para abonar.`;
@@ -135,10 +137,10 @@ function setupRechargeMode(balance, suggestedAmount) {
 
         <div id="bank-info-box" style="background: rgba(161, 130, 232, 0.08); border: 1px solid var(--accent-primary); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <strong style="color: var(--accent-primary); font-size: 0.85rem;"><i class="fa-solid fa-credit-card"></i> Cuenta CLABE Oficial (STP / GhostKey)</strong>
+                <strong style="color: var(--accent-primary); font-size: 0.85rem;" id="pm-bank-title"><i class="fa-solid fa-credit-card"></i> Cuenta CLABE Oficial (STP / GhostKey)</strong>
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); padding: 8px 12px; border-radius: 8px;">
-                <span style="font-family: monospace; font-size: 0.95rem; font-weight: bold; letter-spacing: 1px;">646180157012345678</span>
+                <span style="font-family: monospace; font-size: 0.95rem; font-weight: bold; letter-spacing: 1px;" id="pm-clabe-display">646180157012345678</span>
                 <button type="button" id="btn-copy-clabe-pago" class="btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;"><i class="fa-solid fa-copy"></i> Copiar</button>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;" id="pm-guide-text">Realiza la transferencia y haz clic en Confirmar para notificar al Administrador.</p>
@@ -150,12 +152,56 @@ function setupRechargeMode(balance, suggestedAmount) {
             <i class="fa-solid fa-paper-plane"></i> Confirmar Depositar
         </button>
     `;
+
+    // Load account logic from Firestore filtered by tipo
+    async function loadAccountForTipo(tipo) {
+        const clabeDisplay = document.getElementById('pm-clabe-display');
+        const bankTitle = document.getElementById('pm-bank-title');
+        
+        try {
+            const snap = await getDocs(collection(db, "payment_methods"));
+            let foundDoc = null;
+            
+            snap.forEach(dSnap => {
+                const dData = dSnap.data();
+                if (!foundDoc && (dData.tipo === tipo || (!dData.tipo && tipo === 'transferencia'))) {
+                    foundDoc = { id: dSnap.id, ...dData };
+                }
+            });
+
+            if (foundDoc) {
+                selectedAccount = foundDoc;
+                if (clabeDisplay) clabeDisplay.textContent = foundDoc.clabe || '646180157012345678';
+                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${escapeHtml(foundDoc.banco || 'Cuenta Oficial GhostKey')}`;
+            } else {
+                // Default fallback if no method configured in admin for this tipo
+                selectedAccount = {
+                    clabe: '646180157012345678',
+                    banco: tipo === 'transferencia' ? 'STP / GhostKey' : 'OXXO / STP GhostKey',
+                    beneficiario: 'GhostKey Oficial'
+                };
+                if (clabeDisplay) clabeDisplay.textContent = selectedAccount.clabe;
+                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${selectedAccount.banco}`;
+            }
+        } catch (e) {
+            console.error("Error loading account for tipo:", e);
+            selectedAccount = { clabe: '646180157012345678', banco: 'STP / GhostKey' };
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Initial load for default active method ('transferencia')
+    await loadAccountForTipo('transferencia');
     
     // Select Method logic
     const methodBtns = document.querySelectorAll('.r-method-opt');
     const guideText = document.getElementById('pm-guide-text');
     methodBtns.forEach(mBtn => {
-        mBtn.onclick = () => {
+        mBtn.onclick = async () => {
             methodBtns.forEach(b => {
                 b.classList.remove('active');
                 b.style.borderColor = 'var(--glass-border)';
@@ -167,12 +213,15 @@ function setupRechargeMode(balance, suggestedAmount) {
             mBtn.style.background = 'rgba(161, 130, 232, 0.15)';
             mBtn.style.color = 'white';
 
-            const isTransfer = mBtn.dataset.method === 'transferencia';
+            const methodKey = mBtn.dataset.method;
+            const isTransfer = methodKey === 'transferencia';
             if (guideText) {
                 guideText.textContent = isTransfer 
                     ? 'Realiza la transferencia interbancaria SPEI y confirma tu depósito.'
                     : 'Deposita en cualquier OXXO/Ventanilla a la cuenta CLABE y confirma tu pago.';
             }
+
+            await loadAccountForTipo(methodKey);
         };
     });
 
@@ -191,7 +240,8 @@ function setupRechargeMode(balance, suggestedAmount) {
     const copyClabeBtn = document.getElementById('btn-copy-clabe-pago');
     if (copyClabeBtn) {
         copyClabeBtn.onclick = () => {
-            navigator.clipboard.writeText('646180157012345678').then(() => {
+            const clabeText = selectedAccount ? selectedAccount.clabe : '646180157012345678';
+            navigator.clipboard.writeText(clabeText).then(() => {
                 copyClabeBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copiado`;
                 setTimeout(() => { copyClabeBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Copiar`; }, 2000);
             });
@@ -213,6 +263,11 @@ async function processRecharge() {
         return;
     }
     
+    if (!currentUser) {
+        showError("Debes iniciar sesión para realizar esta operación.");
+        return;
+    }
+
     const btn = document.getElementById('btn-process-recharge');
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando depósito...';
@@ -220,7 +275,7 @@ async function processRecharge() {
     try {
         const reqRef = await addDoc(collection(db, 'balance_requests'), {
             uid: currentUser.uid,
-            userEmail: currentUser.email,
+            userEmail: currentUser.email || 'usuario@ghostkey.app',
             amount: amount,
             method: methodLabel,
             status: "pendiente",
@@ -230,8 +285,8 @@ async function processRecharge() {
         setupWaitingScreen(reqRef.id, amount, methodLabel);
         
     } catch (e) {
-        console.error(e);
-        showError("Error al registrar solicitud.");
+        console.error("Error in processRecharge:", e);
+        showError("Error al registrar la solicitud: " + (e.message || "Fallo en Firestore"));
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar Depositar';
     }

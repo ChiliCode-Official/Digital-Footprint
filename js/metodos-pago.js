@@ -155,6 +155,7 @@ async function savePaymentMethod() {
     const beneficiario = document.getElementById('pm-beneficiario').value.trim();
     const concepto = document.getElementById('pm-concepto').value.trim();
     const clabe = document.getElementById('pm-clabe').value.trim();
+    const tipo = document.getElementById('pm-tipo') ? document.getElementById('pm-tipo').value : 'transferencia';
 
     if (!bank || !beneficiario || !clabe) {
         alert("Banco, Beneficiario y Cuenta CLABE son obligatorios.");
@@ -167,6 +168,7 @@ async function savePaymentMethod() {
             beneficiario: beneficiario,
             concepto: concepto || "Recarga de saldo",
             clabe: clabe,
+            tipo: tipo,
             timestamp: serverTimestamp()
         });
 

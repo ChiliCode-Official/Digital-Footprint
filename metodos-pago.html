@@ -72,6 +72,13 @@
                             <input type="text" id="pm-concepto" placeholder="Ej: Tu correo o ID de usuario" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                         </div>
                         <div>
+                            <label class="payment-detail-label">Tipo de Método</label>
+                            <select id="pm-tipo" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                                <option value="transferencia">Transferencia (SPEI)</option>
+                                <option value="efectivo">Efectivo / OXXO</option>
+                            </select>
+                        </div>
+                        <div>
                             <label class="payment-detail-label">Cuenta CLABE (18 dígitos)</label>
                             <input type="text" id="pm-clabe" placeholder="18 dígitos" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                         </div>
