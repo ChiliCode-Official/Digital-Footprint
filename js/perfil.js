@@ -46,41 +46,55 @@ function showGuard() {
 }
 
 function showProfile(user) {
-    if (authGuard)      authGuard.style.display      = 'none';
-    if (profileContent) profileContent.style.display = 'block';
-    if (btnLogout)      btnLogout.style.display       = 'inline-block';
+    try {
+        if (authGuard)      authGuard.style.display      = 'none';
+        if (profileContent) profileContent.style.display = 'block';
+        if (btnLogout)      btnLogout.style.display       = 'inline-block';
 
-    const mainCard = document.querySelector('.main-container');
-    const hintEl = document.getElementById('copy-uid-hint');
-    if (mainCard) {
-        mainCard.style.cursor = 'pointer';
-        mainCard.onclick = () => {
-            if (user && user.uid) {
-                navigator.clipboard.writeText(user.uid).then(() => {
-                    if (hintEl) {
-                        const origHTML = hintEl.innerHTML;
-                        hintEl.innerHTML = `<i class="fa-solid fa-check" style="color:var(--success);"></i> <strong style="color:var(--success);">¡UID copiado al portapapeles!</strong>`;
-                        setTimeout(() => { hintEl.innerHTML = origHTML; }, 2500);
-                    }
-                }).catch(() => {
-                    alert("UID de amigo: " + user.uid);
-                });
+        if (cardName) cardName.textContent = user.displayName || user.email || '';
+        if (cardUid)  cardUid.textContent  = user.uid || '';
+
+        userAvatars.forEach(img => {
+            if (img) {
+                img.src = user.photoURL ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email||'User')}&background=A182E8&color=fff`;
             }
-        };
-    }
-    userAvatars.forEach(img => {
-        img.src = user.photoURL ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email||'User')}&background=A182E8&color=fff`;
-    });
+        });
 
-    if (user.email === ADMIN_EMAIL) {
-        if (adminView)  adminView.style.display  = 'block';
-        if (clientView) clientView.style.display = 'none';
-        loadAdminData();
-    } else {
-        if (adminView)  adminView.style.display  = 'none';
-        if (clientView) clientView.style.display = 'block';
-        loadClientData(user.uid);
+        const mainCard = document.querySelector('.main-container');
+        const hintEl = document.getElementById('copy-uid-hint');
+        if (mainCard) {
+            mainCard.style.cursor = 'pointer';
+            mainCard.onclick = () => {
+                if (user && user.uid) {
+                    navigator.clipboard.writeText(user.uid).then(() => {
+                        if (hintEl) {
+                            const origHTML = hintEl.innerHTML;
+                            hintEl.innerHTML = `<i class="fa-solid fa-check" style="color:var(--success);"></i> <strong style="color:var(--success);">¡UID copiado al portapapeles!</strong>`;
+                            setTimeout(() => { hintEl.innerHTML = origHTML; }, 2500);
+                        }
+                    }).catch(() => {
+                        alert("UID de amigo: " + user.uid);
+                    });
+                }
+            };
+        }
+    } catch(e) {
+        console.error('Error rendering profile header:', e);
+    }
+
+    try {
+        if (user.email === ADMIN_EMAIL) {
+            if (adminView)  adminView.style.display  = 'block';
+            if (clientView) clientView.style.display = 'none';
+            loadAdminData();
+        } else {
+            if (adminView)  adminView.style.display  = 'none';
+            if (clientView) clientView.style.display = 'block';
+            loadClientData(user.uid);
+        }
+    } catch(e) {
+        console.error('Error switching profile view:', e);
     }
 }
 
@@ -172,6 +186,9 @@ if (btnLoginGuard) {
 
 // ─── Load Client Data ─────────────────────────────────────────────────────────
 async function loadClientData(uid) {
+    let data = { balance: 0, wishlist: [], cart: {} };
+
+    // 1. User doc & balance
     try {
         const ref  = doc(db, 'users', uid);
         let   snap = await getDoc(ref);
@@ -186,15 +203,19 @@ async function loadClientData(uid) {
             snap = await getDoc(ref);
         }
 
-        if (!snap.exists()) return;
-        const data = snap.data();
-
-        if (userBalanceEl) {
-            userBalanceEl.textContent = (data.balance != null)
-                ? Number(data.balance).toFixed(2) : '0.00';
+        if (snap.exists()) {
+            data = snap.data();
+            if (userBalanceEl) {
+                userBalanceEl.textContent = (data.balance != null)
+                    ? Number(data.balance).toFixed(2) : '0.00';
+            }
         }
+    } catch(e) {
+        console.error('Error loading user balance:', e);
+    }
 
-        // Orders
+    // 2. Client Orders
+    try {
         const tbody           = document.getElementById('client-orders-body');
         const noticeBox       = document.getElementById('pending-orders-notice');
         const deliveredSection= document.getElementById('delivered-section');
@@ -276,8 +297,50 @@ async function loadClientData(uid) {
 
         if (noticeBox)        noticeBox.style.display       = hasPending  ? 'block' : 'none';
         if (deliveredSection) deliveredSection.style.display = hasDelivered ? 'block' : 'none';
+    } catch(e) {
+        console.error('Error loading client orders:', e);
+    }
 
-        // Wishlist
+    // 3. Client Balance Requests
+    try {
+        const tbodyRecharges = document.getElementById('client-recharges-body');
+        if (tbodyRecharges) {
+            tbodyRecharges.innerHTML = '';
+            const rechargesSnap = await getDocs(query(collection(db, 'balance_requests'), where('uid', '==', uid)));
+            if (rechargesSnap.empty) {
+                tbodyRecharges.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:1.5rem;">No has realizado solicitudes de recarga.</td></tr>`;
+            } else {
+                rechargesSnap.forEach(d => {
+                    const r = d.data();
+                    let rDate = 'Reciente';
+                    try {
+                        if (r.timestamp && typeof r.timestamp.toDate === 'function') rDate = r.timestamp.toDate().toLocaleDateString();
+                        else if (r.timestamp && r.timestamp.seconds) rDate = new Date(r.timestamp.seconds * 1000).toLocaleDateString();
+                    } catch(e) {}
+                    let badgeStyle = 'background:rgba(234,179,8,0.15);color:var(--warning);';
+                    if (r.status === 'aprobado') badgeStyle = 'background:rgba(34,197,94,0.15);color:var(--success);';
+                    else if (r.status === 'rechazado') badgeStyle = 'background:rgba(239,68,68,0.15);color:var(--danger);';
+                    
+                    tbodyRecharges.innerHTML += `
+                        <tr>
+                            <td style="padding:10px;">${rDate}</td>
+                            <td style="padding:10px;"><strong style="color:var(--success);">$${Number(r.amount||0).toFixed(2)}</strong></td>
+                            <td style="padding:10px;"><span class="status-badge" style="background:rgba(161,130,232,0.15);color:var(--accent-primary);">${escapeHtml(r.method||'Transferencia')}</span></td>
+                            <td style="padding:10px;"><span class="status-badge" style="${badgeStyle}">${(r.status||'PENDIENTE').toUpperCase()}</span></td>
+                        </tr>`;
+                });
+            }
+        }
+    } catch(e) {
+        console.error('Error loading client recharges:', e);
+        const tbodyRecharges = document.getElementById('client-recharges-body');
+        if (tbodyRecharges) {
+            tbodyRecharges.innerHTML = `<tr><td colspan="4" style="color:var(--danger);text-align:center;padding:1rem;">Error al cargar tus recargas.</td></tr>`;
+        }
+    }
+
+    // 4. Client Wishlist
+    try {
         const wishlistContainer = document.getElementById('wishlist-container');
         if (wishlistContainer) {
             const wishlistIds = data.wishlist || [];
@@ -307,42 +370,9 @@ async function loadClientData(uid) {
                     } catch(e) { console.error('Wishlist item error:', e); }
                 }
             }
-        // Client Balance Requests History
-        const tbodyRecharges = document.getElementById('client-recharges-body');
-        if (tbodyRecharges) {
-            tbodyRecharges.innerHTML = '';
-            try {
-                const rechargesSnap = await getDocs(query(collection(db, 'balance_requests'), where('uid', '==', uid)));
-                if (rechargesSnap.empty) {
-                    tbodyRecharges.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:1.5rem;">No has realizado solicitudes de recarga.</td></tr>`;
-                } else {
-                    rechargesSnap.forEach(d => {
-                        const r = d.data();
-                        let rDate = 'Reciente';
-                        try {
-                            if (r.timestamp && typeof r.timestamp.toDate === 'function') rDate = r.timestamp.toDate().toLocaleDateString();
-                            else if (r.timestamp && r.timestamp.seconds) rDate = new Date(r.timestamp.seconds * 1000).toLocaleDateString();
-                        } catch(e) {}
-                        let badgeStyle = 'background:rgba(234,179,8,0.15);color:var(--warning);';
-                        if (r.status === 'aprobado') badgeStyle = 'background:rgba(34,197,94,0.15);color:var(--success);';
-                        else if (r.status === 'rechazado') badgeStyle = 'background:rgba(239,68,68,0.15);color:var(--danger);';
-                        
-                        tbodyRecharges.innerHTML += `
-                            <tr>
-                                <td style="padding:10px;">${rDate}</td>
-                                <td style="padding:10px;"><strong style="color:var(--success);">$${Number(r.amount||0).toFixed(2)}</strong></td>
-                                <td style="padding:10px;"><span class="status-badge" style="background:rgba(161,130,232,0.15);color:var(--accent-primary);">${escapeHtml(r.method||'Transferencia')}</span></td>
-                                <td style="padding:10px;"><span class="status-badge" style="${badgeStyle}">${(r.status||'PENDIENTE').toUpperCase()}</span></td>
-                            </tr>`;
-                    });
-                }
-            } catch(e) {
-                console.error('Error loading client recharges:', e);
-                tbodyRecharges.innerHTML = `<tr><td colspan="4" style="color:var(--danger);text-align:center;padding:1rem;">Error al cargar tus recargas.</td></tr>`;
-            }
         }
-    } catch(err) {
-        console.error('Error loading client data:', err);
+    } catch(e) {
+        console.error('Error loading wishlist:', e);
     }
 }
 
