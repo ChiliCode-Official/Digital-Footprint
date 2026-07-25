@@ -90,10 +90,30 @@ async function loadRealFriends(currentUser) {
             const refBtn = document.getElementById('btn-copy-referral');
             if (refBtn) {
                 refBtn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(refUrl).then(() => {
-                        refBtn.classList.add('copied');
-                        setTimeout(() => refBtn.classList.remove('copied'), 3000);
-                    });
+                    const fallbackCopy = () => {
+                        if (refInput) {
+                            refInput.select();
+                            try {
+                                document.execCommand('copy');
+                                refBtn.classList.add('copied');
+                                setTimeout(() => refBtn.classList.remove('copied'), 3000);
+                            } catch (e) {
+                                console.error("Fallback copy error:", e);
+                            }
+                        }
+                    };
+
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(refUrl).then(() => {
+                            refBtn.classList.add('copied');
+                            setTimeout(() => refBtn.classList.remove('copied'), 3000);
+                        }).catch(err => {
+                            console.warn("Clipboard API failed, using fallback:", err);
+                            fallbackCopy();
+                        });
+                    } else {
+                        fallbackCopy();
+                    }
                 });
             }
         }
@@ -190,6 +210,12 @@ function initFriendsPanel() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initFriendsPanel();
+});
+
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted && auth.currentUser) {
+        loadRealFriends(auth.currentUser);
+    }
 });
 
 export { setPanelCollapsed };
