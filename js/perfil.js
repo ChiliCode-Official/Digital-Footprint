@@ -311,10 +311,11 @@ async function loadAdminData() {
             }
             snap.forEach(d => {
                 const o = d.data();
+                const pendingCount = typeof o.pendingQuantity === 'number' ? o.pendingQuantity : (o.quantity || 1);
                 tbodyOrders.innerHTML += `
                     <tr>
                         <td>${escapeHtml(o.userEmail||'')}</td>
-                        <td>${escapeHtml(o.productName||'')}</td>
+                        <td>${escapeHtml(o.productName||'')} <span style="background:var(--warning);color:#000;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:bold;">Faltan: ${pendingCount} u.</span></td>
                         <td>
                             <div style="display:flex;gap:6px;align-items:center;">
                                 <input type="text" id="deliver-${d.id}" placeholder="Código/Credencial" style="padding:6px;border-radius:6px;background:var(--bg-main);border:1px solid var(--glass-border);color:#fff;width:160px;">

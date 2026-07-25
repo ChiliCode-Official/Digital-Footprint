@@ -236,6 +236,7 @@ onAuthStateChanged(auth, async (user) => {
     currentUser = user;
 
     updateUserProfileUI(user);
+    checkReferralBanner(user);
 
     const reviewFormContainer = document.getElementById('review-form-container');
     if (reviewFormContainer) {
@@ -263,6 +264,26 @@ onAuthStateChanged(auth, async (user) => {
         loadReviews();
     }
 });
+
+function checkReferralBanner(user) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) {
+        localStorage.setItem('ghostkey_referred_by', ref);
+        let notice = document.getElementById('referral-banner-notice');
+        if (!notice) {
+            notice = document.createElement('div');
+            notice.id = 'referral-banner-notice';
+            notice.style.cssText = 'position:fixed; top:15px; left:50%; transform:translateX(-50%); z-index:10000; background:linear-gradient(135deg, var(--accent-primary), #6040a8); color:white; padding:10px 20px; border-radius:30px; box-shadow:0 10px 25px rgba(0,0,0,0.5); font-size:0.85rem; display:flex; align-items:center; gap:10px; font-weight:bold; max-width:90%;';
+            document.body.appendChild(notice);
+        }
+        if (user) {
+            notice.innerHTML = `<i class="fa-solid fa-circle-info" style="color:var(--warning);"></i> <span>El referido sólo aplica para cuentas NUEVAS. Ya tienes sesión iniciada.</span> <button onclick="this.parentNode.remove()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.1rem; margin-left:10px;">&times;</button>`;
+        } else {
+            notice.innerHTML = `<i class="fa-solid fa-gift"></i> <span>¡Te invitaron a GhostKey! Inicia sesión para crear una cuenta NUEVA y contar tu referido.</span> <button onclick="this.parentNode.remove()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.1rem; margin-left:10px;">&times;</button>`;
+        }
+    }
+}
 
 export function getGhostLoaderHTML(message = 'Cargando…') {
     return `
@@ -462,21 +483,24 @@ export async function loadReviews() {
             const likesArr = Array.isArray(r.likes) ? r.likes : [];
             const likesCount = likesArr.length;
             const isLiked = currentUser && likesArr.includes(currentUser.uid);
-            const starsCount = r.rating || 5;
-            const starsHtml = '★'.repeat(starsCount) + '☆'.repeat(5 - starsCount);
+            const ratingVal = Math.min(5, Math.max(1, parseInt(r.rating) || 5));
+            const starsHtml = '★'.repeat(ratingVal) + '☆'.repeat(5 - ratingVal);
 
             const card = document.createElement('div');
             card.className = 'review-card';
-            const productBadge = r.productName ? `<span style="display:inline-block; font-size:0.75rem; background:var(--accent-primary); color:white; padding:2px 8px; border-radius:12px; margin-bottom:8px;">${escapeHtml(r.productName)}</span>` : '';
+            // Strip any quantity info from productName if present (e.g. "Product (1 u)")
+            const cleanProdName = (r.productName || '').replace(/\s*\(\d+\s*u.*?\)/i, '').trim();
+            const productBadge = cleanProdName ? `<span style="display:inline-block; font-size:0.75rem; background:var(--accent-primary); color:white; padding:2px 8px; border-radius:12px; margin-bottom:8px; font-weight:600;">${escapeHtml(cleanProdName)}</span>` : '';
+            
             card.innerHTML = `
-                <div class="review-stars">${starsHtml}</div>
+                <div class="review-stars" style="color: var(--warning); font-size: 1.1rem; margin-bottom: 6px; letter-spacing: 2px;">${starsHtml}</div>
                 <div class="body">
                     ${productBadge}
-                    <p class="text">${escapeHtml(r.text || '')}</p>
-                    <span class="username">from: @${escapeHtml(r.username || 'Usuario')}</span>
+                    <p class="text" style="margin-bottom: 8px;">${escapeHtml(r.text || '')}</p>
+                    <span class="username" style="color: var(--text-muted); font-size: 0.82rem; font-weight: 500;">@${escapeHtml(r.username || 'Usuario')}</span>
                     <div class="footer">
                         <div class="like-btn-action ${isLiked ? 'liked' : ''}" data-id="${docId}">
-                            <svg fill="${isLiked ? 'var(--danger)' : '#000000'}" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-2.5 0 32 32">
+                            <svg fill="${isLiked ? 'var(--danger)' : 'currentColor'}" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-2.5 0 32 32">
                                 <path class="${isLiked ? 'liked' : ''}" d="M0 10.284l0.505 0.36c0.089 0.064 0.92 0.621 2.604 0.621 0.27 0 0.55-0.015 0.836-0.044 3.752 4.346 6.411 7.472 7.060 8.299-1.227 2.735-1.42 5.808-0.537 8.686l0.256 0.834 7.63-7.631 8.309 8.309 0.742-0.742-8.309-8.309 7.631-7.631-0.834-0.255c-2.829-0.868-5.986-0.672-8.686 0.537-0.825-0.648-3.942-3.3-8.28-7.044 0.11-0.669 0.23-2.183-0.575-3.441l-0.352-0.549-8.001 8.001zM1.729 10.039l6.032-6.033c0.385 1.122 0.090 2.319 0.086 2.334l-0.080 0.314 0.245 0.214c7.409 6.398 8.631 7.39 8.992 7.546l-0.002 0.006 0.195 0.058 0.185-0.087c2.257-1.079 4.903-1.378 7.343-0.836l-13.482 13.481c-0.55-2.47-0.262-5.045 0.837-7.342l0.104-0.218-0.098-0.221-0.031 0.013c-0.322-0.632-1.831-2.38-7.498-8.944l-0.185-0.215-0.282 0.038c-0.338 0.045-0.668 0.069-0.981 0.069-0.595 0-1.053-0.083-1.38-0.176z"></path>
                             </svg>
                             <span>${likesCount}</span>

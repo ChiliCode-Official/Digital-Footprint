@@ -648,13 +648,16 @@ body {
   min-width: 268px;
   height: 100%;
   overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
   opacity: 1;
   transition: opacity 0.25s ease, transform 0.35s ease;
 }
 
 .right-panel__inner::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .dashboard-container.friends-panel-collapsed .right-panel__inner {

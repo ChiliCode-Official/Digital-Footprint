@@ -443,23 +443,34 @@ async function processCartPurchase() {
             const sSnap = await transaction.get(stockRef);
             
             let credsToGive = [];
+            let availableCount = 0;
+            let pendingQty = prod.qty;
             let oStatus = "confirmado";
             
             if (sSnap.exists() && sSnap.data().status === 'disponible') {
                 let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
-                if (pool.length >= prod.qty) {
-                    credsToGive = pool.splice(0, prod.qty);
+                availableCount = Math.min(pool.length, prod.qty);
+                if (availableCount > 0) {
+                    credsToGive = pool.splice(0, availableCount);
                     transaction.update(stockRef, { credentialsPool: pool.join('\n') });
-                } else {
+                }
+                pendingQty = prod.qty - availableCount;
+                if (pendingQty > 0) {
                     oStatus = "pendiente";
-                    credsToGive = ["Se agotó el stock. El administrador procesará tu entrega pronto."];
+                    if (availableCount === 0) {
+                        credsToGive = ["Se agotó el stock. El administrador procesará tu entrega pronto."];
+                    } else {
+                        credsToGive.push(`[Nota: Se entregaron ${availableCount} credencial(es). Faltan ${pendingQty} por entregar por el administrador.]`);
+                    }
                 }
             } else if (sSnap.exists() && sSnap.data().status === 'bajo_pedido') {
                 oStatus = "pendiente";
                 credsToGive = ["El administrador procesará tu entrega pronto."];
+                pendingQty = prod.qty;
             } else {
                 oStatus = "pendiente";
                 credsToGive = ["Entrega pendiente de verificación."];
+                pendingQty = prod.qty;
             }
 
             const newOrderRef = doc(collection(db, 'orders'));
@@ -470,6 +481,8 @@ async function processCartPurchase() {
                 productName: prod.name,
                 price: prod.price * prod.qty,
                 quantity: prod.qty,
+                deliveredQuantity: availableCount,
+                pendingQuantity: pendingQty,
                 method: 'creditos',
                 status: oStatus,
                 textDelivered: credsToGive.join('\n'),
@@ -523,23 +536,34 @@ async function processSinglePurchase() {
         const sSnap = await transaction.get(stockRef);
         
         let credsToGive = [];
+        let availableCount = 0;
+        let pendingQty = parsedQty;
         let oStatus = "confirmado";
         
         if (sSnap.exists() && sSnap.data().status === 'disponible') {
             let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
-            if (pool.length >= qty) {
-                credsToGive = pool.splice(0, qty);
+            availableCount = Math.min(pool.length, parsedQty);
+            if (availableCount > 0) {
+                credsToGive = pool.splice(0, availableCount);
                 transaction.update(stockRef, { credentialsPool: pool.join('\n') });
-            } else {
+            }
+            pendingQty = parsedQty - availableCount;
+            if (pendingQty > 0) {
                 oStatus = "pendiente";
-                credsToGive = ["Se agotó el stock instantáneo. Espera confirmación del admin."];
+                if (availableCount === 0) {
+                    credsToGive = ["Se agotó el stock instantáneo. Espera confirmación del admin."];
+                } else {
+                    credsToGive.push(`[Nota: Se entregaron ${availableCount} credencial(es). Faltan ${pendingQty} por entregar por el administrador.]`);
+                }
             }
         } else if (sSnap.exists() && sSnap.data().status === 'bajo_pedido') {
             oStatus = "pendiente";
             credsToGive = ["El administrador procesará tu entrega pronto."];
+            pendingQty = parsedQty;
         } else {
             oStatus = "pendiente";
             credsToGive = ["Entrega pendiente."];
+            pendingQty = parsedQty;
         }
 
         transaction.update(userRef, { balance: currentBal - actualPrice });
@@ -551,7 +575,9 @@ async function processSinglePurchase() {
             productId: productId,
             productName: pData.name,
             price: actualPrice,
-            quantity: qty,
+            quantity: parsedQty,
+            deliveredQuantity: availableCount,
+            pendingQuantity: pendingQty,
             method: 'creditos',
             status: oStatus,
             textDelivered: credsToGive.join('\n'),
