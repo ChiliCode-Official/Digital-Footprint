@@ -180,15 +180,26 @@ if (btnBuy) {
             return;
         }
         
+        const buyNotice = document.getElementById('buy-notice');
         if (stockData && stockData.status === 'disponible') {
             let pool = stockData.credentialsPool || "";
             let count = pool.split('\n').filter(l => l.trim() !== "").length;
             if (currentQty > count) {
-                if (buyError) {
-                    buyError.textContent = "La cantidad excede el stock disponible.";
-                    buyError.style.display = 'block';
+                const immediate = Math.max(0, count);
+                const pending = currentQty - immediate;
+                if (buyNotice) {
+                    buyNotice.style.display = 'block';
+                    buyNotice.style.background = 'rgba(234,179,8,0.12)';
+                    buyNotice.style.border = '1px solid var(--warning)';
+                    buyNotice.style.color = 'var(--warning)';
+                    buyNotice.style.padding = '10px 14px';
+                    buyNotice.style.borderRadius = '10px';
+                    buyNotice.style.fontSize = '0.85rem';
+                    buyNotice.style.marginTop = '10px';
+                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
                 }
-                return;
+            } else if (buyNotice) {
+                buyNotice.style.display = 'none';
             }
         }
         

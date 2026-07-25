@@ -98,6 +98,17 @@ async function loadCartContent() {
                 const itemTotal = (p.price || 0) * qty;
                 totalSum += itemTotal;
 
+                const sSnap = await getDoc(doc(db, 'products_stock', pid));
+                let stockNoticeHtml = '';
+                if (sSnap.exists() && sSnap.data().status === 'disponible') {
+                    const poolCount = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "").length;
+                    if (qty > poolCount) {
+                        const immediate = Math.max(0, poolCount);
+                        const pending = qty - immediate;
+                        stockNoticeHtml = `<div style="font-size:0.75rem; color:var(--warning); margin-top:4px;"><i class="fa-solid fa-clock"></i> ${immediate > 0 ? `${immediate} u. inmediatas, ` : ''}${pending} u. bajo pedido</div>`;
+                    }
+                }
+
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
                 itemDiv.innerHTML = `
@@ -105,6 +116,7 @@ async function loadCartContent() {
                     <div class="cart-item-info">
                         <div class="cart-item-title">${escapeHtml(p.name)}</div>
                         <div class="cart-item-price">$${p.price} x ${qty} = $${itemTotal.toFixed(2)}</div>
+                        ${stockNoticeHtml}
                     </div>
                     <a href="producto.html?id=${pid}" class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem;">Ver</a>
                 `;

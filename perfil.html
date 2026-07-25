@@ -242,7 +242,10 @@
                         </div>
                       </div>
                     </div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                    <p id="copy-uid-hint" style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: color 0.2s;">
+                        <i class="fa-regular fa-copy"></i> Haz clic en la tarjeta para copiar tu UID de amigo
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px;">
                         <a href="info.html" class="btn-secondary"><i class="fa-solid fa-circle-info"></i> Ayuda y Referidos</a>
                         <a href="metodos-pago.html" class="btn-secondary"><i class="fa-solid fa-credit-card"></i> Métodos de Pago</a>
                     </div>
@@ -263,7 +266,31 @@
 
                     <div class="tabs">
                         <button class="tab-btn active" data-target="tab-pedidos">Mis Pedidos</button>
+                        <button class="tab-btn" data-target="tab-recargas">Mis Recargas</button>
                         <button class="tab-btn" data-target="tab-wishlist">Mi Wishlist</button>
+                    </div>
+
+                    <div id="tab-recargas" class="tab-content">
+                        <div class="glass-panel" style="padding: 1.5rem;">
+                            <h3 style="color: var(--accent-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-clock-rotate-left"></i> Historial de Solicitudes de Recarga
+                            </h3>
+                            <div style="overflow-x: auto;">
+                                <table class="orders-table" style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid var(--glass-border); text-align: left; color: var(--text-muted); font-size: 0.85rem;">
+                                            <th style="padding: 10px;">Fecha</th>
+                                            <th style="padding: 10px;">Monto (MXN)</th>
+                                            <th style="padding: 10px;">Método</th>
+                                            <th style="padding: 10px;">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="client-recharges-body">
+                                        <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Cargando tus solicitudes de recarga...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="tab-pedidos" class="tab-content active">
