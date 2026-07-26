@@ -144,9 +144,11 @@ function updateUserProfileUI(user) {
         }
         if (userAvatar) {
             userAvatar.classList.remove('user-avatar--skeleton');
-            userAvatar.src = user.photoURL
-                || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email)}&background=A182E8&color=fff`;
+            const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=A182E8&color=fff`;
+            userAvatar.src = user.photoURL || fallbackUrl;
             userAvatar.alt = user.displayName || user.email;
+            // Fallback in case Google photo fails (CORS / expired token on GitHub Pages)
+            userAvatar.onerror = () => { userAvatar.src = fallbackUrl; userAvatar.onerror = null; };
         }
         userProfileBtn.title = 'Ver perfil';
     } else {

@@ -6,9 +6,9 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 const PANEL_KEY = 'gkey-friends-panel-collapsed';
 
-const dashboard = document.querySelector('.dashboard-container');
+const dashboard = document.querySelector('.dashboard-container') || document.body;
 const panel = document.getElementById('friends-panel');
-const toggleBtn = document.getElementById('friends-panel-toggle');
+const toggleBtn = document.getElementById('friends-panel-toggle') || document.getElementById('close-friends-panel');
 const reopenTab = document.getElementById('friends-panel-tab');
 
 function escapeHtml(str) {
@@ -22,10 +22,23 @@ function escapeHtml(str) {
 }
 
 function setPanelCollapsed(collapsed) {
-    if (!dashboard || !panel) return;
+    if (!panel) return;
 
-    dashboard.classList.toggle('friends-panel-collapsed', collapsed);
+    if (dashboard && dashboard !== document.body) {
+        dashboard.classList.toggle('friends-panel-collapsed', collapsed);
+    }
     panel.classList.toggle('is-collapsed', collapsed);
+
+    // New slide-panel support
+    if (collapsed) {
+        panel.classList.remove('open');
+        const backdrop = document.getElementById('friends-backdrop');
+        if (backdrop) backdrop.classList.remove('open');
+    } else {
+        panel.classList.add('open');
+        const backdrop = document.getElementById('friends-backdrop');
+        if (backdrop) backdrop.classList.add('open');
+    }
 
     if (toggleBtn) {
         toggleBtn.setAttribute('aria-expanded', String(!collapsed));
@@ -212,17 +225,20 @@ async function loadRealFriends(currentUser) {
                 const uDoc = await getDoc(doc(db, 'users', targetUid));
                 const uData = uDoc.exists() ? uDoc.data() : { email: f.recipientEmail };
                 const name = uData.displayName || uData.email || 'Amigo';
-                const avatar = uData.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(name.split('@')[0])}&background=A182E8&color=fff`;
+                const emailDisplay = uData.email || '';
+                // Use stored photoURL or generate avatar
+                const avatar = (uData.photoURL && uData.photoURL.startsWith('http'))
+                    ? uData.photoURL
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(name.split('@')[0])}&background=A182E8&color=fff`;
 
                 friendsContainer.innerHTML += `
-                    <div class="list-item" style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">
-                        <div class="list-icon" style="width:36px; height:36px; border-radius:50%; overflow:hidden; flex-shrink:0;">
-                            <img src="${avatar}" alt="${escapeHtml(name)}" style="width:100%; height:100%; object-fit:cover;">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-main);border:1px solid var(--glass-border);border-radius:10px;margin-bottom:8px;">
+                        <img src="${avatar}" alt="${escapeHtml(name)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(name.split('@')[0])}&background=A182E8&color=fff'">
+                        <div style="flex:1;overflow:hidden;">
+                            <p style="font-size:0.85rem;font-weight:700;margin:0;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(name)}</p>
+                            <p style="font-size:0.72rem;color:var(--text-muted);margin:2px 0 0;">${escapeHtml(emailDisplay)}</p>
                         </div>
-                        <div class="list-info" style="flex:1; overflow:hidden;">
-                            <p class="list-name" style="font-size:0.85rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(name)}</p>
-                            <p class="list-desc" style="font-size:0.75rem; color:var(--success);"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Amigo</p>
-                        </div>
+                        <span style="font-size:0.68rem;color:var(--success);background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-circle" style="font-size:0.4rem;"></i> Amigo</span>
                     </div>
                 `;
             }
@@ -255,11 +271,17 @@ async function loadRealFriends(currentUser) {
 }
 
 function initFriendsPanel() {
-    if (!panel || !dashboard) return;
+    // Works with both old sidebar panel and new slide-over panel
+    if (!panel) return;
 
     const saved = localStorage.getItem(PANEL_KEY);
     const isCollapsed = saved === null ? true : saved === '1';
-    setPanelCollapsed(isCollapsed);
+    // For new slide-over panels, start closed
+    if (!dashboard || dashboard === document.body) {
+        // new layout — start closed
+    } else {
+        setPanelCollapsed(isCollapsed);
+    }
 
     toggleBtn?.addEventListener('click', () => {
         const currentlyCollapsed = panel.classList.contains('is-collapsed');
