@@ -780,3 +780,35 @@ async function initGlobalNavFilters() {
 
     navbar.insertAdjacentElement('afterend', filterContainer);
 }
+
+// Global Referral Share Button Logic
+document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.share-referral-global-btn');
+    if (!btn) return;
+    
+    // Attempt to share
+    try {
+        const _auth = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js').then(m => m.getAuth());
+        if (!_auth.currentUser) {
+            alert('Debes iniciar sesión para compartir tu enlace de referido.');
+            return;
+        }
+        const link = window.location.origin + '/index.html?ref=' + _auth.currentUser.uid;
+        
+        if (navigator.share) {
+            await navigator.share({
+                title: 'GhostKey - Juegos Digitales',
+                text: '¡Únete a GhostKey con mi enlace y obtén beneficios!',
+                url: link
+            });
+        } else {
+            throw new Error('Web Share API no soportada');
+        }
+    } catch(err) {
+        if (err.name !== 'AbortError') {
+            const link = window.location.origin + '/index.html?ref=' + (await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js').then(m => m.getAuth().currentUser?.uid || ''));
+            navigator.clipboard.writeText(link);
+            alert('Enlace copiado al portapapeles: ' + link);
+        }
+    }
+});
