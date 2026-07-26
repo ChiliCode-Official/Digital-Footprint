@@ -23,13 +23,15 @@ async function fetchUserWishlist(uid) {
 }
 
 async function loadProducts() {
-    catalogGrid.innerHTML = getGhostLoaderHTML('Cargando... catálogo...');
+    if (catalogGrid) catalogGrid.innerHTML = getGhostLoaderHTML('Cargando catálogo...');
     try {
-        const [querySnapshot, stockSnapshot, colSnapshot] = await Promise.all([
-            getDocs(collection(db, "products")),
-            getDocs(collection(db, "products_stock")),
-            getDocs(collection(db, "collections"))
-        ]);
+        let querySnapshot = { forEach: () => {} };
+        let stockSnapshot = { forEach: () => {} };
+        let colSnapshot = { forEach: () => {} };
+
+        try { querySnapshot = await getDocs(collection(db, "products")); } catch(e) { console.error("Error fetching products:", e); }
+        try { stockSnapshot = await getDocs(collection(db, "products_stock")); } catch(e) { console.warn("Error fetching stock:", e); }
+        try { colSnapshot = await getDocs(collection(db, "collections")); } catch(e) { console.warn("Error fetching collections:", e); }
         
         const filterDropdown = document.getElementById('filter-dropdown');
         if (filterDropdown) {

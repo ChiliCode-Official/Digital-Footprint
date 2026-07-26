@@ -437,9 +437,13 @@ async function loadIndexProducts() {
 
         container.innerHTML = '';
 
-        const stockSnapshot = await getDocs(collection(db, "products_stock"));
-        const stockData = {};
-        stockSnapshot.forEach((d) => { stockData[d.id] = d.data(); });
+        let stockData = {};
+        try {
+            const stockSnapshot = await getDocs(collection(db, "products_stock"));
+            stockSnapshot.forEach((d) => { stockData[d.id] = d.data(); });
+        } catch(stockErr) {
+            console.warn("Could not fetch stock details:", stockErr);
+        }
 
         prodsSnap.forEach((d) => {
             const p = d.data();
@@ -699,6 +703,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileDock();
     initGlobalNavFilters();
     setUserProfileLoading(true);
+
+    if (document.getElementById('products-container')) {
+        loadIndexProducts();
+    }
 
     const submitBtn = document.getElementById('btn-submit-review');
     if (submitBtn) {
