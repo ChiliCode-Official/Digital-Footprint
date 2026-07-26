@@ -73,9 +73,24 @@ async function loadFriendsInGiftModal() {
     container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Cargando... amigos...</p>';
 
     try {
-        const { getDoc, doc: firestoreDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-        const uSnap = await getDoc(firestoreDoc(db, 'users', currentUser.uid));
-        const friends = uSnap.exists() ? (uSnap.data().friends || []) : [];
+        const { query, collection: firestoreCol, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        
+        const [snap1, snap2] = await Promise.all([
+            getDocs(query(firestoreCol(db, 'friendships'), where('uid1', '==', currentUser.uid))),
+            getDocs(query(firestoreCol(db, 'friendships'), where('uid2', '==', currentUser.uid)))
+        ]);
+
+        const friends = [];
+        const allDocs = [...snap1.docs, ...snap2.docs];
+        
+        for (const docSnap of allDocs) {
+            const data = docSnap.data();
+            if (data.status === 'aceptada') {
+                const friendUid = (data.uid1 === currentUser.uid) ? data.uid2 : data.uid1;
+                const fallbackEmail = (data.uid1 === currentUser.uid) ? data.recipientEmail : data.requesterEmail;
+                friends.push({ uid: friendUid, email: fallbackEmail });
+            }
+        }
 
         if (friends.length === 0) {
             container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Aún no tienes amigos agregados.<br>Ingresa su correo abajo.</p>';
@@ -83,229 +98,29 @@ async function loadFriendsInGiftModal() {
         }
 
         container.innerHTML = '<p style="color:var(--text-muted);font-size:0.75rem;margin-bottom:8px;font-weight:600;">Selecciona un amigo:</p>';
-        friends.forEach(friend => {
-            const email = friend.email || friend;
-            const name = friend.displayName || email;
+        for (const item of friends) {
+            const email = item.email || 'Amigo';
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.style.cssText = 'width:100%;display:flex;align-items:center;gap:10px;background:var(--bg-main);border:1px solid var(--glass-border);border-radius:8px;padding:8px 10px;cursor:pointer;color:var(--text-main);font-family:inherit;font-size:0.85rem;transition:border-color 0.2s;margin-bottom:6px;';
-            btn.innerHTML = `
-                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=A182E8&color=fff" style="width:28px;height:28px;border-radius:50%;">
-                <div style="text-align:left;flex:1;">
-                    <div style="font-weight:600;">${name}</div>
-                    <div style="color:var(--text-muted);font-size:0.72rem;">${email}</div>
-                </div>
-                <i class="fa-solid fa-arrow-right" style="color:var(--accent-primary);"></i>
-            `;
-            btn.addEventListener('click', () => {
+            btn.innerHTML = `<i class="fa-solid fa-user" style="color:var(--accent-primary);"></i> <span>${escapeHtml(email)}</span>`;
+            btn.onclick = () => {
                 const emailInput = document.getElementById('gift-email-input-modal');
-                if (emailInput) emailInput.value = email;
-                // Highlight selected
-                container.querySelectorAll('button').forEach(b => b.style.borderColor = 'var(--glass-border)');
-                btn.style.borderColor = 'var(--accent-primary)';
-            });
-            btn.addEventListener('mouseenter', () => btn.style.borderColor = 'var(--accent-primary)');
-            btn.addEventListener('mouseleave', () => {
-                if (document.getElementById('gift-email-input-modal')?.value !== email) {
-                    btn.style.borderColor = 'var(--glass-border)';
+                if (emailInput) {
+                    emailInput.value = email;
+                    emailInput.style.borderColor = 'var(--accent-primary)';
+                    setTimeout(() => emailInput.style.borderColor = 'var(--glass-border)', 1000);
                 }
-            });
+            };
             container.appendChild(btn);
-        });
+        }
     } catch(e) {
         console.error('Error loading friends in gift modal:', e);
-        container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Error cargando amigos.</p>';
+        container.innerHTML = '<p style="color:var(--danger);font-size:0.82rem;text-align:center;">Error al cargar amigos.</p>';
     }
 }
 
-function normalizeImageUrl(url) {
-    if (!url) return '';
-    let clean = url.trim();
-    if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
-        const parts = clean.split('/');
-        const id = parts[parts.length - 1].split('.')[0];
-        if (id) return `https://i.imgur.com/${id}.png`;
-    }
-    return clean;
-}
-
-async function loadProductDetails() {
-    if (!productId) {
-        if (pTitle) pTitle.textContent = "Producto no especificado";
-        if (pDesc) pDesc.textContent = "Selecciona un producto desde el catÃƒ¡logo para ver sus detalles.";
-        return;
-    }
-    try {
-        const pSnap = await getDoc(doc(db, 'products', productId));
-        if (pSnap.exists()) {
-            productData = { id: pSnap.id, ...pSnap.data() };
-            
-            // Set initial qty to minQuantity if available
-            currentQty = productData.minQuantity || 1;
-            updateQtyUI();
-
-            if (pTitle) pTitle.textContent = productData.name || 'Producto';
-            if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible para este producto.';
-            if (pPrice) pPrice.textContent = `$${productData.price || 0}`;
-            
-            if (pImage) {
-                const cleanImg = normalizeImageUrl(productData.image) || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800';
-                pImage.src = cleanImg;
-                pImage.alt = productData.name || 'Producto';
-                pImage.onerror = () => {
-                    pImage.src = 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=800';
-                };
-            }
-            
-            const sSnap = await getDoc(doc(db, 'products_stock', productId));
-            if (sSnap.exists()) {
-                stockData = sSnap.data();
-                checkAndDisplayStockNotice();
-                if (pBadge) {
-                    if (stockData.status === 'disponible') {
-                        let pool = stockData.credentialsPool || "";
-                        let count = pool.split('\n').filter(l => l.trim() !== "").length;
-                        if (count > 0) {
-                            pBadge.textContent = count >= currentQty ? `En stock (${count})` : `Bajo pedido (En stock: ${count})`;
-                            pBadge.style.background = count >= currentQty ? 'var(--success)' : 'var(--warning)';
-                        } else {
-                            pBadge.textContent = `Bajo pedido`;
-                            pBadge.style.background = 'var(--warning)';
-                        }
-                        if (btnBuy) btnBuy.disabled = false;
-                        if (btnGift) btnGift.disabled = false;
-                    } else if (stockData.status === 'bajo_pedido') {
-                        pBadge.textContent = `Bajo pedido`;
-                        pBadge.style.background = 'var(--warning)';
-                    } else {
-                        pBadge.textContent = `Agotado`;
-                        pBadge.style.background = 'var(--danger)';
-                        if (btnBuy) btnBuy.disabled = true;
-                        if (btnGift) btnGift.disabled = true;
-                    }
-                }
-            } else {
-                if (pBadge) {
-                    pBadge.textContent = `En stock`;
-                    pBadge.style.background = 'var(--success)';
-                }
-            }
-        } else {
-            if (pTitle) pTitle.textContent = "Producto no encontrado";
-            if (pDesc) pDesc.textContent = "El producto solicitado no existe o fue eliminado del inventario.";
-        }
-        
-        loadProductReviews(productId);
-    } catch (err) {
-        console.error("Error loading product details:", err);
-        if (pTitle) pTitle.textContent = "Error al cargar";
-        if (pDesc) pDesc.textContent = "Hubo un error al cargar la información del producto.";
-    }
-}
-
-setPersistence(auth, browserLocalPersistence).catch(console.error);
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        currentUser = user;
-        if (authMsg) authMsg.style.display = 'none';
-        
-        try {
-            const userRef = doc(db, 'users', user.uid);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-                userDocData = userSnap.data();
-                if (userBalanceDisplay) {
-                    userBalanceDisplay.textContent = `$${(userDocData.balance || 0).toFixed(2)}`;
-                }
-                if (buyControls) buyControls.style.display = 'flex';
-
-                const favBtn = document.getElementById('favorite');
-                const favWrapper = document.getElementById('favorite-wrapper');
-                if (favBtn && favWrapper) {
-                    favWrapper.style.display = 'block';
-                    const wishlist = userDocData.wishlist || [];
-                    favBtn.checked = wishlist.includes(productId);
-                    
-                    favBtn.onchange = async () => {
-                        try {
-                            const uRef = doc(db, 'users', currentUser.uid);
-                            if (favBtn.checked) {
-                                await updateDoc(uRef, { wishlist: arrayUnion(productId) });
-                            } else {
-                                await updateDoc(uRef, { wishlist: arrayRemove(productId) });
-                            }
-                        } catch(e) {
-                            console.error("Error updating favorite", e);
-                            favBtn.checked = !favBtn.checked;
-                        }
-                    };
-                }
-
-                if (productData && userDocData.balance < productData.price) {
-                    // Do not disable, let user click to see animation
-                }
-            }
-        } catch (e) {
-            console.error("Error checking user balance:", e);
-        }
-    } else {
-        if (authMsg) authMsg.style.display = 'block';
-        if (buyControls) buyControls.style.display = 'none';
-        currentUser = null;
-    }
-});
-
-
-
-if (btnBuy) {
-    btnBuy.addEventListener('click', async () => {
-        if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
-            if (buyError) {
-                buyError.textContent = "Cantidad invÃƒ¡lida.";
-                buyError.style.display = 'block';
-            }
-            return;
-        }
-        
-        const buyNotice = document.getElementById('buy-notice');
-        if (stockData && stockData.status === 'disponible') {
-            let pool = stockData.credentialsPool || "";
-            let count = pool.split('\n').filter(l => l.trim() !== "").length;
-            if (currentQty > count) {
-                const immediate = Math.max(0, count);
-                const pending = currentQty - immediate;
-                if (buyNotice) {
-                    buyNotice.style.display = 'block';
-                    buyNotice.style.background = 'rgba(234,179,8,0.12)';
-                    buyNotice.style.border = '1px solid var(--warning)';
-                    buyNotice.style.color = 'var(--warning)';
-                    buyNotice.style.padding = '10px 14px';
-                    buyNotice.style.borderRadius = '10px';
-                    buyNotice.style.fontSize = '0.85rem';
-                    buyNotice.style.marginTop = '10px';
-                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
-                }
-            } else if (buyNotice) {
-                buyNotice.style.display = 'none';
-            }
-        }
-        
-        if (buyError) buyError.style.display = 'none';
-        
-        if (!currentUser) {
-            window.location.href = 'index.html'; 
-            return;
-        }
-
-        const totalPrice = productData.price * currentQty;
-
-        // Regular purchase flow -> Redirect to pago.html with qty
-        window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}`;
-    });
-
-    // Multi-Step Modal Logic
-    const btnNext1 = document.getElementById('btn-gift-next-1');
+const btnNext1 = document.getElementById('btn-gift-next-1');
     const btnConfirmBuy = document.getElementById('btn-gift-confirm-buy');
     let pendingGiftEmail = '';
 

@@ -5122,3 +5122,34 @@ input:focus, select:focus, textarea:focus {
 /* --- Reviews Grid (global) --- */
 .gk-reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
 @media(max-width: 768px) { .gk-reviews-grid { grid-template-columns: 1fr; } }
+
+
+/* ===== GLOBAL FRIENDS SIDE PANEL STYLES ===== */
+.gk-friends-panel {
+    position: fixed;
+    right: 0; top: 60px; bottom: 0;
+    width: 320px;
+    background: var(--bg-card);
+    border-left: 1px solid var(--glass-border);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    gap: 1rem;
+    overflow-y: auto;
+}
+.gk-friends-panel.open {
+    transform: translateX(0);
+}
+.gk-friends-panel-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    display: none;
+}
+.gk-friends-panel-backdrop.open {
+    display: block;
+}

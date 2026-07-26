@@ -140,14 +140,32 @@ async function ensureUserDoc(user) {
         const ref  = doc(db, 'users', user.uid);
         const snap = await getDoc(ref);
         if (!snap.exists()) {
+            const referredBy = localStorage.getItem('ghostkey_referred_by') || localStorage.getItem('gkey_ref') || null;
             await setDoc(ref, {
                 email: user.email,
+                name: user.displayName || (user.email ? user.email.split('@')[0] : 'Usuario'),
+                displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Usuario'),
+                photoURL: user.photoURL || null,
                 balance: 0,
                 wishlist: [],
                 cart: {},
                 referralCode: user.uid.substring(0, 8).toUpperCase(),
-                referredBy: null
+                referredBy: referredBy
             });
+        } else {
+            const data = snap.data();
+            const updates = {};
+            const userName = user.displayName || (user.email ? user.email.split('@')[0] : 'Usuario');
+            if (!data.name) updates.name = userName;
+            if (!data.displayName) updates.displayName = userName;
+            if (!data.photoURL && user.photoURL) updates.photoURL = user.photoURL;
+            if (!data.referredBy) {
+                const referredBy = localStorage.getItem('ghostkey_referred_by') || localStorage.getItem('gkey_ref') || null;
+                if (referredBy && referredBy !== user.uid) updates.referredBy = referredBy;
+            }
+            if (Object.keys(updates).length > 0) {
+                await updateDoc(ref, updates);
+            }
         }
     } catch(e) { console.error('ensureUserDoc error:', e); }
 }
