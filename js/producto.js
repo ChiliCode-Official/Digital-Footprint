@@ -41,11 +41,24 @@ let currentQty = 1;
 
 if (btnGift) {
     btnGift.addEventListener('click', () => {
-        isGiftMode = !isGiftMode;
-        btnGift.classList.toggle('is-active', isGiftMode);
-        if (giftInputs) giftInputs.style.display = isGiftMode ? 'block' : 'none';
-        if (!isGiftMode && giftEmail) {
-            giftEmail.value = '';
+        if (!currentUser) {
+            buyError.style.display = 'block';
+            buyError.textContent = "Debes iniciar sesión para regalar este producto.";
+            return;
+        }
+        const multiModal = document.getElementById('gift-multi-modal');
+        if (multiModal) {
+            document.getElementById('gift-step-1').style.display = 'block';
+            document.getElementById('gift-step-2').style.display = 'none';
+            document.getElementById('gift-step-3').style.display = 'none';
+            multiModal.classList.add('active');
+            
+            // Set price in step 2 early
+            const totalPrice = productData.price * currentQty;
+            const confirmName = document.getElementById('gift-confirm-product-name');
+            const confirmPrice = document.getElementById('gift-confirm-price');
+            if (confirmName) confirmName.textContent = productData.name;
+            if (confirmPrice) confirmPrice.textContent = `$${totalPrice.toFixed(2)} MXN`;
         }
     });
 }
@@ -64,7 +77,7 @@ function normalizeImageUrl(url) {
 async function loadProductDetails() {
     if (!productId) {
         if (pTitle) pTitle.textContent = "Producto no especificado";
-        if (pDesc) pDesc.textContent = "Selecciona un producto desde el catálogo para ver sus detalles.";
+        if (pDesc) pDesc.textContent = "Selecciona un producto desde el catÃ¡logo para ver sus detalles.";
         return;
     }
     try {
@@ -77,7 +90,7 @@ async function loadProductDetails() {
             updateQtyUI();
 
             if (pTitle) pTitle.textContent = productData.name || 'Producto';
-            if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible para este producto.';
+            if (pDesc) pDesc.textContent = productData.description || 'Sin descripciÃ³n disponible para este producto.';
             if (pPrice) pPrice.textContent = `$${productData.price || 0}`;
             
             if (pImage) {
@@ -131,7 +144,7 @@ async function loadProductDetails() {
     } catch (err) {
         console.error("Error loading product details:", err);
         if (pTitle) pTitle.textContent = "Error al cargar";
-        if (pDesc) pDesc.textContent = "Hubo un error al cargar la información del producto.";
+        if (pDesc) pDesc.textContent = "Hubo un error al cargar la informaciÃ³n del producto.";
     }
 }
 
@@ -194,7 +207,7 @@ if (btnBuy) {
     btnBuy.addEventListener('click', async () => {
         if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
             if (buyError) {
-                buyError.textContent = "Cantidad inválida.";
+                buyError.textContent = "Cantidad invÃ¡lida.";
                 buyError.style.display = 'block';
             }
             return;
@@ -216,7 +229,7 @@ if (btnBuy) {
                     buyNotice.style.borderRadius = '10px';
                     buyNotice.style.fontSize = '0.85rem';
                     buyNotice.style.marginTop = '10px';
-                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
+                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃ¡n bajo pedido.`;
                 }
             } else if (buyNotice) {
                 buyNotice.style.display = 'none';
@@ -230,22 +243,10 @@ if (btnBuy) {
             return;
         }
 
-        const isGift = btnGift.classList.contains('is-active');
         const totalPrice = productData.price * currentQty;
 
-        if (isGift) {
-            // Initiate multi-step modal
-            const multiModal = document.getElementById('gift-multi-modal');
-            if (multiModal) {
-                document.getElementById('gift-step-1').style.display = 'block';
-                document.getElementById('gift-step-2').style.display = 'none';
-                document.getElementById('gift-step-3').style.display = 'none';
-                multiModal.classList.add('active');
-            }
-        } else {
-            // Regular purchase flow -> Redirect to pago.html with qty
-            window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}`;
-        }
+        // Regular purchase flow -> Redirect to pago.html with qty
+        window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}`;
     });
 
     // Multi-Step Modal Logic
@@ -342,7 +343,7 @@ if (btnBuy) {
                         e.preventDefault();
                         const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
                         const siteUrl = `${window.location.origin}${basePath}`;
-                        const message = `¡Hola! 🎁 Te acabo de regalar *${productData.name}* en GhostKey.\n\n¡Nos esforzaremos al máximo para que lo recibas super rápido! 🚀✨\n\nVisita GhostKey para ver tus regalos: ${siteUrl}`;
+                        const message = `Â¡Hola! ðŸŽ Te acabo de regalar *${productData.name}* en GhostKey.\n\nÂ¡Nos esforzaremos al mÃ¡ximo para que lo recibas super rÃ¡pido! ðŸš€âœ¨\n\nVisita GhostKey para ver tus regalos: ${siteUrl}`;
                         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
                     };
                 }
@@ -361,7 +362,7 @@ const addCartBtn = document.getElementById('add-cart-btn');
 if (addCartBtn) {
     addCartBtn.addEventListener('click', async () => {
         if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
-            alert("Cantidad inválida.");
+            alert("Cantidad invÃ¡lida.");
             return;
         }
         if (stockData && stockData.status === 'disponible') {
@@ -373,7 +374,7 @@ if (addCartBtn) {
             }
         }
         if (!currentUser) {
-            alert("Debes iniciar sesión para usar el carrito.");
+            alert("Debes iniciar sesiÃ³n para usar el carrito.");
             return;
         }
         try {
@@ -385,11 +386,11 @@ if (addCartBtn) {
                 currentCart[productId] = existingQty + currentQty;
                 await updateDoc(uRef, { cart: currentCart });
                 updateCartBadge();
-                alert("¡Producto añadido al carrito!");
+                alert("Â¡Producto aÃ±adido al carrito!");
             }
         } catch(e) {
             console.error(e);
-            alert("Error al añadir al carrito.");
+            alert("Error al aÃ±adir al carrito.");
         }
     });
 }
@@ -411,7 +412,7 @@ function checkAndDisplayStockNotice() {
             buyNotice.style.borderRadius = '10px';
             buyNotice.style.fontSize = '0.85rem';
             buyNotice.style.marginTop = '10px';
-            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
+            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃ¡n bajo pedido.`;
         } else {
             buyNotice.style.display = 'none';
         }
@@ -457,7 +458,7 @@ if(btnPlus) {
 }
 
 async function loadProductReviews(pid) {
-    const container = document.getElementById('reviews-container');
+    const container = document.getElementById('product-reviews-container');
     if (!container) return;
 
     try {
@@ -471,7 +472,7 @@ async function loadProductReviews(pid) {
         }
 
         if (snap.empty) {
-            container.innerHTML = `<p style="color: var(--text-muted);">Todavía no hay reseñas para este producto.</p>`;
+            container.innerHTML = `<p style="color: var(--text-muted);">TodavÃ­a no hay reseÃ±as para este producto.</p>`;
             return;
         }
 
@@ -479,7 +480,7 @@ async function loadProductReviews(pid) {
         snap.forEach(docSnap => {
             const r = docSnap.data();
             const ratingVal = Math.min(5, Math.max(1, parseInt(r.rating) || 5));
-            const starsHtml = '★'.repeat(ratingVal) + '☆'.repeat(5 - ratingVal);
+            const starsHtml = '<i class="fa-solid fa-star"></i>'.repeat(ratingVal) + '<i class="fa-regular fa-star"></i>'.repeat(5 - ratingVal);
 
             const card = document.createElement('div');
             card.className = 'review-card';
@@ -496,7 +497,7 @@ async function loadProductReviews(pid) {
 
     } catch (err) {
         console.error("Error loading product reviews:", err);
-        container.innerHTML = `<p style="color: var(--danger);">No se pudieron cargar las reseñas.</p>`;
+        container.innerHTML = `<p style="color: var(--danger);">No se pudieron cargar las reseÃ±as.</p>`;
     }
 }
 
