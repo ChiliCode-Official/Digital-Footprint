@@ -1621,14 +1621,165 @@ input:focus, select:focus, textarea:focus {
     height: 30px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+  /* --- Review Card (Social) --- */
+  .review-card {
+    position: relative;
+    background: rgba(30, 30, 30, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 16px;
+    width: 100%;
+    min-width: 280px;
+    max-width: 340px;
+    box-sizing: border-box;
+    align-self: stretch;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  
+  .review-stars {
+    color: #fbbf24;
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 10px rgba(251, 191, 36, 0.4);
+  }
+  
+  .review-card .username {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .review-card .username::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--accent-primary), #6366f1);
+    border-radius: 50%;
+    opacity: 0.8;
+  }
+  
+  .review-card .body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .review-card .text {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    flex: 1;
+    width: 100%;
+    font-style: italic;
+  }
+  
+  .review-card .footer {
+    position: relative;
+    width: 100%;
+    color: var(--text-muted);
+    font-size: 13px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+  
+  .review-card .footer div {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  
+  .review-card .footer div:hover {
+    color: var(--accent-primary);
+  }
+  .review-card .footer div:hover svg path {
+    fill: var(--accent-primary);
+    stroke: var(--accent-primary);
+  }
+  
+  .review-card .footer svg {
+    margin-right: 6px;
+    height: 18px;
+    width: 18px;
+    stroke: var(--text-muted);
+    fill: transparent;
+    transition: all 0.2s ease;
+  }
+  
+  .review-card .footer svg.liked path {
+    fill: #ef4444;
+    stroke: #ef4444;
+  }
+  .review-card .footer div.liked {
+    color: #ef4444;
+  } 
+
+  /* --- Rating Stars --- */
+  .rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+  .rating:not(:checked) > input {
     position: absolute;
-    right: 20px;
-    top: 25px;
-    z-index: 95;
-}
+    appearance: none;
+    opacity: 0;
+  }
+  .rating:not(:checked) > label {
+    cursor: pointer;
+    font-size: 30px;
+    color: #666;
+    margin-right: 5px;
+  }
+  .rating:not(:checked) > label:before {
+    content: '☆';
+  }
+  .rating > input:checked + label:hover,
+  .rating > input:checked + label:hover ~ label,
+  .rating > input:checked ~ label:hover,
+  .rating > input:checked ~ label:hover ~ label,
+  .rating > label:hover ~ input:checked ~ label {
+    color: #e58e09;
+  }
+  .rating:not(:checked) > label:hover,
+  .rating:not(:checked) > label:hover ~ label {
+    color: #ff9e0b;
+  }
+  .rating > input:checked ~ label {
+    color: #ffa723;
+  }
 
 /* --- Search Bar Inputbox (Uiverse.io by VijinV) --- */
 .inputbox {
@@ -4930,4 +5081,30 @@ input:focus, select:focus, textarea:focus {
 .share-text {
   margin-left: 5px;
   color: #fff;
+}
+
+﻿/* --- Secondary Nav Bar (categories) --- */
+.gk-subnav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.gk-subnav::-webkit-scrollbar { display: none; }
+.gk-subnav a {
+    padding: 8px 14px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+.gk-subnav a:hover, .gk-subnav a.active {
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
 }

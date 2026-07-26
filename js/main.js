@@ -262,10 +262,9 @@ onAuthStateChanged(auth, async (user) => {
         const uSnap = await getDoc(doc(db, 'users', user.uid));
         if (uSnap.exists()) {
             currentUserWishlist = uSnap.data().wishlist || [];
-            // Show balance in navbar
             const navBalance = document.getElementById('nav-balance-label');
             if (navBalance) {
-                navBalance.textContent = `$${(uSnap.data().credits || 0).toFixed(2)}`;
+                navBalance.textContent = `$${(uSnap.data().balance || 0).toFixed(2)}`;
             }
         } else {
             currentUserWishlist = [];
@@ -481,7 +480,7 @@ export async function loadReviews() {
         if (snap.empty) {
             reviewsContainer.innerHTML = `
                 <div class="gk-review-card" style="text-align:center; grid-column:1/-1;">
-                    <div style="font-size:2rem;">⭐</div>
+                    <div style="font-size:2rem;">🤔</div>
                     <p style="color:var(--text-muted);">¡Sé el primero en compartir tu experiencia de compra con la comunidad!</p>
                     <span style="color:var(--text-muted); font-size:0.8rem;">@GhostKey</span>
                 </div>
@@ -497,7 +496,7 @@ export async function loadReviews() {
             const likesCount = likesArr.length;
             const isLiked = currentUser && likesArr.includes(currentUser.uid);
             const ratingVal = Math.min(5, Math.max(1, parseInt(r.rating) || 5));
-            const starsHtml = '★'.repeat(ratingVal) + '☆'.repeat(5 - ratingVal);
+            const starsHtml = '⭐'.repeat(ratingVal) + '☆'.repeat(5 - ratingVal);
 
             const card = document.createElement('div');
             card.className = 'review-card';
@@ -667,6 +666,7 @@ async function handleReviewSubmit() {
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initMobileDock();
+    initGlobalNavFilters();
     setUserProfileLoading(true);
 
     const submitBtn = document.getElementById('btn-submit-review');
@@ -677,3 +677,92 @@ document.addEventListener('DOMContentLoaded', () => {
         loadReviews();
     }
 });
+
+async function initGlobalNavFilters() {
+    const navbar = document.querySelector('.gk-navbar');
+    if (!navbar) return;
+
+    // Remove old gk-features if it exists to avoid duplication
+    const existing = document.querySelector('.gk-features');
+    if (existing && existing.id !== 'global-nav-filters') existing.remove();
+    if (document.getElementById('global-nav-filters')) return;
+
+    const filterContainer = document.createElement('div');
+    filterContainer.className = 'gk-features';
+    filterContainer.id = 'global-nav-filters';
+    filterContainer.style.margin = '0';
+    filterContainer.style.padding = '12px 16px';
+    filterContainer.style.borderBottom = '1px solid var(--glass-border)';
+
+    let html = `<a href="catalogo.html" class="gk-feature"><i class="fa-solid fa-gamepad"></i> Todo</a>`;
+    
+    try {
+        const q = query(collection(db, 'collections'), limit(3));
+        const snap = await getDocs(q);
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            const icon = data.icon || 'fa-tag';
+            html += `<a href="catalogo.html?cat=${encodeURIComponent(docSnap.id)}" class="gk-feature"><i class="fa-solid ${icon}"></i> ${escapeHtml(data.name)}</a>`;
+        });
+    } catch(e) {
+        console.error('Error loading collections for nav:', e);
+    }
+    
+    html += `<a href="info.html" class="gk-feature"><i class="fa-solid fa-circle-info"></i> Ayuda</a>`;
+    html += `<a href="pago.html" class="gk-feature"><i class="fa-solid fa-plus"></i> Recargar</a>`;
+    
+    filterContainer.innerHTML = html;
+    
+    // Highlight active based on URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const cat = urlParams.get('cat');
+    const isCatalog = window.location.pathname.includes('catalogo.html');
+    const links = filterContainer.querySelectorAll('a.gk-feature');
+    links.forEach(link => {
+        if (isCatalog) {
+            if (!cat && link.textContent.includes('Todo')) link.classList.add('active');
+            else if (cat && link.href.includes(`cat=${encodeURIComponent(cat)}`)) link.classList.add('active');
+        } else {
+            if (window.location.href.includes(link.getAttribute('href').split('?')[0]) && !link.textContent.includes('Todo')) {
+                link.classList.add('active');
+            }
+        }
+    });
+
+    navbar.insertAdjacentElement('afterend', filterContainer);
+}
+﻿async function renderDynamicSubnav() {
+    let subnav = document.querySelector('.gk-subnav');
+    if (!subnav) {
+        const navbar = document.querySelector('.gk-navbar');
+        if (navbar) {
+            subnav = document.createElement('nav');
+            subnav.className = 'gk-subnav';
+            subnav.id = 'global-subnav';
+            navbar.parentNode.insertBefore(subnav, navbar.nextSibling);
+        } else {
+            return;
+        }
+    }
+
+    try {
+        const colSnap = await getDocs(query(collection(db, 'collections'), limit(3)));
+        let collectionsHTML = '';
+        colSnap.forEach(doc => {
+            const data = doc.data();
+            const cid = doc.id;
+            collectionsHTML += <a href="catalogo.html?cat="></a>;
+        });
+
+        const isCatalogo = window.location.pathname.includes('catalogo.html');
+        subnav.innerHTML = 
+            <a href="" class=""><i class="fa-solid fa-gamepad"></i> Todo</a>
+            
+            <a href="info.html"><i class="fa-solid fa-circle-info"></i> Ayuda</a>
+            <a href="pago.html"><i class="fa-solid fa-plus"></i> Recargar</a>
+        ;
+    } catch(e) {
+        console.error('Error rendering dynamic subnav:', e);
+    }
+}
+document.addEventListener('DOMContentLoaded', renderDynamicSubnav);

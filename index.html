@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -157,32 +157,6 @@
             display: none;
         }
         @media(min-width:600px) { .gk-user-chip span { display: inline; } }
-
-        /* --- Secondary Nav Bar (categories) --- */
-        .gk-subnav {
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            gap: 0;
-            padding: 0 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-        .gk-subnav::-webkit-scrollbar { display: none; }
-        .gk-subnav a {
-            padding: 8px 14px;
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            white-space: nowrap;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .gk-subnav a:hover, .gk-subnav a.active {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
-        }
 
         /* --- Page Body (full width, no sidebar) --- */
         .gk-page {
@@ -561,29 +535,11 @@
         </div>
     </nav>
 
-    <!-- ===== SUBNAV CATEGORIES ===== -->
-    <nav class="gk-subnav">
-        <a href="catalogo.html" class="active"><i class="fa-solid fa-gamepad"></i> Todo</a>
-        <a href="catalogo.html?cat=fortnite">Fortnite</a>
-        <a href="catalogo.html?cat=netflix">Streaming</a>
-        <a href="catalogo.html?cat=xbox">Xbox</a>
-        <a href="catalogo.html?cat=playstation">PlayStation</a>
-        <a href="catalogo.html?cat=vbucks">V-Bucks</a>
-        <a href="info.html"><i class="fa-solid fa-circle-info"></i> Ayuda</a>
-        <a href="pago.html"><i class="fa-solid fa-plus"></i> Recargar</a>
-    </nav>
+    <!-- ===== SUBNAV CATEGORIES DYNAMICALLY INSERTED BY MAIN.JS ===== -->
 
     <!-- ===== PAGE BODY ===== -->
     <div class="gk-page">
 
-        <!-- FEATURES STRIP -->
-        <div class="gk-features">
-            <div class="gk-feature"><i class="fa-solid fa-bolt"></i> Entrega Inmediata</div>
-            <div class="gk-feature"><i class="fa-solid fa-shield-halved"></i> Transacciones Seguras</div>
-            <div class="gk-feature"><i class="fa-solid fa-headset"></i> Soporte 24/7</div>
-            <div class="gk-feature"><i class="fa-solid fa-gift"></i> Regala a Amigos</div>
-            <div class="gk-feature"><i class="fa-brands fa-whatsapp"></i> Soporte WhatsApp</div>
-        </div>
 
         <!-- HERO BANNER (dynamic) -->
         <section class="gk-hero" id="hero-banner" style="display:none;" aria-label="Producto destacado">

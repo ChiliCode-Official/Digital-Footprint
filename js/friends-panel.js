@@ -153,42 +153,32 @@ async function loadRealFriends(currentUser) {
             if (oldBox) oldBox.style.display = 'none';
 
             const btnHTML = `
-                <button class="share-button" id="btn-copy-referral" type="button">
-                  <svg class="share-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-                    <path d="M767.99994 585.142857q75.995429 0 129.462857 53.394286t53.394286 129.462857-53.394286 129.462857-129.462857 53.394286-129.462857-53.394286-53.394286-129.462857q0-6.875429 1.170286-19.456l-205.677714-102.838857q-52.589714 49.152-124.562286 49.152-75.995429 0-129.462857-53.394286t-53.394286-129.462857 53.394286-129.462857 129.462857-53.394286q71.972571 0 124.562286 49.152l205.677714-102.838857q-1.170286-12.580571-1.170286-19.456 0-75.995429 53.394286-129.462857t129.462857-53.394286 129.462857 53.394286 53.394286 129.462857-53.394286 129.462857-129.462857 53.394286q-71.972571 0-124.562286-49.152l-205.677714 102.838857q1.170286 12.580571 1.170286 19.456t-1.170286 19.456l205.677714 102.838857q52.589714-49.152 124.562286-49.152z" fill="#fff"></path>
+                <button class="button" id="btn-copy-referral" type="button" style="display: flex; justify-content: center; align-items: center; padding: 10px 24px; gap: 8px; height: 40px; width: 100%; border: none; background: #056bfa; border-radius: 20px; cursor: pointer;">
+                  <span style="line-height: 20px; font-size: 17px; color: white; font-family: sans-serif; letter-spacing: 1px;">Compartir Link</span>
+                  <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white">
+                    <path d="M767.99994 585.142857q75.995429 0 129.462857 53.394286t53.394286 129.462857-53.394286 129.462857-129.462857 53.394286-129.462857-53.394286-53.394286-129.462857q0-6.875429 1.170286-19.456l-205.677714-102.838857q-52.589714 49.152-124.562286 49.152-75.995429 0-129.462857-53.394286t-53.394286-129.462857 53.394286-129.462857 129.462857-53.394286q71.972571 0 124.562286 49.152l205.677714-102.838857q-1.170286-12.580571-1.170286-19.456 0-75.995429 53.394286-129.462857t129.462857-53.394286 129.462857 53.394286 53.394286 129.462857-53.394286 129.462857-129.462857 53.394286q-71.972571 0-124.562286-49.152l-205.677714 102.838857q1.170286 12.580571 1.170286 19.456t-1.170286 19.456l205.677714 102.838857q52.589714-49.152 124.562286-49.152z"></path>
                   </svg>
-                  <span class="share-text" id="btn-copy-ref-text">COMPARTIR</span>
                 </button>
             `;
             referralBox.insertAdjacentHTML('beforeend', btnHTML);
 
-            const refBtn = document.getElementById('btn-copy-referral');
-            if (refBtn) {
-                refBtn.addEventListener('click', async () => {
-                    const urlToShare = refUrl; // Use local const to guarantee correctness
-                    if (navigator.share) {
-                        try {
-                            await navigator.share({
-                                title: 'GhostKey - Invitación',
-                                text: '¡Te invito a unirte a GhostKey! Usa mi enlace para registrarte:',
-                                url: urlToShare
-                            });
-                        } catch (err) {
-                            console.log('Error o cancelación al compartir:', err);
-                        }
-                    } else {
-                        navigator.clipboard.writeText(urlToShare).then(() => {
-                            const txt = document.getElementById('btn-copy-ref-text');
-                            if (txt) {
-                                txt.textContent = 'COPIADO';
-                                setTimeout(() => txt.textContent = 'COMPARTIR', 2000);
-                            }
-                        }).catch(() => {
-                            if (refInput) {
-                                refInput.select();
-                                document.execCommand('copy');
-                            }
+            document.getElementById('btn-copy-referral').addEventListener('click', async () => {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Digital Footprint - Invitación',
+                            text: '¡Únete a Digital Footprint usando mi enlace de referido y obtén beneficios!',
+                            url: refUrl
                         });
+                    } catch (err) {
+                        console.error('Error sharing:', err);
+                    }
+                } else {
+                    navigator.clipboard.writeText(refUrl);
+                    alert('Enlace copiado al portapapeles.');
+                }
+            });
+        }
                     }
                 });
             }
