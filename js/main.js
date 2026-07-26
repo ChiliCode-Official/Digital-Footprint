@@ -154,14 +154,14 @@ function updateUserProfileUI(user) {
     } else {
         if (userNameDisplay) {
             userNameDisplay.classList.remove('user-name--skeleton');
-            userNameDisplay.textContent = 'Iniciar sesión';
+            userNameDisplay.textContent = 'Inicióar sesión';
         }
         if (userAvatar) {
             userAvatar.classList.remove('user-avatar--skeleton');
             userAvatar.src = 'https://ui-avatars.com/api/?name=?&background=1C222E&color=9CA3AF';
             userAvatar.alt = 'Invitado';
         }
-        userProfileBtn.title = 'Iniciar sesión con Google';
+        userProfileBtn.title = 'Inicióar sesión con Google';
     }
     
     const logoutBtn = document.getElementById('logout-btn-header');
@@ -297,12 +297,12 @@ function checkReferralBanner(user) {
         if (user) {
             notice.innerHTML = `<i class="fa-solid fa-circle-info" style="color:var(--warning);"></i> <span>El referido sólo aplica para cuentas NUEVAS. Ya tienes sesión iniciada.</span> <button onclick="this.parentNode.remove()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.1rem; margin-left:10px;">&times;</button>`;
         } else {
-            notice.innerHTML = `<i class="fa-solid fa-gift"></i> <span>¡Te invitaron a GhostKey! Inicia sesión para crear una cuenta NUEVA y contar tu referido.</span> <button onclick="this.parentNode.remove()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.1rem; margin-left:10px;">&times;</button>`;
+            notice.innerHTML = `<i class="fa-solid fa-gift"></i> <span>¡Te invitaron a GhostKey! Inicióa sesión para crear una cuenta NUEVA y contar tu referido.</span> <button onclick="this.parentNode.remove()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.1rem; margin-left:10px;">&times;</button>`;
         }
     }
 }
 
-export function getGhostLoaderHTML(message = 'Cargando…') {
+export function getGhostLoaderHTML(message = 'Cargando...…') {
     return `
         <div class="loading-state">
             <div class="ghost-loader" aria-hidden="true">
@@ -376,7 +376,7 @@ async function loadIndexProducts() {
     const heroSkeleton = document.getElementById('hero-skeleton');
 
     if (container) {
-        container.innerHTML = getGhostLoaderHTML('Cargando productos…');
+        container.innerHTML = getGhostLoaderHTML('Cargando... productos…');
     }
 
     try {

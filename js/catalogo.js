@@ -23,7 +23,7 @@ async function fetchUserWishlist(uid) {
 }
 
 async function loadProducts() {
-    catalogGrid.innerHTML = getGhostLoaderHTML('Cargando catálogo...');
+    catalogGrid.innerHTML = getGhostLoaderHTML('Cargando... catálogo...');
     try {
         const [querySnapshot, stockSnapshot, colSnapshot] = await Promise.all([
             getDocs(collection(db, "products")),

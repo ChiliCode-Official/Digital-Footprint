@@ -55,7 +55,7 @@ async function searchAndAddFriend(term, currentUser) {
     const searchResults = document.getElementById('search-friend-results');
     if (!searchResults) return;
     if (!currentUser) {
-        searchResults.innerHTML = `<p style="color:var(--warning);font-size:0.8rem;text-align:center;">Inicia sesión para agregar amigos.</p>`;
+        searchResults.innerHTML = `<p style="color:var(--warning);font-size:0.8rem;text-align:center;">Inicióa sesión para agregar amigos.</p>`;
         return;
     }
     const rawTerm = term.trim();
@@ -197,12 +197,12 @@ async function loadRealFriends(currentUser) {
 
     if (!friendsContainer) return;
     if (!currentUser) {
-        friendsContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Inicia sesión para ver tu lista de amigos.</p>`;
+        friendsContainer.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Inicióa sesión para ver tu lista de amigos.</p>`;
         return;
     }
 
     try {
-        friendsContainer.innerHTML = `<p style="text-align:center;color:var(--text-muted);font-size:0.8rem;">Cargando amigos...</p>`;
+        friendsContainer.innerHTML = `<p style="text-align:center;color:var(--text-muted);font-size:0.8rem;">Cargando... amigos...</p>`;
 
         const [snap1, snap2] = await Promise.all([
             getDocs(query(collection(db, 'friendships'), where('uid1', '==', currentUser.uid))),

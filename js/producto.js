@@ -1,4 +1,4 @@
-import { auth, db } from './firebase-config.js';
+﻿import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { updateCartBadge } from './cart.js';
@@ -70,7 +70,7 @@ async function loadFriendsInGiftModal() {
     if (!currentUser) return;
     const container = document.getElementById('gift-friends-list');
     if (!container) return;
-    container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Cargando amigos...</p>';
+    container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Cargando... amigos...</p>';
 
     try {
         const { getDoc, doc: firestoreDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
@@ -132,7 +132,7 @@ function normalizeImageUrl(url) {
 async function loadProductDetails() {
     if (!productId) {
         if (pTitle) pTitle.textContent = "Producto no especificado";
-        if (pDesc) pDesc.textContent = "Selecciona un producto desde el catÃ¡logo para ver sus detalles.";
+        if (pDesc) pDesc.textContent = "Selecciona un producto desde el catÃƒ¡logo para ver sus detalles.";
         return;
     }
     try {
@@ -145,7 +145,7 @@ async function loadProductDetails() {
             updateQtyUI();
 
             if (pTitle) pTitle.textContent = productData.name || 'Producto';
-            if (pDesc) pDesc.textContent = productData.description || 'Sin descripciÃ³n disponible para este producto.';
+            if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible para este producto.';
             if (pPrice) pPrice.textContent = `$${productData.price || 0}`;
             
             if (pImage) {
@@ -199,7 +199,7 @@ async function loadProductDetails() {
     } catch (err) {
         console.error("Error loading product details:", err);
         if (pTitle) pTitle.textContent = "Error al cargar";
-        if (pDesc) pDesc.textContent = "Hubo un error al cargar la informaciÃ³n del producto.";
+        if (pDesc) pDesc.textContent = "Hubo un error al cargar la información del producto.";
     }
 }
 
@@ -262,7 +262,7 @@ if (btnBuy) {
     btnBuy.addEventListener('click', async () => {
         if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
             if (buyError) {
-                buyError.textContent = "Cantidad invÃ¡lida.";
+                buyError.textContent = "Cantidad invÃƒ¡lida.";
                 buyError.style.display = 'block';
             }
             return;
@@ -284,7 +284,7 @@ if (btnBuy) {
                     buyNotice.style.borderRadius = '10px';
                     buyNotice.style.fontSize = '0.85rem';
                     buyNotice.style.marginTop = '10px';
-                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃ¡n bajo pedido.`;
+                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃƒ¡n bajo pedido.`;
                 }
             } else if (buyNotice) {
                 buyNotice.style.display = 'none';
@@ -398,7 +398,7 @@ if (btnBuy) {
                         e.preventDefault();
                         const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
                         const siteUrl = `${window.location.origin}${basePath}`;
-                        const message = `Â¡Hola! ðŸŽ Te acabo de regalar *${productData.name}* en GhostKey.\n\nÂ¡Nos esforzaremos al mÃ¡ximo para que lo recibas super rÃ¡pido! ðŸš€âœ¨\n\nVisita GhostKey para ver tus regalos: ${siteUrl}`;
+                        const message = `Ã‚¡Hola! Ã°Å¸Å½Â Te acabo de regalar *${productData.name}* en GhostKey.\n\nÃ‚¡Nos esforzaremos al mÃƒ¡ximo para que lo recibas super rÃƒ¡pido! Ã°Å¸Å¡â‚¬Ã¢Å“Â¨\n\nVisita GhostKey para ver tus regalos: ${siteUrl}`;
                         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
                     };
                 }
@@ -417,7 +417,7 @@ const addCartBtn = document.getElementById('add-cart-btn');
 if (addCartBtn) {
     addCartBtn.addEventListener('click', async () => {
         if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
-            alert("Cantidad invÃ¡lida.");
+            alert("Cantidad invÃƒ¡lida.");
             return;
         }
         if (stockData && stockData.status === 'disponible') {
@@ -429,7 +429,7 @@ if (addCartBtn) {
             }
         }
         if (!currentUser) {
-            alert("Debes iniciar sesiÃ³n para usar el carrito.");
+            alert("Debes iniciar sesión para usar el carrito.");
             return;
         }
         try {
@@ -441,11 +441,11 @@ if (addCartBtn) {
                 currentCart[productId] = existingQty + currentQty;
                 await updateDoc(uRef, { cart: currentCart });
                 updateCartBadge();
-                alert("Â¡Producto aÃ±adido al carrito!");
+                alert("Ã‚¡Producto añadido al carrito!");
             }
         } catch(e) {
             console.error(e);
-            alert("Error al aÃ±adir al carrito.");
+            alert("Error al añadir al carrito.");
         }
     });
 }
@@ -467,7 +467,7 @@ function checkAndDisplayStockNotice() {
             buyNotice.style.borderRadius = '10px';
             buyNotice.style.fontSize = '0.85rem';
             buyNotice.style.marginTop = '10px';
-            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃ¡n bajo pedido.`;
+            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃƒ¡n bajo pedido.`;
         } else {
             buyNotice.style.display = 'none';
         }
@@ -527,7 +527,7 @@ async function loadProductReviews(pid) {
         }
 
         if (snap.empty) {
-            container.innerHTML = `<p style="color: var(--text-muted);">TodavÃ­a no hay reseÃ±as para este producto.</p>`;
+            container.innerHTML = `<p style="color: var(--text-muted);">Todavía no hay reseñas para este producto.</p>`;
             return;
         }
 
@@ -552,7 +552,7 @@ async function loadProductReviews(pid) {
 
     } catch (err) {
         console.error("Error loading product reviews:", err);
-        container.innerHTML = `<p style="color: var(--danger);">No se pudieron cargar las reseÃ±as.</p>`;
+        container.innerHTML = `<p style="color: var(--danger);">No se pudieron cargar las reseñas.</p>`;
     }
 }
 
