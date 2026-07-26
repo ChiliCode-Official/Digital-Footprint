@@ -702,6 +702,22 @@ window.createProduct = async function() {
     } catch(e) { console.error(e); alert('Error creando producto.'); }
 };
 
+window.createCollection = async function() {
+    const nameInput = document.getElementById('new-collection-name');
+    const name = nameInput ? nameInput.value.trim() : '';
+    if (!name) return alert('Ingresa un nombre para la colección.');
+    try {
+        const id = name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        await setDoc(doc(collection(db, 'collections'), id), { name: name });
+        alert('Colección creada exitosamente.');
+        nameInput.value = '';
+        loadAdminDashboard();
+    } catch(e) {
+        console.error('Error al crear colección:', e);
+        alert('Hubo un error al crear la colección.');
+    }
+};
+
 window.openEditModal = async function(prodId) {
     try {
         const [pSnap, sSnap] = await Promise.all([

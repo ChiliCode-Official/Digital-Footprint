@@ -305,7 +305,7 @@
 
                 <!-- Dual View Container -->
                 <div id="client-view">
-                    <div class="balance-card" style="background: linear-gradient(135deg, var(--accent-primary) 0%, #7C3AED 100%); padding: 2rem; border-radius: var(--border-radius-lg); color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(124, 58, 237, 0.35); border: 1px solid rgba(255,255,255,0.15);">
+                    <div class="balance-card" style="background: linear-gradient(135deg, var(--accent-primary) 0%, #7C3AED 100%); padding: 2rem; border-radius: var(--border-radius-lg); color: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(124, 58, 237, 0.35); border: 1px solid rgba(255,255,255,0.15);">
                         <div>
                             <p style="opacity: 0.85; margin-bottom: 5px; font-size: 0.95rem; font-weight: 500;"><i class="fa-solid fa-wallet"></i> Saldo Disponible (MXN)</p>
                             <p class="balance-amount" style="font-size: 3.2rem; font-weight: 900; letter-spacing: -1px;">$<span id="user-balance">0.00</span></p>
@@ -569,7 +569,7 @@
                                     <label class="gk-label">Nombre de Colección</label>
                                     <input type="text" id="new-collection-name" class="gk-input" placeholder="Ej. PlayStation, Steam, Xbox...">
                                 </div>
-                                <button type="button" class="btn btn-primary" id="btn-create-collection" style="margin-top: 10px;">Crear Colección</button>
+                                <button type="button" class="btn btn-primary" id="btn-create-collection" onclick="createCollection()" style="margin-top: 10px;">Crear Colección</button>
                             </div>
                         </div>
 

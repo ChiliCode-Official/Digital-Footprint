@@ -114,7 +114,7 @@ async function setupRechargeMode(balance, suggestedAmount) {
     dynamicArea.innerHTML = `
         <div style="margin-bottom: 1.2rem;">
             <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 8px;">1. Método de Depósito</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;" id="payment-method-selector">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;" id="payment-method-selector">
                 <button type="button" class="r-method-opt active" data-method="transferencia" style="padding: 12px; border-radius: 10px; border: 2px solid var(--accent-primary); background: rgba(161, 130, 232, 0.15); color: white; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
                     <i class="fa-solid fa-building-columns" style="color: var(--accent-primary);"></i> Transferencia
                 </button>
@@ -126,7 +126,7 @@ async function setupRechargeMode(balance, suggestedAmount) {
 
         <div style="margin-bottom: 1.2rem;">
             <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 8px;">2. Monto a Depositar ($ MXN)</label>
-            <div class="recharge-options" id="recharge-btns" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <div class="recharge-options" id="recharge-btns" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px;">
                 <div class="r-opt" data-val="100">$100</div>
                 <div class="r-opt" data-val="200">$200</div>
                 <div class="r-opt" data-val="500">$500</div>

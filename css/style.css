@@ -1764,7 +1764,7 @@ input:focus, select:focus, textarea:focus {
     margin-right: 5px;
   }
   .rating:not(:checked) > label:before {
-    content: '☆';
+    content: '★';
   }
   .rating > input:checked + label:hover,
   .rating > input:checked + label:hover ~ label,
@@ -5108,3 +5108,17 @@ input:focus, select:focus, textarea:focus {
     color: var(--accent-primary);
     border-bottom-color: var(--accent-primary);
 }
+
+/* --- Features strip (global) --- */
+.gk-features { display: flex; gap: 12px; overflow-x: auto; padding: 16px 0; margin: 8px 0; scrollbar-width: none; }
+.gk-features::-webkit-scrollbar { display: none; }
+.gk-feature { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 10px; padding: 10px 16px; white-space: nowrap; flex-shrink: 0; font-size: 0.82rem; color: var(--text-muted); text-decoration: none; transition: all 0.2s; }
+.gk-feature:hover { border-color: var(--accent-primary); color: var(--text-main); transform: translateY(-2px); }
+.gk-feature.active { background: var(--accent-primary); color: #fff; border-color: var(--accent-primary); }
+.gk-feature i { font-size: 1.1rem; }
+.gk-feature.active i { color: #fff; }
+.gk-feature:not(.active) i { color: var(--accent-primary); }
+
+/* --- Reviews Grid (global) --- */
+.gk-reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+@media(max-width: 768px) { .gk-reviews-grid { grid-template-columns: 1fr; } }
