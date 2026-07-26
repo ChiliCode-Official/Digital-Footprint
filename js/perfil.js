@@ -401,7 +401,7 @@ async function loadClientData(uid) {
                                 <div class="card__shine"></div>
                                 <div class="card__glow"></div>
                                 <div class="card__content">
-                                    <div class="card__image" style="background-image:url('${p.image||''}');"></div>
+                                    <div class="card__image" style="background-image:url('${normalizeImageUrl(p.image||'')}');"></div>
                                     <div class="card__text"><p class="card__title">${escapeHtml(p.name)}</p></div>
                                     <div class="card__footer"><div class="card__price">$${p.price}</div></div>
                                 </div>`;

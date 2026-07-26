@@ -1,4 +1,4 @@
-﻿import { auth, db } from './firebase-config.js';
+import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { updateCartBadge } from './cart.js';
@@ -284,7 +284,7 @@ if (btnBuy) {
                     buyNotice.style.borderRadius = '10px';
                     buyNotice.style.fontSize = '0.85rem';
                     buyNotice.style.marginTop = '10px';
-                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃƒ¡n bajo pedido.`;
+                    buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
                 }
             } else if (buyNotice) {
                 buyNotice.style.display = 'none';
@@ -467,7 +467,7 @@ function checkAndDisplayStockNotice() {
             buyNotice.style.borderRadius = '10px';
             buyNotice.style.fontSize = '0.85rem';
             buyNotice.style.marginTop = '10px';
-            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarÃƒ¡n bajo pedido.`;
+            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
         } else {
             buyNotice.style.display = 'none';
         }
@@ -542,7 +542,7 @@ async function loadProductReviews(pid) {
             card.style.minWidth = "280px";
             card.innerHTML = `
                 <div class="review-stars">${starsHtml}</div>
-                <div class="body">
+                <div class="review-body">
                     <p class="text">${escapeHtml(r.text || '')}</p>
                     <span class="username">@${escapeHtml(r.username || 'Usuario')}</span>
                 </div>

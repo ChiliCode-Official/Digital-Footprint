@@ -205,12 +205,22 @@
             <button class="gk-search-btn-nav" id="gk-nav-search-btn" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         <div class="gk-nav-actions">
-            <a href="pago.html" class="gk-nav-btn gk-nav-balance" id="nav-balance-btn" title="Recargar saldo"><i class="fa-solid fa-wallet"></i><span class="lbl" id="nav-balance-label">Saldo</span></a>
-            <a href="cart.html" class="gk-nav-btn" title="Carrito"><i class="fa-solid fa-bag-shopping"></i><span class="lbl">Carrito</span></a>
-            <a href="perfil.html" class="gk-user-chip" id="user-profile-btn" title="Mi perfil">
-                <img id="user-avatar" src="https://ui-avatars.com/api/?name=G&background=A182E8&color=fff" alt="Avatar" onerror="this.onerror=null;this.src=this.src;" referrerpolicy="no-referrer">
-                <span id="user-name">Cuenta</span>
+            <a href="pago.html" class="gk-nav-btn gk-nav-balance" id="nav-balance-btn" title="Mi saldo">
+                <i class="fa-solid fa-wallet"></i>
+                <span class="label" id="nav-balance-label">Saldo</span>
             </a>
+            <button class="gk-nav-btn" id="nav-friends-btn" title="Amigos">
+                <i class="fa-solid fa-users"></i>
+                <span class="label">Amigos</span>
+            </button>
+            <a href="cart.html" class="gk-nav-btn" title="Carrito">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="label">Carrito</span>
+            </a>
+            <div class="gk-user-chip" id="user-profile-btn" title="Mi perfil" onclick="window.location='perfil.html'">
+                <img id="user-avatar" class="user-avatar" src="https://ui-avatars.com/api/?name=G&background=A182E8&color=fff" alt="Avatar" referrerpolicy="no-referrer">
+                <span id="user-name">Cuenta</span>
+            </div>
         </div>
     </nav>
     <script>
@@ -481,6 +491,7 @@
                     </div>
 
                     <div id="tab-admin-recargas" class="tab-content">
+                        <div style="overflow-x:auto;">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -495,6 +506,7 @@
                                 <!-- JS Injected -->
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     
                     <div id="tab-admin-stock" class="tab-content">
@@ -694,12 +706,75 @@
             <button id="btn-close-gift" style="background:#e10600; color:#fff; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; font-size:1rem;">Cerrar y Copiar</button>
         </div>
     </div>
-    <!-- Mobile Dock -->
+    <!-- ===== MOBILE BOTTOM DOCK ===== -->
     <nav class="gk-dock">
-        <a href="index.html" class="gk-dock-item "><i class="fa-solid fa-house"></i><span>Inicióo</span></a>
-        <a href="catalogo.html" class="gk-dock-item "><i class="fa-solid fa-gamepad"></i><span>Catálogo</span></a>
-        <a href="pago.html" class="gk-dock-item "><i class="fa-solid fa-wallet"></i><span>Saldo</span></a>
-        <a href="perfil.html" class="gk-dock-item active"><i class="fa-solid fa-user"></i><span>Perfil</span></a>
+        <a href="index.html" class="gk-dock-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Inicióo</span>
+        </a>
+        <a href="catalogo.html" class="gk-dock-item">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>Catálogo</span>
+        </a>
+        <button class="gk-dock-item" id="dock-friends-btn">
+            <i class="fa-solid fa-users"></i>
+            <span>Amigos</span>
+        </button>
+        <a href="pago.html" class="gk-dock-item">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Saldo</span>
+        </a>
+        <a href="perfil.html" class="gk-dock-item active">
+            <i class="fa-solid fa-user"></i>
+            <span>Perfil</span>
+        </a>
     </nav>
+<!-- ===== FRIENDS SIDE PANEL ===== -->
+    <div class="gk-friends-panel-backdrop" id="friends-backdrop"></div>
+    <aside class="gk-friends-panel" id="friends-panel">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+            <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-users" style="color:var(--accent-primary);"></i> Amigos & Referidos
+            </h3>
+            <button id="close-friends-panel" style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.2rem;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Search -->
+        <div class="brutalist-container" style="width: 100%; margin-top: 4px;">
+            <input id="search-friend-input" placeholder="Correo o UID de amigo..." class="brutalist-input smooth-type" type="text" style="padding: 10px; font-size: 14px; border-width: 2px;" />
+            <label class="brutalist-label" style="top: -20px; font-size: 10px;">BUSCAR / AÑADIR</label>
+        </div>
+        <button type="button" class="btn-primary" id="search-friend-btn" style="width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fa-solid fa-user-plus"></i> Buscar Amigo
+        </button>
+
+        <!-- Friends List -->
+        <div style="flex:1;">
+            <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+                Miembros de la Comunidad
+            </h4>
+            <div class="friends-list" id="friends-list" style="display: flex; flex-direction: column; gap: 8px;">
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando... amigos...</p>
+            </div>
+        </div>
+
+        <!-- Referral -->
+        <div class="referral-box" style="background: var(--bg-card); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius-md, 12px);">
+            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">
+                <i class="fa-solid fa-gift"></i> Tu Enlace de Invitación
+            </h4>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                ¡Gana 3% en saldo cuando tus amigos compren usando tu link!
+            </p>
+            <div style="display:flex; gap: 6px;">
+                <input type="text" id="ref-link-input" readonly value="Inicióa sesión para ver tu enlace" style="flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
+                <button class="btn-primary" id="copy-ref-btn" style="padding: 6px 10px; font-size: 0.8rem;"><i class="fa-solid fa-copy"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    
 </body>
 </html>

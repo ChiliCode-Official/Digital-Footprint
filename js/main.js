@@ -815,3 +815,27 @@ document.addEventListener('click', async (e) => {
         }
     }
 });
+
+
+// Global Friends Panel Toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const friendsPanel = document.getElementById('friends-panel');
+    const friendsBackdrop = document.getElementById('friends-backdrop');
+    function openFriends() {
+        if(friendsPanel) friendsPanel.classList.add('open');
+        if(friendsBackdrop) friendsBackdrop.classList.add('open');
+    }
+    function closeFriends() {
+        if(friendsPanel) friendsPanel.classList.remove('open');
+        if(friendsBackdrop) friendsBackdrop.classList.remove('open');
+    }
+    
+    const navBtn = document.getElementById('nav-friends-btn');
+    const dockBtn = document.getElementById('dock-friends-btn');
+    const closeBtn = document.getElementById('close-friends-panel');
+    
+    if (navBtn) navBtn.addEventListener('click', openFriends);
+    if (dockBtn) dockBtn.addEventListener('click', openFriends);
+    if (closeBtn) closeBtn.addEventListener('click', closeFriends);
+    if (friendsBackdrop) friendsBackdrop.addEventListener('click', closeFriends);
+});

@@ -114,11 +114,11 @@ async function setupRechargeMode(balance, suggestedAmount) {
     dynamicArea.innerHTML = `
         <div style="margin-bottom: 1.2rem;">
             <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 8px;">1. Método de Depósito</label>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;" id="payment-method-selector">
-                <button type="button" class="r-method-opt active" data-method="transferencia" style="padding: 12px; border-radius: 10px; border: 2px solid var(--accent-primary); background: rgba(161, 130, 232, 0.15); color: white; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;" id="payment-method-selector">
+                <button type="button" class="r-method-opt active" data-method="transferencia" style="flex: 1; min-width: 140px; padding: 12px; border-radius: 10px; border: 2px solid var(--accent-primary); background: rgba(161, 130, 232, 0.15); color: white; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
                     <i class="fa-solid fa-building-columns" style="color: var(--accent-primary);"></i> Transferencia
                 </button>
-                <button type="button" class="r-method-opt" data-method="efectivo" style="padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
+                <button type="button" class="r-method-opt" data-method="efectivo" style="flex: 1; min-width: 140px; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--bg-card); color: var(--text-muted); cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;">
                     <i class="fa-solid fa-store" style="color: var(--warning);"></i> Efectivo / OXXO
                 </button>
             </div>
@@ -126,11 +126,11 @@ async function setupRechargeMode(balance, suggestedAmount) {
 
         <div style="margin-bottom: 1.2rem;">
             <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 8px;">2. Monto a Depositar ($ MXN)</label>
-            <div class="recharge-options" id="recharge-btns" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px;">
-                <div class="r-opt" data-val="100">$100</div>
-                <div class="r-opt" data-val="200">$200</div>
-                <div class="r-opt" data-val="500">$500</div>
-                <div class="r-opt" data-val="1200">$1200</div>
+            <div class="recharge-options" id="recharge-btns" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <div class="r-opt" data-val="100" style="flex: 1; min-width: 60px; text-align: center;">$100</div>
+                <div class="r-opt" data-val="200" style="flex: 1; min-width: 60px; text-align: center;">$200</div>
+                <div class="r-opt" data-val="500" style="flex: 1; min-width: 60px; text-align: center;">$500</div>
+                <div class="r-opt" data-val="1200" style="flex: 1; min-width: 60px; text-align: center;">$1200</div>
             </div>
             <input type="number" id="custom-recharge-amount" class="brutalist-input" placeholder="Monto personalizado (Min. $15)" style="width: 100%; margin-top: 10px; font-size: 1.05rem; padding: 12px; border-radius: 10px;" min="15" value="${defaultVal}">
         </div>

@@ -88,5 +88,11 @@ service cloud.firestore {
       // Only admins can edit payment methods
       allow write: if isAdmin();
     }
+    
+    // Collections collection
+    match /collections/{collectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }

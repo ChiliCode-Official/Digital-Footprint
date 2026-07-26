@@ -160,6 +160,15 @@ function handleFilters() {
         }
         searchInput.addEventListener('input', applyFilters);
     }
+    
+    // Listen to new filters
+    const priceRadios = document.querySelectorAll('input[name="price-filter"]');
+    priceRadios.forEach(r => r.addEventListener('change', applyFilters));
+    
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', applyFilters);
+    }
 }
 
 function applyFilters() {
@@ -175,6 +184,35 @@ function applyFilters() {
     
     if (searchTerm) {
         filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(searchTerm));
+    }
+    
+    // Apply Price Filter
+    const checkedPrice = document.querySelector('input[name="price-filter"]:checked');
+    if (checkedPrice) {
+        const val = checkedPrice.value;
+        if (val === 'under-100') filtered = filtered.filter(p => p.price < 100);
+        else if (val === '100-500') filtered = filtered.filter(p => p.price >= 100 && p.price <= 500);
+        else if (val === 'over-500') filtered = filtered.filter(p => p.price > 500);
+    }
+    
+    // Apply Sort
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) {
+        const sortVal = sortSelect.value;
+        if (sortVal === 'price-asc') filtered.sort((a,b) => a.price - b.price);
+        else if (sortVal === 'price-desc') filtered.sort((a,b) => b.price - a.price);
+        else if (sortVal === 'newest') {
+            filtered.sort((a,b) => {
+                const ta = a.createdAt ? (typeof a.createdAt.toMillis === 'function' ? a.createdAt.toMillis() : 0) : 0;
+                const tb = b.createdAt ? (typeof b.createdAt.toMillis === 'function' ? b.createdAt.toMillis() : 0) : 0;
+                return tb - ta;
+            });
+        }
+    }
+    
+    const resultsCount = document.getElementById('results-count');
+    if (resultsCount) {
+        resultsCount.textContent = filtered.length + ' resultado' + (filtered.length === 1 ? '' : 's');
     }
     
     renderProducts(filtered);
