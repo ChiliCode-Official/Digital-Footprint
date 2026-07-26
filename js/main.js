@@ -406,36 +406,56 @@ async function loadIndexProducts() {
     const heroSkeleton = document.getElementById('hero-skeleton');
 
     if (container) {
-        container.innerHTML = getGhostLoaderHTML('Cargando... productos…');
+        container.innerHTML = getGhostLoaderHTML('Cargando productos...');
     }
 
     try {
-        const qHero = query(collection(db, "products"), where("isFeatured", "==", true), limit(1));
-        const heroSnap = await getDocs(qHero);
-
-        if (!heroSnap.empty) {
-            const heroProd = heroSnap.docs[0];
-            const hData = heroProd.data();
-            const banner = document.getElementById('hero-banner');
-            banner.style.display = 'flex';
-            // Set background image via the <img> tag or as CSS background
-            const heroBgImg = document.getElementById('hero-bg-img');
-            if (heroBgImg) {
-                heroBgImg.src = hData.image || '';
-            } else {
-                banner.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${hData.image}')`;
+        let heroProd = null;
+        try {
+            const qHero = query(collection(db, "products"), where("isFeatured", "==", true), limit(1));
+            const heroSnap = await getDocs(qHero);
+            if (!heroSnap.empty) {
+                heroProd = heroSnap.docs[0];
             }
-            document.getElementById('hero-title').textContent = hData.name;
-            document.getElementById('hero-price').textContent = `$${hData.price} MXN`;
-            document.getElementById('hero-buy-btn').href = `producto.html?id=${heroProd.id}`;
+        } catch(heroErr) {
+            console.warn("Featured query warning:", heroErr);
         }
-
-        if (heroSkeleton) heroSkeleton.style.display = 'none';
 
         const qProds = query(collection(db, "products"), limit(6));
         const prodsSnap = await getDocs(qProds);
 
-        container.innerHTML = '';
+        if (!heroProd && !prodsSnap.empty) {
+            heroProd = prodsSnap.docs[0];
+        }
+
+        if (heroProd) {
+            const hData = heroProd.data();
+            const banner = document.getElementById('hero-banner');
+            if (banner) {
+                banner.style.display = 'flex';
+                const heroBgImg = document.getElementById('hero-bg-img');
+                if (heroBgImg) {
+                    heroBgImg.src = hData.image || '';
+                } else {
+                    banner.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${hData.image}')`;
+                }
+                const titleEl = document.getElementById('hero-title');
+                if (titleEl) titleEl.textContent = hData.name;
+                const priceEl = document.getElementById('hero-price');
+                if (priceEl) priceEl.textContent = `$${hData.price} MXN`;
+                const buyBtn = document.getElementById('hero-buy-btn');
+                if (buyBtn) buyBtn.href = `producto.html?id=${heroProd.id}`;
+            }
+        }
+
+        if (heroSkeleton) heroSkeleton.style.display = 'none';
+
+        if (container) container.innerHTML = '';
+
+        if (prodsSnap.empty) {
+            if (container) container.innerHTML = `<p style="color:var(--text-muted); width:100%; text-align:center; padding:2rem;">No hay productos en el catálogo aún.</p>`;
+            return;
+        }
 
         let stockData = {};
         try {
@@ -469,7 +489,7 @@ async function loadIndexProducts() {
                     <img class="gk-card-img" src="${p.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400'}" alt="${p.name}" loading="lazy">
                     <div class="gk-card-body">
                         <span class="gk-card-badge" style="background:${badgeBg}">${stockLabel}</span>
-                        <div class="gk-card-name">${p.name}</div>
+                        <div class="gk-card-name">${escapeHtml(p.name)}</div>
                         <div class="gk-card-stars">${starsHtml} <span style="color:var(--text-muted); font-size:0.7rem;">(4.8)</span></div>
                         <div class="gk-card-price">$${p.price} <span class="gk-card-original">MXN</span></div>
                     </div>
@@ -478,16 +498,6 @@ async function loadIndexProducts() {
         });
 
         initWishlistButtons(currentUserWishlist);
-
-        gsap.from(".hero-banner", { y: 30, opacity: 0, duration: 0.8, ease: "power3.out" });
-        gsap.to(".card", {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power3.out",
-            delay: 0.3
-        });
     } catch (e) {
         console.error("Error loading products on index", e);
         if (heroSkeleton) heroSkeleton.style.display = 'none';
