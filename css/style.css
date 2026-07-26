@@ -3880,10 +3880,10 @@ input:focus, select:focus, textarea:focus {
   z-index: -1;
   filter: blur(1px);
 }
-.white,
-.border,
-.darkBorderBg,
-.glow {
+#poda .white,
+#poda .border,
+#poda .darkBorderBg,
+#poda .glow {
   max-height: 70px;
   max-width: 314px;
   height: 100%;
@@ -3895,7 +3895,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 12px;
   filter: blur(3px);
 }
-.input {
+#poda .input {
   background-color: #010201;
   border: none;
   /* padding:7px; */
@@ -3911,11 +3911,11 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   justify-content: center;
 }
-.input::placeholder {
+#poda .input::placeholder {
   color: #c0b9c0;
 }
 
-.input:focus {
+#poda .input:focus {
   outline: none;
 }
 
@@ -3950,14 +3950,14 @@ input:focus, select:focus, textarea:focus {
   opacity: 0;
 }
 
-.white {
+#poda .white {
   max-height: 63px;
   max-width: 307px;
   border-radius: 10px;
   filter: blur(2px);
 }
 
-.white::before {
+#poda .white::before {
   content: "";
   z-index: -2;
   text-align: center;
@@ -3981,13 +3981,13 @@ input:focus, select:focus, textarea:focus {
   /* animation: rotate 4s linear infinite; */
   transition: all 2s;
 }
-.border {
+#poda .border {
   max-height: 59px;
   max-width: 303px;
   border-radius: 11px;
   filter: blur(0.5px);
 }
-.border::before {
+#poda .border::before {
   content: "";
   z-index: -2;
   text-align: center;
@@ -4011,11 +4011,11 @@ input:focus, select:focus, textarea:focus {
   /* animation: rotate 4s 0.1s linear infinite; */
   transition: all 2s;
 }
-.darkBorderBg {
+#poda .darkBorderBg {
   max-height: 65px;
   max-width: 312px;
 }
-.darkBorderBg::before {
+#poda .darkBorderBg::before {
   content: "";
   z-index: -2;
   text-align: center;
@@ -4080,14 +4080,14 @@ input:focus, select:focus, textarea:focus {
   transition: all 4s;
 }
 
-.glow {
+#poda .glow {
   overflow: hidden;
   filter: blur(30px);
   opacity: 0.4;
   max-height: 130px;
   max-width: 354px;
 }
-.glow:before {
+#poda .glow:before {
   content: "";
   z-index: -2;
   text-align: center;
@@ -4159,7 +4159,7 @@ input:focus, select:focus, textarea:focus {
   background: linear-gradient(180deg, #161329, black, #1d1b4b);
   border: 1px solid transparent;
 }
-.filterBorder {
+#poda .filterBorder {
   height: 42px;
   width: 40px;
   position: absolute;
@@ -4169,7 +4169,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 10px;
 }
 
-.filterBorder::before {
+#poda .filterBorder::before {
   content: "";
 
   text-align: center;
@@ -4202,6 +4202,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Single layout constraint rule added at the end */
-#poda, .input, .white, .border, .darkBorderBg, .glow {
+#poda, #poda .input, #poda .white, #poda .border, #poda .darkBorderBg, #poda .glow {
   max-width: 100% !important;
 }
