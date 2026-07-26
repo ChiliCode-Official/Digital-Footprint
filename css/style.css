@@ -1789,10 +1789,10 @@ input:focus, select:focus, textarea:focus {
   pointer-events: none;
 }
 
-.card__text {
+.card__details {
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  gap: 0.5em;
 }
 
 .card__title {
@@ -1801,44 +1801,45 @@ input:focus, select:focus, textarea:focus {
   margin: 0;
   font-weight: 700;
   transition: all 0.3s ease;
+  line-height: 1.2;
 }
 
-.card__description {
-  color: var(--card-text);
-  font-size: 0.75em;
-  margin: 0;
-  opacity: 0.7;
-  transition: all 0.3s ease;
-}
-
-.card__footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
-}
-
-.card__price {
-  color: var(--card-text);
-  font-weight: 700;
-  font-size: 1em;
-  transition: all 0.3s ease;
-}
-
-.card__button {
-  width: 28px;
-  height: 28px;
-  background: var(--card-accent);
-  border-radius: 50%;
+.card__reviews {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
+  gap: 5px;
+  font-size: 0.8em;
+}
+
+.card__reviews .rating {
+  color: var(--text-muted);
+}
+
+.card__price-large {
+  color: var(--card-text);
+  font-weight: 900;
+  font-size: 1.5em;
+  transition: all 0.3s ease;
+  margin: 0.2em 0;
+}
+
+.card__add-btn {
+  background-color: #ffd814;
+  color: #0f1111;
+  border: 1px solid #fcd200;
+  border-radius: 100px;
+  padding: 8px 15px;
+  font-size: 0.9em;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  transform: scale(0.9);
   position: relative;
   z-index: 10;
+  width: 100%;
+}
+
+.card__add-btn:hover {
+  background-color: #f7ca00;
 }
 
 /* Hover Effects */
@@ -2730,8 +2731,8 @@ input:focus, select:focus, textarea:focus {
 .wheel-and-hamster {
   --dur: 1s;
   position: relative;
-  width: 7em;
-  height: 7em;
+  width: 12em;
+  height: 12em;
   font-size: 14px;
 }
 
@@ -2767,27 +2768,13 @@ input:focus, select:focus, textarea:focus {
   z-index: 1;
 }
 
-.hamster__body {
-  animation: hamsterBody var(--dur) ease-in-out infinite;
-  background: hsl(30,90%,90%);
-  border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
-  box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset,
-		0.15em -0.5em 0 hsl(30,90%,80%) inset;
-  top: 0.25em;
-  left: 2em;
-  width: 4.5em;
-  height: 3em;
-  transform-origin: 17% 50%;
-  transform-style: preserve-3d;
-}
-
 .hamster__head {
   animation: hamsterHead var(--dur) ease-in-out infinite;
   background: hsl(30,90%,55%);
   border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
   box-shadow: 0 -0.25em 0 hsl(30,90%,80%) inset,
-		0.4em -0.1em 0 hsl(30,90%,90%) inset;
-  top: 0.4em;
+		0.75em -1.55em 0 hsl(30,90%,90%) inset;
+  top: 0;
   left: -2em;
   width: 2.75em;
   height: 2.5em;
@@ -2797,8 +2784,8 @@ input:focus, select:focus, textarea:focus {
 .hamster__ear {
   animation: hamsterEar var(--dur) ease-in-out infinite;
   background: hsl(0,90%,85%);
-  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-  box-shadow: -0.25em 0 0 hsl(30,90%,55%) inset;
+  border-radius: 50%;
+  box-shadow: -0.25em 0 hsl(30,90%,55%) inset;
   top: -0.25em;
   right: -0.25em;
   width: 0.75em;
@@ -2811,18 +2798,32 @@ input:focus, select:focus, textarea:focus {
   background-color: hsl(0,0%,0%);
   border-radius: 50%;
   top: 0.375em;
-  left: 0.5em;
+  left: 1.25em;
   width: 0.5em;
   height: 0.5em;
 }
 
 .hamster__nose {
-  background-color: hsl(0,90%,75%);
+  background: hsl(0,90%,75%);
   border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
   top: 0.75em;
   left: 0;
   width: 0.2em;
   height: 0.25em;
+}
+
+.hamster__body {
+  animation: hamsterBody var(--dur) ease-in-out infinite;
+  background: hsl(30,90%,90%);
+  border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
+  box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset,
+		0.15em -0.5em 0 hsl(30,90%,80%) inset;
+  top: 0.25em;
+  left: 2em;
+  width: 4.5em;
+  height: 3em;
+  transform-origin: 17% 50%;
+  transform-style: preserve-3d;
 }
 
 .hamster__limb--fr,
@@ -2838,20 +2839,19 @@ input:focus, select:focus, textarea:focus {
 .hamster__limb--fr {
   animation: hamsterFRLimb var(--dur) linear infinite;
   background: linear-gradient(hsl(30,90%,80%) 80%,hsl(0,90%,75%) 80%);
-  transform: rotate(15deg);
-  z-index: -1;
+  transform: rotate(15deg) translateZ(-1px);
 }
 
 .hamster__limb--fl {
   animation: hamsterFLLimb var(--dur) linear infinite;
   background: linear-gradient(hsl(30,90%,90%) 80%,hsl(0,90%,85%) 80%);
-  transform: rotate(-30deg);
-  z-index: 1;
+  transform: rotate(15deg);
 }
 
 .hamster__limb--br,
 .hamster__limb--bl {
-  border-radius: 0.75em 0.75em 0 0 / 1.5em 0.75em 0 0;
+  border-radius: 0.75em 0.75em 0 0;
+  clip-path: polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);
   top: 1em;
   left: 2.8em;
   width: 1.5em;
@@ -2862,85 +2862,143 @@ input:focus, select:focus, textarea:focus {
 .hamster__limb--br {
   animation: hamsterBRLimb var(--dur) linear infinite;
   background: linear-gradient(hsl(30,90%,80%) 90%,hsl(0,90%,75%) 90%);
-  transform: rotate(-25deg);
-  z-index: -1;
+  transform: rotate(-25deg) translateZ(-1px);
 }
 
 .hamster__limb--bl {
   animation: hamsterBLLimb var(--dur) linear infinite;
   background: linear-gradient(hsl(30,90%,90%) 90%,hsl(0,90%,85%) 90%);
-  transform: rotate(30deg);
-  z-index: 1;
+  transform: rotate(-25deg);
 }
 
 .hamster__tail {
   animation: hamsterTail var(--dur) linear infinite;
   background: hsl(0,90%,85%);
   border-radius: 0.25em 50% 50% 0.25em;
-  box-shadow: -0.2em 0 0 hsl(30,90%,55%) inset;
+  box-shadow: 0 -0.2em 0 hsl(0,90%,75%) inset;
   top: 1.5em;
   right: -0.5em;
   width: 1em;
   height: 0.5em;
-  transform: rotate(30deg);
-  transform-origin: 0 50%;
+  transform: rotate(30deg) translateZ(-1px);
+  transform-origin: 0.25em 0.25em;
 }
 
 .spoke {
   animation: spoke var(--dur) linear infinite;
   background: radial-gradient(100% 100% at center,hsl(0,0%,60%) 4.8%,hsla(0,0%,60%,0) 5%),
-		linear-gradient(hsla(0,0%,60%,0) 46.9%,hsl(0,0%,60%) 47%,hsl(0,0%,60%) 53%,hsla(0,0%,60%,0) 53.1%),
-		linear-gradient(90deg,hsla(0,0%,60%,0) 46.9%,hsl(0,0%,60%) 47%,hsl(0,0%,60%) 53%,hsla(0,0%,60%,0) 53.1%);
+		linear-gradient(hsla(0,0%,55%,0) 46.9%,hsl(0,0%,65%) 47% 52.9%,hsla(0,0%,65%,0) 53%) 50% 50% / 99% 99% no-repeat;
 }
 
+/* Animations */
 @keyframes hamster {
-  from, to { transform: rotate(4deg) translate(-0.8em,1.85em); }
-  50% { transform: rotate(0) translate(-0.8em,1.85em); }
-}
+  from, to {
+    transform: rotate(4deg) translate(-0.8em,1.85em);
+  }
 
-@keyframes hamsterBody {
-  from, 50%, to { transform: rotate(0); }
-  25%, 75% { transform: rotate(2deg); }
+  50% {
+    transform: rotate(0) translate(-0.8em,1.85em);
+  }
 }
 
 @keyframes hamsterHead {
-  from, 25%, 50%, 75%, to { transform: rotate(0); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(8deg); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(0);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(8deg);
+  }
 }
 
 @keyframes hamsterEye {
-  from, 90%, to { transform: scaleY(1); }
-  95% { transform: scaleY(0); }
+  from, 90%, to {
+    transform: scaleY(1);
+  }
+
+  95% {
+    transform: scaleY(0);
+  }
 }
 
 @keyframes hamsterEar {
-  from, 25%, 50%, 75%, to { transform: rotate(0); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(12deg); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(0);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes hamsterBody {
+  from, 25%, 50%, 75%, to {
+    transform: rotate(0);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(-2deg);
+  }
 }
 
 @keyframes hamsterFRLimb {
-  from, 25%, 50%, 75%, to { transform: rotate(50deg) translateZ(-1px); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(-60deg) translateZ(-1px); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(50deg) translateZ(-1px);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(-30deg) translateZ(-1px);
+  }
 }
 
 @keyframes hamsterFLLimb {
-  from, 25%, 50%, 75%, to { transform: rotate(-60deg); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(50deg); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(-30deg);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(50deg);
+  }
 }
 
 @keyframes hamsterBRLimb {
-  from, 25%, 50%, 75%, to { transform: rotate(-50deg) translateZ(-1px); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(40deg) translateZ(-1px); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(-60deg) translateZ(-1px);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(20deg) translateZ(-1px);
+  }
 }
 
 @keyframes hamsterBLLimb {
-  from, 25%, 50%, 75%, to { transform: rotate(40deg); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(-50deg); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(20deg);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(-60deg);
+  }
 }
 
 @keyframes hamsterTail {
-  from, 25%, 50%, 75%, to { transform: rotate(30deg); }
-  12.5%, 37.5%, 62.5%, 87.5% { transform: rotate(10deg); }
+  from, 25%, 50%, 75%, to {
+    transform: rotate(30deg) translateZ(-1px);
+  }
+
+  12.5%, 37.5%, 62.5%, 87.5% {
+    transform: rotate(10deg) translateZ(-1px);
+  }
+}
+
+@keyframes spoke {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(-1turn);
+  }
 }
 
 /* --- Login Form (D3OXY adapted to GhostKey theme) --- */
@@ -4204,4 +4262,412 @@ input:focus, select:focus, textarea:focus {
 /* Single layout constraint rule added at the end */
 #poda, #poda .input, #poda .white, #poda .border, #poda .darkBorderBg, #poda .glow {
   max-width: 100% !important;
+}
+
+/* Amazon Clone Search Bar */
+.search-amazon-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.amz-search-input {
+  background-color: #e4e4e7;
+  color: #52525b;
+  font-family: monospace;
+  box-shadow: 0 0 0 1px #a1a1aa, 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: all 300ms ease;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  border: none;
+  width: 250px;
+}
+.amz-search-input::placeholder {
+  color: #52525b;
+  opacity: 0.5;
+}
+.amz-search-input:focus {
+  box-shadow: 0 0 0 2px #fb7185, 0 10px 15px -3px rgba(251, 113, 133, 0.5);
+}
+.amz-search-btn {
+  background-color: #e4e4e7;
+  color: #52525b;
+  box-shadow: 0 0 0 1px #a1a1aa, 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: all 300ms ease;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.amz-search-btn:focus, .amz-search-btn:hover {
+  box-shadow: 0 0 0 2px #fb7185, 0 10px 15px -3px rgba(251, 113, 133, 0.5);
+}
+.amz-rocket-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  transform: rotate(45deg);
+}
+
+/* Amazon Clone Filter Dropdown */
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+  display: none;
+  flex-direction: column;
+  z-index: 50;
+  min-width: 150px;
+}
+.filter-dropdown.show {
+  display: flex;
+}
+.filter-dropdown .filter-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 10px 15px;
+  text-align: left;
+  border-radius: 0;
+  cursor: pointer;
+}
+.filter-dropdown .filter-btn:last-child {
+  border-bottom: none;
+}
+.filter-dropdown .filter-btn:hover, .filter-dropdown .filter-btn.active {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+/* Mobile Catalog Amazon UX */
+@media (max-width: 768px) {
+  #catalog-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  #catalog-grid .card {
+    min-height: auto;
+    height: auto;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  #catalog-grid .card__content {
+    flex-direction: row;
+    padding: 10px;
+    align-items: flex-start;
+  }
+  
+  #catalog-grid .card__image {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+  }
+  
+  #catalog-grid .card__details {
+    flex: 1;
+    margin-left: 15px;
+    justify-content: center;
+  }
+
+  /* Make search full width */
+  #amz-search-container {
+    width: 100% !important;
+  }
+}
+
+/* --- Gift Animation Modal --- */
+#gift-animation-modal .gift-anim-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 5em;
+  font-weight: 900;
+  color: #e10600;
+  position: relative;
+  transition: all 1s ease;
+  text-align: center;
+}
+
+#gift-animation-modal .container__star {
+  transition: all .7s ease-in-out;
+}
+
+#gift-animation-modal .svg-icon {
+  position: absolute;
+  fill: #e94822;
+  z-index: 1;
+}
+
+#gift-animation-modal .star-eight {
+  background: #efd510;
+  width: 150px;
+  height: 150px;
+  position: relative;
+  text-align: center;
+  animation: rot 3s  infinite;
+}
+
+#gift-animation-modal .star-eight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 150px;
+  width: 150px;
+  background: #efd510;
+  transform: rotate(135deg);
+}
+
+#gift-animation-modal .gift-anim-container.opened .container__star {
+  transform: rotateX(70deg) translateY(250px);
+  box-shadow: 0px 0px 120px -100px #e4e727;
+}
+
+#gift-animation-modal .gift-anim-container.opened .svg-icon {
+  animation: grow 1s linear infinite;
+}
+
+@keyframes rot {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(340deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes grow {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* --- POS Animation for Recharge Waiting Screen (Admin12121) --- */
+.pos-anim-container {
+  background-color: #ffffff;
+  display: flex;
+  width: 100%;
+  max-width: 460px;
+  height: 120px;
+  position: relative;
+  border-radius: 6px;
+  transition: 0.3s ease-in-out;
+  margin: 0 auto;
+}
+
+.pos-anim-container:hover {
+  transform: scale(1.03);
+  max-width: 220px;
+}
+
+.pos-anim-container:hover .pos-left-side {
+  width: 100%;
+}
+
+.pos-left-side {
+  background-color: #5de2a3;
+  width: 130px;
+  height: 120px;
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.pos-right-side {
+  width: calc(100% - 130px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  justify-content: space-between;
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
+.pos-right-side:hover {
+  background-color: #f9f7f9;
+}
+
+.pos-arrow {
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+}
+
+.pos-new {
+  font-size: 20px;
+  font-family: inherit;
+  font-weight: 700;
+  color: #000;
+  margin-left: 20px;
+}
+
+.pos-card {
+  width: 70px;
+  height: 46px;
+  background-color: #c7ffbc;
+  border-radius: 6px;
+  position: absolute;
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+}
+
+.pos-card-line {
+  width: 65px;
+  height: 13px;
+  background-color: #80ea69;
+  border-radius: 2px;
+  margin-top: 7px;
+}
+
+.pos-buttons {
+  width: 8px;
+  height: 8px;
+  background-color: #379e1f;
+  box-shadow: 0 -10px 0 0 #26850e, 0 10px 0 0 #56be3e;
+  border-radius: 50%;
+  margin-top: 5px;
+  transform: rotate(90deg);
+  margin: 10px 0 0 -30px;
+}
+
+.pos-anim-container:hover .pos-card {
+  animation: slide-top 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) both;
+}
+
+.pos-anim-container:hover .pos-post {
+  animation: slide-post 1s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+
+@keyframes slide-top {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-70px) rotate(90deg); }
+  60% { transform: translateY(-70px) rotate(90deg); }
+  100% { transform: translateY(-8px) rotate(90deg); }
+}
+
+.pos-post {
+  width: 63px;
+  height: 75px;
+  background-color: #dddde0;
+  position: absolute;
+  z-index: 11;
+  bottom: 10px;
+  top: 120px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pos-post-line {
+  width: 47px;
+  height: 9px;
+  background-color: #545354;
+  position: absolute;
+  border-radius: 0px 0px 3px 3px;
+  right: 8px;
+  top: 8px;
+}
+
+.pos-post-line:before {
+  content: "";
+  position: absolute;
+  width: 47px;
+  height: 9px;
+  background-color: #757375;
+  top: -8px;
+}
+
+.pos-screen {
+  width: 47px;
+  height: 23px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 22px;
+  right: 8px;
+  border-radius: 3px;
+}
+
+.pos-numbers {
+  width: 12px;
+  height: 12px;
+  background-color: #838183;
+  box-shadow: 0 -18px 0 0 #838183, 0 18px 0 0 #838183;
+  border-radius: 2px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 25px;
+  top: 52px;
+}
+
+.pos-numbers-line2 {
+  width: 12px;
+  height: 12px;
+  background-color: #aaa9ab;
+  box-shadow: 0 -18px 0 0 #aaa9ab, 0 18px 0 0 #aaa9ab;
+  border-radius: 2px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 25px;
+  top: 68px;
+}
+
+@keyframes slide-post {
+  50% { transform: translateY(0); }
+  100% { transform: translateY(-70px); }
+}
+
+.pos-dollar {
+  position: absolute;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 800;
+  width: 100%;
+  left: 0;
+  top: 0;
+  color: #4b953b;
+  text-align: center;
+}
+
+.pos-anim-container:hover .pos-dollar {
+  animation: fade-in-fwd 0.3s 1s backwards;
+}
+
+@keyframes fade-in-fwd {
+  0% { opacity: 0; transform: translateY(-5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media only screen and (max-width: 480px) {
+  .pos-anim-container {
+    transform: scale(0.9);
+  }
+  .pos-anim-container:hover {
+    transform: scale(0.94);
+  }
 }

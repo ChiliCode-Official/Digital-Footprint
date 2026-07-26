@@ -109,15 +109,16 @@ function renderProducts(products) {
             <div class="card__badge" style="background:${statusColor}">${stockLabel}</div>
             <button class="wishlist-btn" data-id="${prod.id}" style="position:absolute; top:12px; left:12px; z-index:4; background:var(--bg-panel); border:1px solid var(--glass-border); color:var(--text-muted); border-radius:50%; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-heart"></i></button>
             <div class="card__image" style="background-image: url('${prodImg}');"></div>
-            <div class="card__text">
+            <div class="card__details">
                 <p class="card__title">${escapeHtml(prod.name)}</p>
-                <p class="card__description">Item Premium</p>
-            </div>
-            <div class="card__footer">
-                <div class="card__price">$${prod.price}</div>
-                <div class="card__button">
-                <svg height="16" width="16" viewBox="0 0 24 24"><path stroke-width="2" stroke="currentColor" d="M4 12H20M12 4V20" fill="currentColor"></path></svg>
+                <div class="card__reviews">
+                    <span class="stars">⭐⭐⭐⭐⭐</span>
+                    <span class="rating">4.8 (1.3k)</span>
                 </div>
+                <div class="card__price-large">$${prod.price}</div>
+                <button class="card__add-btn">
+                    Agregar al carrito
+                </button>
             </div>
             </div>
         `;
@@ -151,11 +152,33 @@ function handleFilters() {
             filterBtns.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             applyFilters();
+            
+            // Close dropdown on mobile after selecting a filter if it's open
+            const filterDropdown = document.getElementById('filter-dropdown');
+            if (filterDropdown && filterDropdown.classList.contains('show')) {
+                filterDropdown.classList.remove('show');
+            }
         });
     });
 
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
+    }
+    
+    const filterRocketBtn = document.getElementById('filter-rocket-btn');
+    const filterDropdown = document.getElementById('filter-dropdown');
+    
+    if (filterRocketBtn && filterDropdown) {
+        filterRocketBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!filterRocketBtn.contains(e.target) && !filterDropdown.contains(e.target)) {
+                filterDropdown.classList.remove('show');
+            }
+        });
     }
 }
 

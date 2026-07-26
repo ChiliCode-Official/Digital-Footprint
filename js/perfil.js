@@ -278,7 +278,7 @@ async function loadClientData(uid) {
                             <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-bottom:4px;">${dDate}</span>
                             <p class="delivered-title delivered-price">$${o.price||0}</p>
                         </div>
-                        <button class="delivered-card-btn" data-credential="${escapeHtml(o.textDelivered||'')}">
+                        <button class="delivered-card-btn" data-credential="${escapeHtml(o.textDelivered||'')}" data-is-gift="${o.isGift ? 'true' : 'false'}">
                             <i class="fa-solid fa-key"></i> OBTENER
                         </button>
                     </div>`;
@@ -286,15 +286,50 @@ async function loadClientData(uid) {
             }
         }
 
+        // Handle Gift Modal interactions
+        const giftModal = document.getElementById('gift-animation-modal');
+        const giftTrigger = document.getElementById('gift-anim-trigger');
+        const giftHint = document.getElementById('gift-click-hint');
+        const giftText = document.getElementById('gift-credential-text');
+        const giftVal = document.getElementById('gift-credential-value');
+        const btnCloseGift = document.getElementById('btn-close-gift');
+
         document.querySelectorAll('.delivered-card-btn').forEach(btn => {
             btn.onclick = () => {
                 const text = btn.dataset.credential;
-                if (text) {
+                const isGift = btn.dataset.isGift === 'true';
+
+                if (!text) {
+                    alert('El administrador está procesando tu entrega.');
+                    return;
+                }
+
+                if (isGift && giftModal) {
+                    // Reset modal state
+                    giftTrigger.classList.remove('opened');
+                    giftHint.style.display = 'block';
+                    giftText.style.display = 'none';
+                    giftVal.textContent = text;
+                    giftModal.style.display = 'flex';
+
+                    giftTrigger.onclick = () => {
+                        giftTrigger.classList.add('opened');
+                        giftHint.style.display = 'none';
+                        setTimeout(() => {
+                            giftText.style.display = 'block';
+                        }, 1000);
+                    };
+
+                    btnCloseGift.onclick = () => {
+                        navigator.clipboard.writeText(text)
+                            .then(() => alert(`¡Regalo reclamado y credencial copiada!\n${text}`))
+                            .catch(() => alert(`Credencial:\n${text}`));
+                        giftModal.style.display = 'none';
+                    };
+                } else {
                     navigator.clipboard.writeText(text)
                         .then(() => alert(`Credencial copiada:\n${text}`))
                         .catch(() => alert(`Credencial:\n${text}`));
-                } else {
-                    alert('El administrador está procesando tu entrega.');
                 }
             };
         });

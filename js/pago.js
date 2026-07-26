@@ -300,12 +300,30 @@ function setupWaitingScreen(requestId, amount, methodLabel) {
     subEl.textContent = 'Estamos esperando la confirmación de tu depósito por el administrador.';
 
     dynamicArea.innerHTML = `
-        <div style="background: var(--bg-card); border: 1px solid var(--accent-primary); border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: var(--shadow-glow);">
-            <div style="display:inline-flex; align-items:center; justify-content:center; width:54px; height:54px; border-radius:50%; background:rgba(245, 158, 11, 0.15); color:var(--warning); font-size:1.6rem; margin-bottom:0.8rem;">
-                <i class="fa-solid fa-spinner fa-spin"></i>
+        <div style="background: var(--bg-card); border: 1px solid var(--accent-primary); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; box-shadow: var(--shadow-glow); display: flex; flex-direction: column; align-items: center; gap: 20px;">
+            <div class="pos-anim-container">
+             <div class="pos-left-side">
+              <div class="pos-card">
+               <div class="pos-card-line"></div>
+               <div class="pos-buttons"></div>
+              </div>
+              <div class="pos-post">
+               <div class="pos-post-line"></div>
+               <div class="pos-screen">
+                <div class="pos-dollar">$</div>
+               </div>
+               <div class="pos-numbers"></div>
+               <div class="pos-numbers-line2"></div>
+              </div>
+             </div>
+             <div class="pos-right-side">
+              <div class="pos-new">Procesando...</div>
+               <svg viewBox="0 0 451.846 451.847" height="512" width="512" xmlns="http://www.w3.org/2000/svg" class="pos-arrow"><path fill="#cfcfcf" data-old_color="#000000" class="active-path" data-original="#000000" d="M345.441 248.292L151.154 442.573c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744L278.318 225.92 106.409 54.017c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.287 194.284c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373z"></path></svg>
+             </div>
             </div>
+            
             <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 5px; color: #fff;">Esperando tu pago...</h3>
-            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1rem;">
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.5rem;">
                 Monto: <strong style="color:#fff;">$${amount.toFixed(2)} MXN</strong> | Método: <strong style="color:var(--accent-primary);">${methodLabel}</strong>
             </p>
             <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">

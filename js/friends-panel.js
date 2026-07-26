@@ -199,11 +199,11 @@ async function loadRealFriends(currentUser) {
                 const name = uData.displayName || uData.email || 'Usuario';
 
                 friendsContainer.innerHTML += `
-                    <div style="background:rgba(234,179,8,0.1);border:1px solid var(--warning);padding:8px;border-radius:8px;margin-bottom:8px;">
-                        <p style="font-size:0.75rem;color:var(--warning);margin-bottom:4px;"><i class="fa-solid fa-user-clock"></i> Solicitud de: <strong>${escapeHtml(name)}</strong></p>
-                        <div style="display:flex;gap:6px;">
-                            <button class="btn-accept-friend" data-id="${fId}" style="background:var(--success);color:white;border:none;padding:4px 8px;border-radius:5px;font-size:0.7rem;cursor:pointer;flex:1;">Aceptar</button>
-                            <button class="btn-reject-friend" data-id="${fId}" style="background:var(--danger);color:white;border:none;padding:4px 8px;border-radius:5px;font-size:0.7rem;cursor:pointer;flex:1;">Rechazar</button>
+                    <div style="background:rgba(234,179,8,0.1);border:1px solid var(--warning);padding:12px;border-radius:8px;margin-bottom:8px;">
+                        <p style="font-size:0.8rem;color:var(--warning);margin-bottom:8px;"><i class="fa-solid fa-user-clock"></i> Solicitud de: <strong>${escapeHtml(name)}</strong></p>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-accept-friend" data-id="${fId}" style="background:var(--success);color:white;border:none;padding:8px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;flex:1;transition:all 0.2s;box-shadow:0 4px 6px rgba(0,0,0,0.2);">Aceptar</button>
+                            <button class="btn-reject-friend" data-id="${fId}" style="background:transparent;color:var(--danger);border:1px solid var(--danger);padding:8px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;flex:1;transition:all 0.2s;">Rechazar</button>
                         </div>
                     </div>
                 `;
