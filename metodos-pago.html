@@ -8,30 +8,65 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png"></head>
 <body>
-
-    <div class="dashboard-container">
-        <!-- Sidebar (PC) -->
-        <aside class="sidebar">
-            <a href="index.html" class="brand-logo" style="display:flex; justify-content:center; align-items:center;"><img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey" style="width: 40px; height: 40px; border-radius: 8px;"></a>
-            
-            <ul class="nav-links">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a href="catalogo.html" class="nav-link"><i class="fa-solid fa-gamepad"></i></a>
-                </li>
-                <li class="nav-item active">
-                    <a href="metodos-pago.html" class="nav-link"><i class="fa-solid fa-credit-card"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a href="perfil.html" class="nav-link"><i class="fa-solid fa-user"></i></a>
-                </li>
-            </ul>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content" style="grid-column: 2 / span 2;">
+    <!-- ===== GLOBAL NAVBAR (GhostKey) ===== -->
+    <style>
+        html, body { height: auto !important; overflow: visible !important; overflow-x: hidden !important; }
+        body { display: block !important; min-height: 100vh; }
+        .gk-navbar { position: sticky; top: 0; z-index: 1000; background: var(--bg-card); border-bottom: 2px solid var(--accent-primary); display: flex; align-items: center; gap: 12px; padding: 0 16px; height: 60px; box-shadow: 0 2px 16px rgba(0,0,0,0.4); }
+        .gk-nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+        .gk-nav-logo img { width: 36px; height: 36px; border-radius: 8px; }
+        .gk-nav-logo span { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+        .gk-search-wrap { flex: 1; display: flex; align-items: center; background: var(--bg-main); border: 2px solid var(--glass-border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; max-width: 700px; }
+        .gk-search-wrap:focus-within { border-color: var(--accent-primary); }
+        .gk-search-wrap input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); padding: 8px 12px; font-size: 0.95rem; font-family: inherit; }
+        .gk-search-wrap input::placeholder { color: var(--text-muted); }
+        .gk-search-btn-nav { background: var(--accent-primary); border: none; cursor: pointer; padding: 10px 14px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; color: #fff; font-size: 1rem; }
+        .gk-search-btn-nav:hover { background: var(--accent-secondary, #7c5cbf); }
+        .gk-nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .gk-nav-btn { background: transparent; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; text-decoration: none; transition: background 0.2s; white-space: nowrap; }
+        .gk-nav-btn:hover { background: var(--bg-main); }
+        .gk-nav-btn .lbl { display: none; }
+        @media(min-width:768px) { .gk-nav-btn .lbl { display: inline; } }
+        .gk-nav-balance { background: rgba(161,120,232,0.12); border: 1px solid var(--accent-primary); color: var(--accent-primary); font-weight: 700; }
+        .gk-user-chip { display: flex; align-items: center; gap: 8px; background: var(--bg-main); border: 1px solid var(--glass-border); border-radius: 30px; padding: 4px 12px 4px 4px; cursor: pointer; transition: border-color 0.2s; text-decoration: none; }
+        .gk-user-chip:hover { border-color: var(--accent-primary); }
+        .gk-user-chip img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+        .gk-user-chip span { font-size: 0.85rem; color: var(--text-main); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none; }
+        @media(min-width:600px) { .gk-user-chip span { display: inline; } }
+        .gk-page-body { max-width: 1400px; margin: 0 auto; padding: 0 16px 100px; }
+        .gk-dock { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top: 1px solid var(--glass-border); display: none; align-items: center; justify-content: space-around; padding: 8px 0; z-index: 1001; }
+        @media(max-width: 768px) { .gk-dock { display: flex; } .gk-page-body { padding-bottom: 80px; } }
+        .gk-dock-item { display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; color: var(--text-muted); font-size: 0.6rem; padding: 4px 12px; border-radius: 8px; transition: color 0.2s; border: none; background: transparent; cursor: pointer; font-family: inherit; }
+        .gk-dock-item i { font-size: 1.2rem; }
+        .gk-dock-item.active { color: var(--accent-primary); }
+    </style>
+    <nav class="gk-navbar">
+        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey"><span>GhostKey</span></a>
+        <div class="gk-search-wrap">
+            <input id="gk-nav-search" type="text" placeholder="Buscar productos..." autocomplete="off">
+            <button class="gk-search-btn-nav" id="gk-nav-search-btn" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="gk-nav-actions">
+            <a href="pago.html" class="gk-nav-btn gk-nav-balance" id="nav-balance-btn" title="Recargar saldo"><i class="fa-solid fa-wallet"></i><span class="lbl" id="nav-balance-label">Saldo</span></a>
+            <a href="cart.html" class="gk-nav-btn" title="Carrito"><i class="fa-solid fa-bag-shopping"></i><span class="lbl">Carrito</span></a>
+            <a href="perfil.html" class="gk-user-chip" id="user-profile-btn" title="Mi perfil">
+                <img id="user-avatar" src="https://ui-avatars.com/api/?name=G&background=A182E8&color=fff" alt="Avatar">
+                <span id="user-name">Cuenta</span>
+            </a>
+        </div>
+    </nav>
+    <script>
+        // Search redirect
+        (function(){
+            var btn = document.getElementById('gk-nav-search-btn');
+            var inp = document.getElementById('gk-nav-search');
+            if(btn && inp){
+                btn.addEventListener('click', function(){ var q=inp.value.trim(); if(q) window.location.href='catalogo.html?search='+encodeURIComponent(q); });
+                inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ var q=inp.value.trim(); if(q) window.location.href='catalogo.html?search='+encodeURIComponent(q); } });
+            }
+        })();
+    </script>
+    <div class="gk-page-body">
             <!-- Top Bar -->
             <header class="top-bar">
                 <button class="btn-secondary" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
@@ -112,7 +147,7 @@
                     <p style="color: var(--text-muted);">Cargando mÃ©todos de pago...</p>
                 </div>
             </section>
-        </main>
+        
     </div>
 
     <!-- Mobile Dock -->
@@ -128,5 +163,12 @@
 
     <script type="module" src="js/metodos-pago.js"></script>
     <script type="module" src="js/cart.js"></script>
+    <!-- Mobile Dock -->
+    <nav class="gk-dock">
+        <a href="index.html" class="gk-dock-item "><i class="fa-solid fa-house"></i><span>Inicio</span></a>
+        <a href="catalogo.html" class="gk-dock-item "><i class="fa-solid fa-gamepad"></i><span>Catálogo</span></a>
+        <a href="pago.html" class="gk-dock-item active"><i class="fa-solid fa-wallet"></i><span>Saldo</span></a>
+        <a href="perfil.html" class="gk-dock-item "><i class="fa-solid fa-user"></i><span>Perfil</span></a>
+    </nav>
 </body>
 </html>
