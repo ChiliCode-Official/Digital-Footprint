@@ -45,8 +45,8 @@ async function searchAndAddFriend(term, currentUser) {
         searchResults.innerHTML = `<p style="color:var(--warning);font-size:0.8rem;text-align:center;">Inicia sesión para agregar amigos.</p>`;
         return;
     }
-    const cleanTerm = term.trim().toLowerCase();
-    if (!cleanTerm) {
+    const rawTerm = term.trim();
+    if (!rawTerm) {
         searchResults.innerHTML = '';
         return;
     }
@@ -57,19 +57,22 @@ async function searchAndAddFriend(term, currentUser) {
         let foundUser = null;
         let foundUid = null;
 
-        // Try exact UID lookup first
-        const uidSnap = await getDoc(doc(db, 'users', cleanTerm));
-        if (uidSnap.exists()) {
-            foundUser = uidSnap.data();
-            foundUid = uidSnap.id;
-        } else {
-            // Query by exact email
-            const q = query(collection(db, 'users'), where('email', '==', cleanTerm));
+        if (rawTerm.includes('@')) {
+            // Query by exact email (lowercase)
+            const cleanEmail = rawTerm.toLowerCase();
+            const q = query(collection(db, 'users'), where('email', '==', cleanEmail));
             const emailSnap = await getDocs(q);
             if (!emailSnap.empty) {
                 const docSnap = emailSnap.docs[0];
                 foundUser = docSnap.data();
                 foundUid = docSnap.id;
+            }
+        } else {
+            // UID lookup: preserve exact case!
+            const uidSnap = await getDoc(doc(db, 'users', rawTerm));
+            if (uidSnap.exists()) {
+                foundUser = uidSnap.data();
+                foundUid = uidSnap.id;
             }
         }
 
@@ -297,6 +300,13 @@ function initFriendsPanel() {
                 searchAndAddFriend(searchFriendInput.value, auth.currentUser);
             }
         });
+
+        const searchBtn = document.getElementById('search-friend-btn');
+        if (searchBtn) {
+            searchBtn.onclick = () => {
+                searchAndAddFriend(searchFriendInput.value, auth.currentUser);
+            };
+        }
     }
 }
 

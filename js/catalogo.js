@@ -44,15 +44,29 @@ async function loadProducts() {
     }
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function normalizeImageUrl(url) {
     if (!url) return '';
-    let clean = url.trim();
-    if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
-        const parts = clean.split('/');
-        const id = parts[parts.length - 1].split('.')[0];
-        if (id) return `https://i.imgur.com/${id}.png`;
+    try {
+        let clean = url.trim();
+        if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
+            const parts = clean.split('/');
+            const id = parts[parts.length - 1].split('.')[0];
+            if (id) return `https://i.imgur.com/${id}.png`;
+        }
+        return clean;
+    } catch(e) {
+        return url || '';
     }
-    return clean;
 }
 
 function renderProducts(products) {
@@ -110,15 +124,25 @@ function renderProducts(products) {
         catalogGrid.appendChild(card);
     });
 
-    initWishlistButtons(currentUserWishlist);
+    try {
+        initWishlistButtons(currentUserWishlist);
+    } catch(e) { console.error('Wishlist init error:', e); }
 
-    gsap.to('.card', {
-        opacity: 1,
-        y: -10,
-        duration: 0.5,
-        stagger: 0.05,
-        ease: "power2.out"
-    });
+    try {
+        if (typeof gsap !== 'undefined') {
+            gsap.to('.card', {
+                opacity: 1,
+                y: -10,
+                duration: 0.5,
+                stagger: 0.05,
+                ease: "power2.out"
+            });
+        } else {
+            document.querySelectorAll('.card').forEach(c => c.style.opacity = 1);
+        }
+    } catch(e) {
+        document.querySelectorAll('.card').forEach(c => c.style.opacity = 1);
+    }
 }
 
 function handleFilters() {
