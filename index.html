@@ -11,277 +11,716 @@
     <meta property="og:description" content="Compra cuentas premium, claves de juegos y saldo virtual.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ghostkey.app/">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:image" content="https://i.imgur.com/LbMnNUg.png">
     <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Font Awesome para Iconos Temporales -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png">`n</head>
+    <style>
+        /* ===== AMAZON-STYLE LANDING OVERHAUL ===== */
+        body { margin: 0; padding: 0; }
+
+        /* --- Top Navbar --- */
+        .gk-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+            height: 60px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+        }
+        .gk-nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .gk-nav-logo img { width: 36px; height: 36px; border-radius: 8px; }
+        .gk-nav-logo span {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            display: none;
+        }
+        @media(min-width:600px) { .gk-nav-logo span { display: inline; } }
+
+        /* Search bar */
+        .gk-search-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--bg-main);
+            border: 2px solid var(--glass-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+            max-width: 700px;
+        }
+        .gk-search-wrap:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(161,120,232,0.2);
+        }
+        .gk-search-wrap input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        .gk-search-wrap input::placeholder { color: var(--text-muted); }
+        .gk-search-btn {
+            background: var(--accent-primary);
+            border: none;
+            cursor: pointer;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .gk-search-btn:hover { background: var(--accent-secondary); }
+        .gk-search-btn svg { width: 22px; height: 22px; }
+
+        /* Nav actions */
+        .gk-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .gk-nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            text-decoration: none;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .gk-nav-btn:hover { background: var(--bg-main); }
+        .gk-nav-btn .label { display: none; }
+        @media(min-width:768px) { .gk-nav-btn .label { display: inline; } }
+        .gk-nav-balance {
+            background: rgba(161,120,232,0.12);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .gk-user-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 4px 12px 4px 4px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .gk-user-chip:hover { border-color: var(--accent-primary); }
+        .gk-user-chip img {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .gk-user-chip span {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: none;
+        }
+        @media(min-width:600px) { .gk-user-chip span { display: inline; } }
+
+        /* --- Secondary Nav Bar (categories) --- */
+        .gk-subnav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .gk-subnav::-webkit-scrollbar { display: none; }
+        .gk-subnav a {
+            padding: 8px 14px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .gk-subnav a:hover, .gk-subnav a.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        /* --- Page Body (full width, no sidebar) --- */
+        .gk-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px 100px;
+        }
+
+        /* --- Hero Banner --- */
+        .gk-hero {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 20px 0;
+            min-height: 280px;
+            display: flex;
+            align-items: flex-end;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+        .gk-hero-bg {
+            position: absolute; inset: 0;
+            object-fit: cover;
+            width: 100%; height: 100%;
+            opacity: 0.45;
+        }
+        .gk-hero-content {
+            position: relative;
+            padding: 2rem;
+            max-width: 500px;
+        }
+        .gk-hero-tag {
+            background: var(--accent-primary);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .gk-hero h1 {
+            font-size: clamp(1.5rem, 5vw, 2.4rem);
+            font-weight: 900;
+            color: #fff;
+            margin: 0 0 8px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .gk-hero-price {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin: 0 0 1.2rem;
+        }
+
+        /* --- Section Headers --- */
+        .gk-section { margin: 32px 0 0; }
+        .gk-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--glass-border);
+            padding-bottom: 10px;
+        }
+        .gk-section-header h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+        }
+        .gk-see-all {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .gk-see-all:hover { text-decoration: underline; }
+
+        /* --- Horizontal Products Scroll --- */
+        .gk-hscroll {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-primary) transparent;
+        }
+        .gk-hscroll::-webkit-scrollbar { height: 4px; }
+        .gk-hscroll::-webkit-scrollbar-track { background: transparent; }
+        .gk-hscroll::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 2px; }
+
+        /* --- Product Card --- */
+        .gk-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            width: 180px;
+            min-width: 180px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            scroll-snap-align: start;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .gk-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 8px 24px rgba(161,120,232,0.2);
+        }
+        .gk-card-img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            background: var(--bg-main);
+        }
+        .gk-card-body { padding: 10px 12px 12px; }
+        .gk-card-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--accent-primary);
+            color: #fff;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .gk-card-name {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .gk-card-stars { color: #ffa723; font-size: 0.72rem; margin-bottom: 4px; }
+        .gk-card-price {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+        }
+        .gk-card-original {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        /* --- Reviews Grid --- */
+        .gk-reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .gk-review-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .gk-review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .gk-review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .gk-review-avatar {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .gk-review-meta { flex: 1; }
+        .gk-review-user { font-weight: 700; font-size: 0.88rem; color: var(--text-main); }
+        .gk-review-product { font-size: 0.75rem; color: var(--text-muted); }
+        .gk-review-stars { color: #ffa723; font-size: 0.85rem; }
+        .gk-review-text { color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; }
+
+        /* Review form card */
+        .gk-review-form-card {
+            background: linear-gradient(135deg, rgba(161,120,232,0.08), rgba(0,0,0,0.2));
+            border: 1px dashed var(--accent-primary);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* --- Features strip --- */
+        .gk-features {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 16px 0;
+            margin: 8px 0;
+            scrollbar-width: none;
+        }
+        .gk-features::-webkit-scrollbar { display: none; }
+        .gk-feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 10px 16px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .gk-feature i { color: var(--accent-primary); font-size: 1.1rem; }
+
+        /* --- Friends Side Panel --- */
+        .gk-friends-panel {
+            position: fixed;
+            right: 0; top: 60px; bottom: 0;
+            width: 320px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--glass-border);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+        .gk-friends-panel.open { transform: translateX(0); }
+        .gk-friends-panel-backdrop {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        .gk-friends-panel-backdrop.open { display: block; }
+
+        /* --- Mobile Dock (bottom nav) --- */
+        .gk-dock {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+            z-index: 1001;
+        }
+        @media(min-width: 769px) { .gk-dock { display: none; } }
+        .gk-dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.6rem;
+            padding: 4px 12px;
+            border-radius: 8px;
+            transition: color 0.2s;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .gk-dock-item i { font-size: 1.2rem; }
+        .gk-dock-item.active { color: var(--accent-primary); }
+
+        /* Loading Skeletons */
+        .gk-skeleton {
+            display: flex;
+            gap: 14px;
+        }
+        .gk-skeleton-card {
+            width: 180px;
+            min-width: 180px;
+            height: 240px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-main) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Hide the old sidebar on landing */
+        .gk-page-wrapper { display: block; }
+
+        @media(max-width: 768px) {
+            .gk-hero { min-height: 200px; }
+            .gk-hero-content { padding: 1.2rem; }
+            .gk-card { width: 150px; min-width: 150px; }
+            .gk-reviews-grid { grid-template-columns: 1fr; }
+            .gk-page { padding: 0 12px 100px; }
+        }
+    </style>
+</head>
 <body>
+    <!-- ===== TOP NAVBAR ===== -->
+    <nav class="gk-navbar">
+        <a href="index.html" class="gk-nav-logo">
+            <img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey">
+            <span>GhostKey</span>
+        </a>
 
-    <div class="dashboard-container">
-        <!-- Sidebar (PC) -->
-        <aside class="sidebar">
-            <a href="index.html" class="brand-logo" style="display:flex; justify-content:center; align-items:center;"><img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey" style="width: 40px; height: 40px; border-radius: 8px;"></a>
-            
-            <ul class="nav-links">
-                <div class="nav-indicator"></div>
-                <li class="nav-item active">
-                    <a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a href="catalogo.html" class="nav-link"><i class="fa-solid fa-gamepad"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a href="perfil.html" class="nav-link"><i class="fa-solid fa-user"></i></a>
-                </li>
-            </ul>
-        </aside>
+        <!-- Search Bar (Uiverse rocket) -->
+        <div class="search-amazon-container gk-search-wrap" style="border:none; background:transparent; flex:1; max-width:700px;">
+            <input
+                id="main-search-input"
+                class="amz-search-input"
+                autocomplete="off"
+                placeholder="Buscar productos, juegos, cuentas..."
+                name="text"
+                type="text"
+                style="flex:1;"
+            />
+            <span class="amz-search-btn" id="main-search-btn" title="Buscar" style="cursor:pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="amz-rocket-icon" viewBox="0 0 128 128">
+                    <path fill="#CA2C31" d="m3.77 71.73l16.34-16.1l27.82-4.93l-2.75 14.56L7.57 76.82l-2.43-1.05z"></path>
+                    <path fill="#A02422" d="M22.94 59.76L5.2 75.88l13.05 6.36l19.81-10.11v-4.77l4.05-10.92zm41.98 28.39l-8.57 3.72l-8.09 17.15s7.12 15.77 7.44 15.77c.32 0 4.37.32 4.37.32l14.4-16.1l3.64-27.5l-13.19 6.64z"></path>
+                    <path fill="#CA2C31" d="M56.5 100.84s4.77-.97 8.17-2.59c3.4-1.62 7.6-4.04 7.6-4.04l-1.54 13.43l-15.05 17.13s-.59-.73-3.09-6.17c-1.99-4.34-2.68-5.89-2.68-5.89l6.59-11.87z"></path>
+                    <path fill="#F7D74D" d="M31.58 80.66s-5.74-.48-12.03 7.47c-5.74 7.26-8.43 19.08-9.47 22.12s-3.53 3.66-2.7 5.05s4.42 1.31 8.85.76s8.23-1.94 8.23-1.94s-.19.48-.83 1.52c-.23.37-1.03.9-.97 1.45c.14 1.31 11.36 1.34 20.32-7.88c9.68-9.95 4.98-18.11 4.98-18.11L31.58 80.66z"></path>
+                    <path fill="#FBF0B4" d="M33.31 85.29s-6.19.33-11.31 8.28s-7.5 17.16-7.01 17.78c.48.62 10.02-2.83 12.31-2.14c1.57.48.76 2.07 1.18 2.49c.35.35 4.49.94 11.19-6.32c6.71-7.26 5.12-17.46 5.12-17.46l-11.48-2.63z"></path>
+                    <path fill="#F7D74D" d="M67.2 8.04C51.67 8.35 32.85 21.36 23.8 38.51c-2.59 4.94-4.37 9.98-5.07 14.77l23.16 11.59c3.51-3.64 7.19-6.44 10.86-8.2c10.47-5.01 22.77-3.83 31.38 6.07l22.81 11.42c.81-4.8.66-10.05-.65-15.34C100.88 36.84 83.59 7.7 67.2 8.04z"></path>
+                    <path fill="#FBF0B4" d="M103.25 74.16L80.44 62.74c8.61 9.9 7.43 22.2-2.78 29.17l22.81 11.42c5.51-6.59 6.71-17.98 2.78-29.17zm-71.67-25.8L8.73 36.94c-2.68 7.74-1.87 17.82 2.27 27.37l20.54 9.65c-5.42-9.42-5.17-19.87.04-25.6z"></path>
+                    <path fill="#fff" d="M67.65 21.37c-8.23.17-17.4 5.37-24.14 14.38c-2.73 3.67-4.9 7.8-6.2 12.12l25.52 12.77c1.64-2.65 3.47-4.85 5.44-6.49c6.04-4.97 13.47-5.83 19.16-1.31l.17.14l23.44 11.73c.29-4.29-.53-9.07-2.41-13.96c-7.09-18.65-22.38-29.78-40.98-29.38z"></path>
+                    <circle cx="80.87" cy="40.57" fill="#A02422" r="9.7"></circle>
+                    <circle cx="80.87" cy="40.57" fill="#fff" r="5.63"></circle>
+                </svg>
+            </span>
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Bar -->
-            <header class="top-bar">
-                <div class="inputbox">
-                    <input required="required" type="text" placeholder="">
-                    <span>Search...</span>
-                    <i></i>
-                </div>
-                
-                <div class="top-actions">
-                    <button class="action-btn" title="Amigos"><i class="fa-solid fa-users"></i></button>
-                    <a href="cart.html" class="action-btn" title="Carrito"><i class="fa-solid fa-bag-shopping"></i></a>
-                    <button class="action-btn" id="logout-btn-header" title="Cerrar sesión" style="display:none; color: var(--danger);"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-                    <div class="user-profile user-profile--loading" id="user-profile-btn" title="Cargando sesión…">
-                        <img id="user-avatar" class="user-avatar" alt="Avatar de usuario">
-                        <span id="user-name" class="user-name user-name--skeleton">Cargando…</span>
-                    </div>
-                </div>
-            </header>
+        <!-- Nav Actions -->
+        <div class="gk-nav-actions">
+            <a href="pago.html" class="gk-nav-btn gk-nav-balance" id="nav-balance-btn" title="Mi saldo">
+                <i class="fa-solid fa-wallet"></i>
+                <span class="label" id="nav-balance-label">Saldo</span>
+            </a>
+            <button class="gk-nav-btn" id="nav-friends-btn" title="Amigos">
+                <i class="fa-solid fa-users"></i>
+                <span class="label">Amigos</span>
+            </button>
+            <a href="cart.html" class="gk-nav-btn" title="Carrito">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="label">Carrito</span>
+            </a>
+            <div class="gk-user-chip" id="user-profile-btn" title="Mi perfil" onclick="window.location='perfil.html'">
+                <img id="user-avatar" class="user-avatar" src="https://ui-avatars.com/api/?name=G&background=A182E8&color=fff" alt="Avatar">
+                <span id="user-name">Cuenta</span>
+            </div>
+        </div>
+    </nav>
 
-            <!-- Hero Skeleton -->
-            <section class="hero-skeleton" id="hero-skeleton" aria-busy="true" aria-label="Cargando destacado">
-                <div class="loading-state loading-state--inline">
-                    <div class="ghost-loader" aria-hidden="true">
-                        <div class="ghost-red">
-                            <div class="ghost-pupil"></div>
-                            <div class="ghost-pupil ghost-pupil1"></div>
-                            <div class="ghost-eye"></div>
-                            <div class="ghost-eye ghost-eye1"></div>
-                            <div class="ghost-top0"></div>
-                            <div class="ghost-top1"></div>
-                            <div class="ghost-top2"></div>
-                            <div class="ghost-top3"></div>
-                            <div class="ghost-top4"></div>
-                            <div class="ghost-st0"></div>
-                            <div class="ghost-st1"></div>
-                            <div class="ghost-st2"></div>
-                            <div class="ghost-st3"></div>
-                            <div class="ghost-st4"></div>
-                            <div class="ghost-st5"></div>
-                            <div class="ghost-an1"></div>
-                            <div class="ghost-an2"></div>
-                            <div class="ghost-an3"></div>
-                            <div class="ghost-an4"></div>
-                            <div class="ghost-an5"></div>
-                            <div class="ghost-an6"></div>
-                            <div class="ghost-an7"></div>
-                            <div class="ghost-an8"></div>
-                            <div class="ghost-an9"></div>
-                            <div class="ghost-an10"></div>
-                            <div class="ghost-an11"></div>
-                            <div class="ghost-an12"></div>
-                            <div class="ghost-an13"></div>
-                            <div class="ghost-an14"></div>
-                            <div class="ghost-an15"></div>
-                            <div class="ghost-an16"></div>
-                            <div class="ghost-an17"></div>
-                            <div class="ghost-an18"></div>
-                        </div>
-                        <div class="ghost-shadow"></div>
-                    </div>
-                    <p class="loading-text">Buscando lo destacado…</p>
-                </div>
-            </section>
+    <!-- ===== SUBNAV CATEGORIES ===== -->
+    <nav class="gk-subnav">
+        <a href="catalogo.html" class="active"><i class="fa-solid fa-gamepad"></i> Todo</a>
+        <a href="catalogo.html?cat=fortnite">Fortnite</a>
+        <a href="catalogo.html?cat=netflix">Streaming</a>
+        <a href="catalogo.html?cat=xbox">Xbox</a>
+        <a href="catalogo.html?cat=playstation">PlayStation</a>
+        <a href="catalogo.html?cat=vbucks">V-Bucks</a>
+        <a href="info.html"><i class="fa-solid fa-circle-info"></i> Ayuda</a>
+        <a href="pago.html"><i class="fa-solid fa-plus"></i> Recargar</a>
+    </nav>
 
-            <!-- Hero Banner -->
-            <section class="hero-banner" id="hero-banner" style="display:none;">
-                <span class="hero-tag" id="hero-tag">Destacado</span>
-                <h1 class="hero-title" id="hero-title">...</h1>
-                <p class="hero-price" id="hero-price">...</p>
-                <div class="hero-actions">
-                    <a href="#" id="hero-buy-btn" class="btn-primary" style="text-decoration:none;">Comprar Ahora</a>
-                </div>
-            </section>
+    <!-- ===== PAGE BODY ===== -->
+    <div class="gk-page">
 
-            <!-- Horizontal Carousel -->
-            <section>
-                <div class="section-header">
-                    <h2 class="section-title">Más Vendidos</h2>
-                    <a href="catalogo.html" style="color:var(--accent-primary); text-decoration:none; font-size:0.9rem;">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+        <!-- FEATURES STRIP -->
+        <div class="gk-features">
+            <div class="gk-feature"><i class="fa-solid fa-bolt"></i> Entrega Inmediata</div>
+            <div class="gk-feature"><i class="fa-solid fa-shield-halved"></i> Transacciones Seguras</div>
+            <div class="gk-feature"><i class="fa-solid fa-headset"></i> Soporte 24/7</div>
+            <div class="gk-feature"><i class="fa-solid fa-gift"></i> Regala a Amigos</div>
+            <div class="gk-feature"><i class="fa-brands fa-whatsapp"></i> Soporte WhatsApp</div>
+        </div>
+
+        <!-- HERO BANNER (dynamic) -->
+        <section class="gk-hero" id="hero-banner" style="display:none;" aria-label="Producto destacado">
+            <img id="hero-bg-img" class="gk-hero-bg" src="" alt="">
+            <div class="gk-hero-content">
+                <span class="gk-hero-tag" id="hero-tag">Destacado</span>
+                <h1 id="hero-title">Cargando...</h1>
+                <p class="gk-hero-price" id="hero-price">$0.00</p>
+                <a href="#" id="hero-buy-btn" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-bolt"></i> Comprar Ahora
+                </a>
+            </div>
+        </section>
+        <!-- Hero Skeleton -->
+        <section class="gk-hero" id="hero-skeleton" aria-busy="true" aria-label="Cargando destacado" style="min-height:220px; background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-main) 50%, var(--bg-card) 75%); background-size:200% 100%; animation: shimmer 1.5s infinite;"></section>
+
+        <!-- BEST SELLERS -->
+        <section class="gk-section">
+            <div class="gk-section-header">
+                <h2><i class="fa-solid fa-fire" style="color:var(--danger);"></i> Más Vendidos</h2>
+                <a href="catalogo.html" class="gk-see-all">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="gk-hscroll" id="products-container">
+                <!-- skeleton cards -->
+                <div class="gk-skeleton">
+                    <div class="gk-skeleton-card"></div>
+                    <div class="gk-skeleton-card"></div>
+                    <div class="gk-skeleton-card"></div>
+                    <div class="gk-skeleton-card"></div>
+                    <div class="gk-skeleton-card"></div>
                 </div>
-                
-                <div class="horizontal-scroll" id="products-container">
-                    <div class="loading-state">
-                        <div class="ghost-loader" aria-hidden="true">
-                            <div class="ghost-red">
-                                <div class="ghost-pupil"></div>
-                                <div class="ghost-pupil ghost-pupil1"></div>
-                                <div class="ghost-eye"></div>
-                                <div class="ghost-eye ghost-eye1"></div>
-                                <div class="ghost-top0"></div>
-                                <div class="ghost-top1"></div>
-                                <div class="ghost-top2"></div>
-                                <div class="ghost-top3"></div>
-                                <div class="ghost-top4"></div>
-                                <div class="ghost-st0"></div>
-                                <div class="ghost-st1"></div>
-                                <div class="ghost-st2"></div>
-                                <div class="ghost-st3"></div>
-                                <div class="ghost-st4"></div>
-                                <div class="ghost-st5"></div>
-                                <div class="ghost-an1"></div>
-                                <div class="ghost-an2"></div>
-                                <div class="ghost-an3"></div>
-                                <div class="ghost-an4"></div>
-                                <div class="ghost-an5"></div>
-                                <div class="ghost-an6"></div>
-                                <div class="ghost-an7"></div>
-                                <div class="ghost-an8"></div>
-                                <div class="ghost-an9"></div>
-                                <div class="ghost-an10"></div>
-                                <div class="ghost-an11"></div>
-                                <div class="ghost-an12"></div>
-                                <div class="ghost-an13"></div>
-                                <div class="ghost-an14"></div>
-                                <div class="ghost-an15"></div>
-                                <div class="ghost-an16"></div>
-                                <div class="ghost-an17"></div>
-                                <div class="ghost-an18"></div>
-                            </div>
-                            <div class="ghost-shadow"></div>
-                        </div>
-                        <p class="loading-text">Cargando productos…</p>
-                    </div>
-                </div>
-            </section>
-            <!-- Community Reviews Section -->
-            <section class="reviews-section" style="margin-top: 3rem;">
-                <h2 class="section-title">Nuestra Comunidad</h2>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">¿Qué opinan nuestros usuarios?</p>
-                
-                <div id="review-form-container" style="background: var(--bg-card); padding: 1.5rem; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 2rem; display: none;">
-                    <h3 style="margin-bottom: 1rem;">Comparte tu experiencia</h3>
-                    <select id="review-product-select" style="width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main);">
+            </div>
+        </section>
+
+        <!-- COMMUNITY REVIEWS -->
+        <section class="gk-section" id="reviews-section">
+            <div class="gk-section-header">
+                <h2><i class="fa-solid fa-star" style="color:#ffa723;"></i> Nuestra Comunidad</h2>
+                <span style="color:var(--text-muted); font-size:0.82rem;">¿Qué opinan nuestros usuarios?</span>
+            </div>
+
+            <!-- Write a review (only visible when logged in) -->
+            <div id="review-form-container" style="display:none;">
+                <div class="gk-review-form-card">
+                    <h3 style="margin:0; font-size:1rem; color:var(--accent-primary);">
+                        <i class="fa-solid fa-pen-to-square"></i> Comparte tu experiencia
+                    </h3>
+                    <select id="review-product-select" style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main);">
                         <option value="">Cargando tus productos...</option>
                     </select>
-                    <textarea id="review-text" rows="3" style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); padding: 10px; margin-bottom: 10px; resize: none;" placeholder="Escribe tu opinión aquí..."></textarea>
-                    
+                    <textarea id="review-text" rows="3" style="width: 100%; background: var(--bg-main); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); padding: 10px; resize: none; font-family: inherit; box-sizing:border-box;" placeholder="Escribe tu opinión aquí..."></textarea>
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                         <div class="rating">
-                          <input value="5" name="rate" id="star5" type="radio">
-                          <label title="5 stars" for="star5"></label>
-                          <input value="4" name="rate" id="star4" type="radio">
-                          <label title="4 stars" for="star4"></label>
-                          <input value="3" name="rate" id="star3" type="radio" checked="">
-                          <label title="3 stars" for="star3"></label>
-                          <input value="2" name="rate" id="star2" type="radio">
-                          <label title="2 stars" for="star2"></label>
-                          <input value="1" name="rate" id="star1" type="radio">
-                          <label title="1 star" for="star1"></label>
+                            <input value="5" name="rate" id="star5" type="radio">
+                            <label title="5 stars" for="star5"></label>
+                            <input value="4" name="rate" id="star4" type="radio">
+                            <label title="4 stars" for="star4"></label>
+                            <input value="3" name="rate" id="star3" type="radio" checked="">
+                            <label title="3 stars" for="star3"></label>
+                            <input value="2" name="rate" id="star2" type="radio">
+                            <label title="2 stars" for="star2"></label>
+                            <input value="1" name="rate" id="star1" type="radio">
+                            <label title="1 star" for="star1"></label>
                         </div>
                         <button id="btn-submit-review" class="btn-primary" style="padding: 0.5rem 1.5rem;">Publicar</button>
                     </div>
                 </div>
-
-                <div id="reviews-container" style="display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem;">
-                    <!-- Reviews will be injected here -->
-                </div>
-            </section>
-
-        </main>
-
-        <!-- Right Panel (Friends & Referral Panel) -->
-        <aside class="right-panel" id="friends-panel">
-            <button type="button" class="panel-collapse-btn" id="friends-panel-toggle" aria-expanded="true" aria-label="Ocultar panel de amigos">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <div class="right-panel__inner" style="padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 1.2rem; height: 100%;">
-                <!-- Panel Header -->
-                <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between;">
-                    <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-users" style="color: var(--accent-primary);"></i> Amigos & Referidos
-                    </h3>
-                </div>
-                
-                <!-- Search Input -->
-                <div class="brutalist-container" style="width: 100%; margin-top: 10px;">
-                  <input
-                    id="search-friend-input"
-                    placeholder="Correo o UID de amigo..."
-                    class="brutalist-input smooth-type"
-                    type="text"
-                    style="padding: 10px; font-size: 14px; border-width: 2px;"
-                  />
-                  <label class="brutalist-label" style="top: -20px; font-size: 10px;">BUSCAR / AÑADIR</label>
-                </div>
-                
-                <button type="button" class="btn-primary" id="search-friend-btn" style="width: 100%; margin-top: 10px; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i class="fa-solid fa-user-plus"></i> Buscar Amigo
-                </button>
-
-
-                <!-- Friends List (Dynamically populated) -->
-                <div class="panel-section" style="flex: 1;">
-                    <h4 class="panel-title" style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
-                        Miembros de la Comunidad
-                    </h4>
-                    <div class="friends-list" id="friends-list" style="display: flex; flex-direction: column; gap: 8px;">
-                        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando amigos...</p>
-                    </div>
-                </div>
-
-                <!-- Referral Section -->
-                <div class="referral-box" style="background: var(--bg-card); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius-md);">
-                    <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">
-                        <i class="fa-solid fa-gift"></i> Tu Enlace de Invitación
-                    </h4>
-                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
-                        ¡Gana 3% en saldo cuando tus amigos compren usando tu link!
-                    </p>
-                    <div style="display:flex; gap: 6px;">
-                        <input type="text" id="ref-link-input" readonly value="Inicia sesión para ver tu enlace" style="flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
-                        <button class="btn-primary" id="copy-ref-btn" style="padding: 6px 10px; font-size: 0.8rem;"><i class="fa-solid fa-copy"></i></button>
-                    </div>
-                </div>
             </div>
-        </aside>
-    </div>
 
-    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-        <div class="mobile-menu__backdrop" id="mobile-menu-backdrop"></div>
-        <div class="mobile-menu__panel">
-            <p class="mobile-menu__title">Más opciones</p>
-            <a href="index.html" class="mobile-menu__link"><i class="fa-solid fa-house"></i> Inicio</a>
-            <a href="catalogo.html" class="mobile-menu__link"><i class="fa-solid fa-gamepad"></i> Catálogo</a>
-            <a href="perfil.html" class="mobile-menu__link"><i class="fa-solid fa-user"></i> Perfil</a>
-            <a href="info.html" class="mobile-menu__link"><i class="fa-solid fa-circle-info"></i> Información</a>
+            <!-- Reviews Grid -->
+            <div id="reviews-container" class="gk-reviews-grid">
+                <!-- Reviews injected by JS -->
+            </div>
+        </section>
+
+    </div><!-- /gk-page -->
+
+    <!-- ===== FRIENDS SIDE PANEL ===== -->
+    <div class="gk-friends-panel-backdrop" id="friends-backdrop"></div>
+    <aside class="gk-friends-panel" id="friends-panel">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+            <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-users" style="color:var(--accent-primary);"></i> Amigos & Referidos
+            </h3>
+            <button id="close-friends-panel" style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.2rem;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
-    </div>
 
-    <!-- Mobile Dock -->
-    <nav class="mobile-dock">
-        <a href="index.html" class="dock-item active"><i class="fa-solid fa-house"></i></a>
-        <a href="catalogo.html" class="dock-item"><i class="fa-solid fa-gamepad"></i></a>
-        <label class="hamburger dock-item" style="margin: 0; padding: 0;">
-          <input type="checkbox" id="mobile-menu-toggle">
-          <svg viewBox="0 0 32 32">
-            <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
-            <path class="line" d="M7 16 27 16"></path>
-          </svg>
-        </label>
-        <a href="#" class="dock-item"><i class="fa-solid fa-users"></i></a>
-        <a href="perfil.html" class="dock-item"><i class="fa-solid fa-user"></i></a>
+        <!-- Search -->
+        <div class="brutalist-container" style="width: 100%; margin-top: 4px;">
+            <input id="search-friend-input" placeholder="Correo o UID de amigo..." class="brutalist-input smooth-type" type="text" style="padding: 10px; font-size: 14px; border-width: 2px;" />
+            <label class="brutalist-label" style="top: -20px; font-size: 10px;">BUSCAR / AÑADIR</label>
+        </div>
+        <button type="button" class="btn-primary" id="search-friend-btn" style="width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fa-solid fa-user-plus"></i> Buscar Amigo
+        </button>
+
+        <!-- Friends List -->
+        <div style="flex:1;">
+            <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+                Miembros de la Comunidad
+            </h4>
+            <div class="friends-list" id="friends-list" style="display: flex; flex-direction: column; gap: 8px;">
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando amigos...</p>
+            </div>
+        </div>
+
+        <!-- Referral -->
+        <div class="referral-box" style="background: var(--bg-card); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius-md, 12px);">
+            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">
+                <i class="fa-solid fa-gift"></i> Tu Enlace de Invitación
+            </h4>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                ¡Gana 3% en saldo cuando tus amigos compren usando tu link!
+            </p>
+            <div style="display:flex; gap: 6px;">
+                <input type="text" id="ref-link-input" readonly value="Inicia sesión para ver tu enlace" style="flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
+                <button class="btn-primary" id="copy-ref-btn" style="padding: 6px 10px; font-size: 0.8rem;"><i class="fa-solid fa-copy"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MOBILE BOTTOM DOCK ===== -->
+    <nav class="gk-dock">
+        <a href="index.html" class="gk-dock-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="catalogo.html" class="gk-dock-item">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>Catálogo</span>
+        </a>
+        <button class="gk-dock-item" id="dock-friends-btn">
+            <i class="fa-solid fa-users"></i>
+            <span>Amigos</span>
+        </button>
+        <a href="pago.html" class="gk-dock-item">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Saldo</span>
+        </a>
+        <a href="perfil.html" class="gk-dock-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Perfil</span>
+        </a>
     </nav>
 
     <!-- Scripts -->
@@ -290,5 +729,32 @@
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/mobile-nav.js"></script>
     <script type="module" src="js/cart.js"></script>
+    <script>
+        // Friends panel toggle
+        const friendsPanel = document.getElementById('friends-panel');
+        const friendsBackdrop = document.getElementById('friends-backdrop');
+        function openFriends() {
+            friendsPanel.classList.add('open');
+            friendsBackdrop.classList.add('open');
+        }
+        function closeFriends() {
+            friendsPanel.classList.remove('open');
+            friendsBackdrop.classList.remove('open');
+        }
+        document.getElementById('nav-friends-btn').addEventListener('click', openFriends);
+        document.getElementById('dock-friends-btn').addEventListener('click', openFriends);
+        document.getElementById('close-friends-panel').addEventListener('click', closeFriends);
+        friendsBackdrop.addEventListener('click', closeFriends);
+
+        // Search: redirect to catalog
+        function doSearch() {
+            const q = document.getElementById('main-search-input').value.trim();
+            if (q) window.location.href = `catalogo.html?search=${encodeURIComponent(q)}`;
+        }
+        document.getElementById('main-search-btn').addEventListener('click', doSearch);
+        document.getElementById('main-search-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doSearch();
+        });
+    </script>
 </body>
 </html>

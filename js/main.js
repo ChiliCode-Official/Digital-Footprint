@@ -258,6 +258,11 @@ onAuthStateChanged(auth, async (user) => {
         const uSnap = await getDoc(doc(db, 'users', user.uid));
         if (uSnap.exists()) {
             currentUserWishlist = uSnap.data().wishlist || [];
+            // Show balance in navbar
+            const navBalance = document.getElementById('nav-balance-label');
+            if (navBalance) {
+                navBalance.textContent = `$${(uSnap.data().credits || 0).toFixed(2)}`;
+            }
         } else {
             currentUserWishlist = [];
         }
@@ -379,9 +384,15 @@ async function loadIndexProducts() {
             const hData = heroProd.data();
             const banner = document.getElementById('hero-banner');
             banner.style.display = 'flex';
-            banner.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${hData.image}')`;
+            // Set background image via the <img> tag or as CSS background
+            const heroBgImg = document.getElementById('hero-bg-img');
+            if (heroBgImg) {
+                heroBgImg.src = hData.image || '';
+            } else {
+                banner.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${hData.image}')`;
+            }
             document.getElementById('hero-title').textContent = hData.name;
-            document.getElementById('hero-price').textContent = `$${hData.price}`;
+            document.getElementById('hero-price').textContent = `$${hData.price} MXN`;
             document.getElementById('hero-buy-btn').href = `producto.html?id=${heroProd.id}`;
         }
 
@@ -399,39 +410,31 @@ async function loadIndexProducts() {
         prodsSnap.forEach((d) => {
             const p = d.data();
 
-            let statusColor = 'var(--danger)';
+            let badgeBg = 'var(--danger)';
             let stockLabel = 'Agotado';
             if (stockData[d.id]) {
                 const sd = stockData[d.id];
                 if (sd.status === 'disponible') {
                     const count = (sd.credentialsPool || "").split('\n').filter(l => l.trim() !== "").length;
-                    stockLabel = count > 0 ? `En stock (${count})` : 'Agotado';
-                    statusColor = count > 0 ? 'var(--success)' : 'var(--danger)';
+                    stockLabel = count > 0 ? 'En stock' : 'Agotado';
+                    badgeBg = count > 0 ? 'var(--success)' : 'var(--danger)';
                 } else if (sd.status === 'bajo_pedido') {
                     stockLabel = 'Bajo pedido';
-                    statusColor = 'var(--warning)';
+                    badgeBg = 'var(--warning)';
                 }
             }
 
+            const starsHtml = '<i class="fa-solid fa-star"></i>'.repeat(5);
+
             container.innerHTML += `
-                <a href="producto.html?id=${d.id}" class="card" style="opacity:0;">
-                  <div class="card__shine"></div>
-                  <div class="card__glow"></div>
-                  <div class="card__content">
-                    <div class="card__badge" style="background:${statusColor}">${stockLabel}</div>
-                    <button class="wishlist-btn" data-id="${d.id}" style="position:absolute; top:12px; left:12px; z-index:4; background:var(--bg-panel); border:1px solid var(--glass-border); color:var(--text-muted); border-radius:50%; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-heart"></i></button>
-                    <div class="card__image" style="background-image: url('${p.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400'}');"></div>
-                    <div class="card__text">
-                      <p class="card__title">${p.name}</p>
-                      <p class="card__description">Item Premium</p>
+                <a href="producto.html?id=${d.id}" class="gk-card">
+                    <img class="gk-card-img" src="${p.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400'}" alt="${p.name}" loading="lazy">
+                    <div class="gk-card-body">
+                        <span class="gk-card-badge" style="background:${badgeBg}">${stockLabel}</span>
+                        <div class="gk-card-name">${p.name}</div>
+                        <div class="gk-card-stars">${starsHtml} <span style="color:var(--text-muted); font-size:0.7rem;">(4.8)</span></div>
+                        <div class="gk-card-price">$${p.price} <span class="gk-card-original">MXN</span></div>
                     </div>
-                    <div class="card__footer">
-                      <div class="card__price">$${p.price}</div>
-                      <div class="card__button">
-                        <svg height="16" width="16" viewBox="0 0 24 24"><path stroke-width="2" stroke="currentColor" d="M4 12H20M12 4V20" fill="currentColor"></path></svg>
-                      </div>
-                    </div>
-                  </div>
                 </a>
             `;
         });
@@ -473,12 +476,10 @@ export async function loadReviews() {
 
         if (snap.empty) {
             reviewsContainer.innerHTML = `
-                <div class="review-card" style="min-width: 280px; text-align: center;">
-                    <div class="review-stars">★★★★★</div>
-                    <div class="body">
-                        <p class="text">¡Sé el primero en compartir tu experiencia de compra con la comunidad!</p>
-                        <span class="username">@GhostKey</span>
-                    </div>
+                <div class="gk-review-card" style="text-align:center; grid-column:1/-1;">
+                    <div style="font-size:2rem;">⭐</div>
+                    <p style="color:var(--text-muted);">¡Sé el primero en compartir tu experiencia de compra con la comunidad!</p>
+                    <span style="color:var(--text-muted); font-size:0.8rem;">@GhostKey</span>
                 </div>
             `;
             return;

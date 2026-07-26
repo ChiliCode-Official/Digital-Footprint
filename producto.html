@@ -51,7 +51,7 @@
             }
         }
     </style>
-<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png">`n</head>
+<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png"></head>
 <body>
 
     <div class="dashboard-container no-right-panel">
@@ -105,7 +105,7 @@
                     </div>
 
                     <div id="auth-state-message" style="color: var(--warning); font-size: 0.9rem;">
-                        <i class="fa-solid fa-circle-exclamation"></i> Necesitas iniciar sesión para comprar.
+                        <i class="fa-solid fa-circle-exclamation"></i> Necesitas iniciar sesiÃ³n para comprar.
                     </div>
 
                     <div id="buy-controls" style="display: none; flex-direction: column; gap: 1rem;" class="product-actions">
@@ -252,7 +252,7 @@
                 <h2 class="section-title">Opiniones de los Usuarios</h2>
                 <div id="product-reviews-container" style="display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem; margin-top: 1.5rem;">
                     <!-- Reviews will be injected here by JS -->
-                    <p style="color: var(--text-muted);">Cargando reseñas...</p>
+                    <p style="color: var(--text-muted);">Cargando reseÃ±as...</p>
                 </div>
             </section>
         </main>
@@ -261,11 +261,11 @@
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         <div class="mobile-menu__backdrop" id="mobile-menu-backdrop"></div>
         <div class="mobile-menu__panel">
-            <p class="mobile-menu__title">Más opciones</p>
+            <p class="mobile-menu__title">MÃ¡s opciones</p>
             <a href="index.html" class="mobile-menu__link"><i class="fa-solid fa-house"></i> Inicio</a>
-            <a href="catalogo.html" class="mobile-menu__link"><i class="fa-solid fa-gamepad"></i> Catálogo</a>
+            <a href="catalogo.html" class="mobile-menu__link"><i class="fa-solid fa-gamepad"></i> CatÃ¡logo</a>
             <a href="perfil.html" class="mobile-menu__link"><i class="fa-solid fa-user"></i> Perfil</a>
-            <a href="info.html" class="mobile-menu__link"><i class="fa-solid fa-circle-info"></i> Información</a>
+            <a href="info.html" class="mobile-menu__link"><i class="fa-solid fa-circle-info"></i> InformaciÃ³n</a>
         </div>
     </div>
 
@@ -291,8 +291,14 @@
             <!-- Step 1: Input Email -->
             <div id="gift-step-1">
                 <h3 style="color: var(--accent-primary); font-size: 1.3rem;">Regalar a un Amigo</h3>
-                <p style="margin-top: 8px; font-size: 0.95rem; color: var(--text-muted);">Ingresa el correo electrónico de tu amigo.</p>
-                <div class="brutalist-container" style="width: 100%; margin-top: 1.5rem;">
+                
+                <!-- Friends quick-select -->
+                <div id="gift-friends-list" style="max-height:160px; overflow-y:auto; margin:12px 0; padding-right:4px;">
+                    <p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Cargando amigos...</p>
+                </div>
+                
+                <p style="margin-top: 8px; font-size: 0.88rem; color: var(--text-muted);">O ingresa el correo de tu amigo manualmente:</p>
+                <div class="brutalist-container" style="width: 100%; margin-top: 1rem;">
                   <input
                     id="gift-email-input-modal"
                     placeholder="AMIGO@EMAIL.COM"
@@ -310,22 +316,22 @@
 
             <!-- Step 2: Confirmation -->
             <div id="gift-step-2" style="display: none;">
-                <h3 style="color: var(--warning); font-size: 1.3rem;">¿Estás Seguro?</h3>
+                <h3 style="color: var(--warning); font-size: 1.3rem;">Â¿EstÃ¡s Seguro?</h3>
                 <p style="margin-top: 8px; font-size: 0.95rem; color: var(--text-main);">
-                    Estás a punto de regalar <strong id="gift-confirm-product-name" style="color:var(--accent-primary);">Producto</strong> 
+                    EstÃ¡s a punto de regalar <strong id="gift-confirm-product-name" style="color:var(--accent-primary);">Producto</strong> 
                     a <strong id="gift-confirm-email">correo@amigo.com</strong> por <strong id="gift-confirm-price" style="color:var(--danger);">$0.00 MXN</strong>.
                 </p>
                 <div style="display: flex; gap: 10px; margin-top: 2rem;">
-                    <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('gift-step-2').style.display='none'; document.getElementById('gift-step-1').style.display='block';">Atrás</button>
+                    <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('gift-step-2').style.display='none'; document.getElementById('gift-step-1').style.display='block';">AtrÃ¡s</button>
                     <button class="btn-primary" style="flex:1;" id="btn-gift-confirm-buy">Confirmar Regalo</button>
                 </div>
             </div>
 
             <!-- Step 3: Success Astronaut -->
             <div id="gift-step-3" style="display: none;">
-                <h3 style="color: var(--accent-primary); font-size: 1.3rem;">¡Regalo Enviado con Éxito! 🎁</h3>
+                <h3 style="color: var(--accent-primary); font-size: 1.3rem;">Â¡Regalo Enviado con Ã‰xito! ðŸŽ</h3>
                 <p id="gift-modal-message" style="margin-top: 8px; font-size: 0.95rem; color: var(--text-main);">
-                    Nos esforzaremos al máximo para entregar tu regalo a tu amigo con la mayor rapidez posible.
+                    Nos esforzaremos al mÃ¡ximo para entregar tu regalo a tu amigo con la mayor rapidez posible.
                 </p>
 
                 <div class="astronaut-space-container">

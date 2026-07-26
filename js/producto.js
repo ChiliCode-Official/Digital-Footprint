@@ -59,8 +59,63 @@ if (btnGift) {
             const confirmPrice = document.getElementById('gift-confirm-price');
             if (confirmName) confirmName.textContent = productData.name;
             if (confirmPrice) confirmPrice.textContent = `$${totalPrice.toFixed(2)} MXN`;
+
+            // Load friends list into the modal
+            loadFriendsInGiftModal();
         }
     });
+}
+
+async function loadFriendsInGiftModal() {
+    if (!currentUser) return;
+    const container = document.getElementById('gift-friends-list');
+    if (!container) return;
+    container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Cargando amigos...</p>';
+
+    try {
+        const { getDoc, doc: firestoreDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        const uSnap = await getDoc(firestoreDoc(db, 'users', currentUser.uid));
+        const friends = uSnap.exists() ? (uSnap.data().friends || []) : [];
+
+        if (friends.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Aún no tienes amigos agregados.<br>Ingresa su correo abajo.</p>';
+            return;
+        }
+
+        container.innerHTML = '<p style="color:var(--text-muted);font-size:0.75rem;margin-bottom:8px;font-weight:600;">Selecciona un amigo:</p>';
+        friends.forEach(friend => {
+            const email = friend.email || friend;
+            const name = friend.displayName || email;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.style.cssText = 'width:100%;display:flex;align-items:center;gap:10px;background:var(--bg-main);border:1px solid var(--glass-border);border-radius:8px;padding:8px 10px;cursor:pointer;color:var(--text-main);font-family:inherit;font-size:0.85rem;transition:border-color 0.2s;margin-bottom:6px;';
+            btn.innerHTML = `
+                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=A182E8&color=fff" style="width:28px;height:28px;border-radius:50%;">
+                <div style="text-align:left;flex:1;">
+                    <div style="font-weight:600;">${name}</div>
+                    <div style="color:var(--text-muted);font-size:0.72rem;">${email}</div>
+                </div>
+                <i class="fa-solid fa-arrow-right" style="color:var(--accent-primary);"></i>
+            `;
+            btn.addEventListener('click', () => {
+                const emailInput = document.getElementById('gift-email-input-modal');
+                if (emailInput) emailInput.value = email;
+                // Highlight selected
+                container.querySelectorAll('button').forEach(b => b.style.borderColor = 'var(--glass-border)');
+                btn.style.borderColor = 'var(--accent-primary)';
+            });
+            btn.addEventListener('mouseenter', () => btn.style.borderColor = 'var(--accent-primary)');
+            btn.addEventListener('mouseleave', () => {
+                if (document.getElementById('gift-email-input-modal')?.value !== email) {
+                    btn.style.borderColor = 'var(--glass-border)';
+                }
+            });
+            container.appendChild(btn);
+        });
+    } catch(e) {
+        console.error('Error loading friends in gift modal:', e);
+        container.innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Error cargando amigos.</p>';
+    }
 }
 
 function normalizeImageUrl(url) {

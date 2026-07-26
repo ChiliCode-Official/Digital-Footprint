@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Virtual - Métodos de Pago</title>
+    <title>Tienda Virtual - MÃ©todos de Pago</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png">`n</head>
+<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png"></head>
 <body>
 
     <div class="dashboard-container">
@@ -36,7 +36,7 @@
             <header class="top-bar">
                 <button class="btn-secondary" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
                 <div class="top-actions">
-                    <div class="user-profile user-profile--loading" id="user-profile-btn" title="Cargando sesión…">
+                    <div class="user-profile user-profile--loading" id="user-profile-btn" title="Cargando sesiÃ³nâ€¦">
                         <img id="user-avatar" class="user-avatar" alt="">
                         <span id="user-name"></span>
                     </div>
@@ -47,7 +47,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                     <div>
                         <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">
-                            <i class="fa-solid fa-building-columns" style="color: var(--accent-primary);"></i> Métodos de Pago
+                            <i class="fa-solid fa-building-columns" style="color: var(--accent-primary);"></i> MÃ©todos de Pago
                         </h1>
                         <p style="color: var(--text-muted);">Realiza tus transferencias con los datos oficiales de GhostKey.</p>
                     </div>
@@ -56,7 +56,7 @@
 
                 <!-- Admin Add Payment Method Form (Visible only to Admin) -->
                 <div id="admin-payment-container" class="glass-panel" style="display: none; padding: 1.8rem; margin-bottom: 2rem; border-color: rgba(161, 130, 232, 0.4);">
-                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fa-solid fa-shield"></i> Administrar Métodos de Pago (Panel Admin)</h3>
+                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fa-solid fa-shield"></i> Administrar MÃ©todos de Pago (Panel Admin)</h3>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
                         <div>
@@ -72,19 +72,19 @@
                             <input type="text" id="pm-concepto" placeholder="Ej: Tu correo o ID de usuario" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                         </div>
                         <div>
-                            <label class="payment-detail-label">Tipo de Método</label>
+                            <label class="payment-detail-label">Tipo de MÃ©todo</label>
                             <select id="pm-tipo" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                                 <option value="transferencia">Transferencia (SPEI)</option>
                                 <option value="efectivo">Efectivo / OXXO</option>
                             </select>
                         </div>
                         <div>
-                            <label class="payment-detail-label">Cuenta CLABE (18 dígitos)</label>
-                            <input type="text" id="pm-clabe" placeholder="18 dígitos" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                            <label class="payment-detail-label">Cuenta CLABE (18 dÃ­gitos)</label>
+                            <input type="text" id="pm-clabe" placeholder="18 dÃ­gitos" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                         </div>
                     </div>
                     
-                    <button id="btn-save-payment-method" class="btn-primary" style="padding: 10px 20px;"><i class="fa-solid fa-plus"></i> Guardar Método de Pago</button>
+                    <button id="btn-save-payment-method" class="btn-primary" style="padding: 10px 20px;"><i class="fa-solid fa-plus"></i> Guardar MÃ©todo de Pago</button>
                 </div>
 
                 <!-- POS Payment Machine Animation (Uiverse Admin12121) -->
@@ -109,14 +109,14 @@
 
                 <!-- Payment Methods Grid -->
                 <div id="payment-methods-list" class="payment-grid">
-                    <p style="color: var(--text-muted);">Cargando métodos de pago...</p>
+                    <p style="color: var(--text-muted);">Cargando mÃ©todos de pago...</p>
                 </div>
             </section>
         </main>
     </div>
 
     <!-- Mobile Dock -->
-    <nav class="mobile-dock" aria-label="Navegación móvil">
+    <nav class="mobile-dock" aria-label="NavegaciÃ³n mÃ³vil">
         <a href="index.html" class="dock-item"><i class="fa-solid fa-house"></i></a>
         <a href="catalogo.html" class="dock-item"><i class="fa-solid fa-gamepad"></i></a>
         <a href="metodos-pago.html" class="dock-item active"><i class="fa-solid fa-credit-card"></i></a>
@@ -124,7 +124,7 @@
     </nav>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast-notification">¡Cuenta CLABE copiada al portapapeles!</div>
+    <div id="toast" class="toast-notification">Â¡Cuenta CLABE copiada al portapapeles!</div>
 
     <script type="module" src="js/metodos-pago.js"></script>
     <script type="module" src="js/cart.js"></script>

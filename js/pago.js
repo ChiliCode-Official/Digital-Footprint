@@ -297,7 +297,7 @@ async function processRecharge() {
     
     try {
         const reqRef = doc(collection(db, 'balance_requests'));
-        const methodLabel = selectedMethodBtn ? selectedMethodBtn.querySelector('span').textContent.trim() : 'Transferencia';
+        // methodLabel already declared above with null-safe check
         
         await setDoc(reqRef, {
             uid: currentUser.uid,
