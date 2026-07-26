@@ -17,8 +17,16 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ===== AMAZON-STYLE LANDING OVERHAUL ===== */
-        body { margin: 0; padding: 0; }
+        /* ===== OVERRIDE GLOBAL body STYLES FOR LANDING ===== */
+        html, body {
+            height: auto !important;
+            overflow: visible !important;
+            overflow-x: hidden !important;
+        }
+        body {
+            display: block !important;
+            min-height: 100vh;
+        }
 
         /* --- Top Navbar --- */
         .gk-navbar {
