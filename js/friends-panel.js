@@ -179,11 +179,8 @@ async function loadRealFriends(currentUser) {
                 }
             });
         }
-                    }
-                });
-            }
-        }
     }
+
 
     if (!friendsContainer) return;
     if (!currentUser) {
