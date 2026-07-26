@@ -12,8 +12,11 @@ import {
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 window.addEventListener('pageshow', (event) => {
-    if (event.persisted && auth.currentUser) {
+    if (event.persisted) {
         // Re-trigger auth state check on bfcache restoration
+        if (typeof updateUserProfileUI === 'function') {
+            updateUserProfileUI(auth.currentUser);
+        }
     }
 });
 import {
