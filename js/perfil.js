@@ -711,7 +711,7 @@ window.createCollection = async function() {
         await setDoc(doc(db, 'collections', id), { name: name });
         alert('Colección creada exitosamente.');
         nameInput.value = '';
-        loadAdminDashboard();
+        loadAdminData();
     } catch(e) {
         console.error('Error al crear colección:', e);
         alert('Hubo un error al crear la colección.');
