@@ -969,6 +969,143 @@ body.mobile-menu-open {
   align-items: stretch;
 }
 
+/* From Uiverse.io by vinodjangid07 - reward-btn */
+.reward-btn {
+  width: 100%;
+  min-width: 140px;
+  height: 48px;
+  background-color: #101218;
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.IconContainer {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.IconContainer svg {
+  width: 40%;
+  z-index: 3;
+}
+.box-top {
+  transition: all 0.3s;
+}
+.reward-btn .text {
+  width: auto;
+  padding-left: 8px;
+  height: 100%;
+  font-size: 14px;
+  color: #6a8ef6;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-weight: 600;
+}
+.reward-btn:hover .IconContainer .box-top {
+  transform: translateY(-5px);
+}
+.reward-btn:hover {
+  background-color: #202531;
+}
+.reward-btn:hover .coin {
+  transform: translateY(-5px);
+  transition-delay: 0.2s;
+}
+.coin {
+  width: 25%;
+  height: 25%;
+  background-color: #e4d61a;
+  position: absolute;
+  border-radius: 50%;
+  transition: all 0.3s;
+  z-index: 1;
+  border: 2px solid #ffe956;
+  margin-top: 4px;
+}
+.reward-btn.is-active {
+  background-color: #202531;
+  border-color: #6a8ef6;
+  box-shadow: 0 0 15px rgba(106, 142, 246, 0.4);
+}
+
+/* From Uiverse.io by fthisilak - pay-btn */
+.pay-btn {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  background-color: var(--accent-primary, #6A8EF6);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.pay-btn .btn-text {
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.pay-btn .icon-container {
+  position: absolute;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+}
+
+.pay-btn .icon {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transition: all 0.3s ease;
+}
+
+.pay-btn .card-icon,
+.pay-btn .payment-icon,
+.pay-btn .dollar-icon,
+.pay-btn .check-icon {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.pay-btn .default-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pay-btn:hover {
+  background-color: var(--accent-hover, #5577e0);
+}
+
+.pay-btn:hover .default-icon {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.pay-btn:hover .dollar-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .btn-gift-gradient {
   position: relative;
   width: 100%;
