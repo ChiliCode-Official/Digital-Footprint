@@ -301,7 +301,7 @@ function initFriendsPanel() {
             }
         });
 
-        const searchBtn = document.getElementById('search-friend-btn');
+        const searchBtn = document.getElementById('search-friend-btn') || document.getElementById('filter-icon');
         if (searchBtn) {
             searchBtn.onclick = () => {
                 searchAndAddFriend(searchFriendInput.value, auth.currentUser);
