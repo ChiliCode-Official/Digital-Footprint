@@ -5,7 +5,7 @@ import { initWishlistButtons } from './wishlist.js';
 import { getGhostLoaderHTML } from './main.js';
 
 const catalogGrid = document.getElementById('catalog-grid');
-const searchInput = document.getElementById('gk-nav-search'); // Updated to use the navbar search input
+const searchInput = document.getElementById('gk-nav-search');
 let allProducts = [];
 let stockData = {};
 let currentUserWishlist = [];
@@ -40,7 +40,7 @@ async function loadProducts() {
             stockData[doc.id] = doc.data();
         });
 
-        applyFilters(); // Trigger filters directly to handle URL params on load
+        applyFilters(); 
     } catch (e) {
         console.error("Error loading products: ", e);
         if (catalogGrid) catalogGrid.innerHTML = `<p style="color:var(--danger)">Error al cargar el catálogo.</p>`;
@@ -91,7 +91,7 @@ function renderProducts(products) {
             status = sd.status;
             if (status === 'disponible') {
                 let pool = sd.credentialsPool || "";
-                let count = pool.split('\\n').filter(line => line.trim() !== "").length;
+                let count = pool.split('\n').filter(line => line.trim() !== "").length;
                 stockLabel = count > 0 ? `En stock (${count})` : 'Agotado';
                 statusColor = count > 0 ? 'var(--success)' : 'var(--danger)';
             } else if (status === 'bajo_pedido') {
@@ -106,26 +106,26 @@ function renderProducts(products) {
         card.href = `producto.html?id=${prod.id}`;
         card.className = 'card';
         card.style.opacity = 0;
-        card.innerHTML = \`
+        card.innerHTML = `
             <div class="card__shine"></div>
             <div class="card__glow"></div>
             <div class="card__content">
-            <div class="card__badge" style="background:\${statusColor}">\${stockLabel}</div>
-            <button class="wishlist-btn" data-id="\${prod.id}" style="position:absolute; top:12px; left:12px; z-index:4; background:var(--bg-panel); border:1px solid var(--glass-border); color:var(--text-muted); border-radius:50%; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-heart"></i></button>
-            <div class="card__image" style="background-image: url('\${prodImg}');"></div>
+            <div class="card__badge" style="background:${statusColor}">${stockLabel}</div>
+            <button class="wishlist-btn" data-id="${prod.id}" style="position:absolute; top:12px; left:12px; z-index:4; background:var(--bg-panel); border:1px solid var(--glass-border); color:var(--text-muted); border-radius:50%; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-heart"></i></button>
+            <div class="card__image" style="background-image: url('${prodImg}');"></div>
             <div class="card__details">
-                <p class="card__title">\${escapeHtml(prod.name)}</p>
+                <p class="card__title">${escapeHtml(prod.name)}</p>
                 <div class="card__reviews">
                     <span class="stars">★★★★★</span>
                     <span class="rating">4.8 (1.3k)</span>
                 </div>
-                <div class="card__price-large">$\${prod.price}</div>
+                <div class="card__price-large">$${prod.price}</div>
                 <button class="card__add-btn">
                     Agregar al carrito
                 </button>
             </div>
             </div>
-        \`;
+        `;
         catalogGrid.appendChild(card);
     });
 
@@ -155,7 +155,6 @@ function handleFilters() {
     const urlSearch = urlParams.get('search');
     
     if (searchInput) {
-        // Init search input from URL
         if (urlSearch) {
             searchInput.value = urlSearch;
         }
@@ -193,6 +192,5 @@ onAuthStateChanged(auth, async (user) => {
     } else {
         currentUserWishlist = [];
     }
-    // Only load products after we know auth state so wishlist renders correctly
     loadProducts();
 });

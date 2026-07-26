@@ -708,7 +708,7 @@ window.createCollection = async function() {
     if (!name) return alert('Ingresa un nombre para la colección.');
     try {
         const id = name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        await setDoc(doc(collection(db, 'collections'), id), { name: name });
+        await setDoc(doc(db, 'collections', id), { name: name });
         alert('Colección creada exitosamente.');
         nameInput.value = '';
         loadAdminDashboard();

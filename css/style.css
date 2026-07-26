@@ -1678,7 +1678,7 @@ input:focus, select:focus, textarea:focus {
     opacity: 0.8;
   }
   
-  .review-card .body {
+  .review-card .review-body {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -2286,7 +2286,7 @@ input:focus, select:focus, textarea:focus {
   margin-top: 8px;
 }
 
-.review-card .body {
+.review-card .review-body {
   display: flex;
   flex-direction: column;
   flex: 1;

@@ -554,7 +554,7 @@ export async function loadReviews() {
             
             card.innerHTML = `
                 <div class="review-stars">${starsHtml}</div>
-                <div class="body">
+                <div class="review-body">
                     ${productBadge}
                     <p class="text">${escapeHtml(r.text || '')}</p>
                     <span class="username">@${escapeHtml(r.username || 'Usuario')}</span>
