@@ -414,6 +414,51 @@ async function loadClientData(uid) {
     } catch(e) {
         console.error('Error loading wishlist:', e);
     }
+
+    // 5. Client Referrals
+    try {
+        const referralInput = document.getElementById('profile-referral-link');
+        const shareBtn = document.getElementById('btn-share-referral-profile');
+        const referralLink = `${window.location.origin}/index.html?ref=${uid}`;
+        if (referralInput) referralInput.value = referralLink;
+
+        if (shareBtn) {
+            shareBtn.onclick = () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'GhostKey - Tienda Virtual',
+                        text: '¡Regístrate en GhostKey usando mi enlace de referido y obtén los mejores productos!',
+                        url: referralLink
+                    }).catch(console.error);
+                } else {
+                    navigator.clipboard.writeText(referralLink)
+                        .then(() => alert('¡Enlace de referido copiado al portapapeles!'))
+                        .catch(() => alert(`Tu enlace de referido es:\n${referralLink}`));
+                }
+            };
+        }
+
+        const tbodyReferrals = document.getElementById('client-referrals-body');
+        if (tbodyReferrals) {
+            tbodyReferrals.innerHTML = '';
+            const refSnap = await getDocs(query(collection(db, 'users'), where('referredBy', '==', uid)));
+            if (refSnap.empty) {
+                tbodyReferrals.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:1.5rem;">Aún no tienes amigos registrados con tu código. ¡Comparte tu enlace!</td></tr>`;
+            } else {
+                refSnap.forEach(d => {
+                    const u = d.data();
+                    tbodyReferrals.innerHTML += `
+                        <tr>
+                            <td style="padding:10px; font-weight:600;"><i class="fa-solid fa-user" style="margin-right:6px; color:var(--accent-primary);"></i> ${escapeHtml(u.name || 'Usuario')}</td>
+                            <td style="padding:10px; color:var(--text-muted);">${escapeHtml(u.email || 'N/A')}</td>
+                            <td style="padding:10px;"><span class="status-badge" style="background:rgba(34,197,94,0.15);color:var(--success);">3% activo</span></td>
+                        </tr>`;
+                });
+            }
+        }
+    } catch(e) {
+        console.error('Error loading referrals:', e);
+    }
 }
 
 // ─── Load Admin Data ──────────────────────────────────────────────────────────

@@ -171,6 +171,37 @@ function updateUserProfileUI(user) {
             signOut(auth).then(() => window.location.reload());
         };
     }
+
+    const refInput = document.getElementById('ref-link-input');
+    const shareBtn = document.getElementById('btn-share-referral') || document.getElementById('btn-copy-referral');
+    if (refInput) {
+        if (user) {
+            const referralLink = `${window.location.origin}/index.html?ref=${user.uid}`;
+            refInput.value = referralLink;
+            if (shareBtn) {
+                shareBtn.onclick = () => {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'GhostKey - Tienda Virtual',
+                            text: '¡Regístrate en GhostKey usando mi enlace de referido y obtén los mejores productos!',
+                            url: referralLink
+                        }).catch(console.error);
+                    } else {
+                        navigator.clipboard.writeText(referralLink)
+                            .then(() => alert('¡Enlace de referido copiado!'))
+                            .catch(() => alert(`Enlace:\n${referralLink}`));
+                    }
+                };
+            }
+        } else {
+            refInput.value = 'Inició sesión para ver tu enlace';
+            if (shareBtn) {
+                shareBtn.onclick = () => {
+                    alert('Por favor inicia sesión para obtener tu enlace de referido.');
+                };
+            }
+        }
+    }
 }
 
 async function handleLogin() {
@@ -731,38 +762,3 @@ async function initGlobalNavFilters() {
 
     navbar.insertAdjacentElement('afterend', filterContainer);
 }
-﻿async function renderDynamicSubnav() {
-    let subnav = document.querySelector('.gk-subnav');
-    if (!subnav) {
-        const navbar = document.querySelector('.gk-navbar');
-        if (navbar) {
-            subnav = document.createElement('nav');
-            subnav.className = 'gk-subnav';
-            subnav.id = 'global-subnav';
-            navbar.parentNode.insertBefore(subnav, navbar.nextSibling);
-        } else {
-            return;
-        }
-    }
-
-    try {
-        const colSnap = await getDocs(query(collection(db, 'collections'), limit(3)));
-        let collectionsHTML = '';
-        colSnap.forEach(doc => {
-            const data = doc.data();
-            const cid = doc.id;
-            collectionsHTML += <a href="catalogo.html?cat="></a>;
-        });
-
-        const isCatalogo = window.location.pathname.includes('catalogo.html');
-        subnav.innerHTML = 
-            <a href="" class=""><i class="fa-solid fa-gamepad"></i> Todo</a>
-            
-            <a href="info.html"><i class="fa-solid fa-circle-info"></i> Ayuda</a>
-            <a href="pago.html"><i class="fa-solid fa-plus"></i> Recargar</a>
-        ;
-    } catch(e) {
-        console.error('Error rendering dynamic subnav:', e);
-    }
-}
-document.addEventListener('DOMContentLoaded', renderDynamicSubnav);
