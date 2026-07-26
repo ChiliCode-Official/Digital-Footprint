@@ -8,6 +8,14 @@ import {
     setPersistence,
     browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+setPersistence(auth, browserLocalPersistence).catch(console.error);
+
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted && auth.currentUser) {
+        // Re-trigger auth state check on bfcache restoration
+    }
+});
 import {
     doc,
     setDoc,

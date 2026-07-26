@@ -56,8 +56,9 @@ function showProfile(user) {
 
         userAvatars.forEach(img => {
             if (img) {
+                const nameStr = user.displayName || (user.email ? user.email.split('@')[0] : 'GhostKey');
                 img.src = user.photoURL ||
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.email||'User')}&background=A182E8&color=fff`;
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(nameStr)}&background=A182E8&color=fff`;
             }
         });
 

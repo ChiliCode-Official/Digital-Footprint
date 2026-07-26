@@ -44,6 +44,17 @@ async function loadProducts() {
     }
 }
 
+function normalizeImageUrl(url) {
+    if (!url) return '';
+    let clean = url.trim();
+    if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
+        const parts = clean.split('/');
+        const id = parts[parts.length - 1].split('.')[0];
+        if (id) return `https://i.imgur.com/${id}.png`;
+    }
+    return clean;
+}
+
 function renderProducts(products) {
     catalogGrid.innerHTML = '';
     
@@ -71,6 +82,8 @@ function renderProducts(products) {
             }
         }
 
+        const prodImg = normalizeImageUrl(prod.image) || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400';
+
         const card = document.createElement('a');
         card.href = `producto.html?id=${prod.id}`;
         card.className = 'card';
@@ -81,9 +94,9 @@ function renderProducts(products) {
             <div class="card__content">
             <div class="card__badge" style="background:${statusColor}">${stockLabel}</div>
             <button class="wishlist-btn" data-id="${prod.id}" style="position:absolute; top:12px; left:12px; z-index:4; background:var(--bg-panel); border:1px solid var(--glass-border); color:var(--text-muted); border-radius:50%; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-heart"></i></button>
-            <div class="card__image" style="background-image: url('${prod.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400'}');"></div>
+            <div class="card__image" style="background-image: url('${prodImg}');"></div>
             <div class="card__text">
-                <p class="card__title">${prod.name}</p>
+                <p class="card__title">${escapeHtml(prod.name)}</p>
                 <p class="card__description">Item Premium</p>
             </div>
             <div class="card__footer">
