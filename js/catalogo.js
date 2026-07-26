@@ -25,13 +25,38 @@ async function fetchUserWishlist(uid) {
 async function loadProducts() {
     catalogGrid.innerHTML = getGhostLoaderHTML('Cargando catálogo...');
     try {
-        const querySnapshot = await getDocs(collection(db, "products"));
+        const [querySnapshot, stockSnapshot, colSnapshot] = await Promise.all([
+            getDocs(collection(db, "products")),
+            getDocs(collection(db, "products_stock")),
+            getDocs(collection(db, "collections"))
+        ]);
+        
+        const filterDropdown = document.getElementById('filter-dropdown');
+        if (filterDropdown) {
+            filterDropdown.innerHTML = '<button class="filter-btn active" data-filter="all">Todos</button>';
+            colSnapshot.forEach(doc => {
+                const c = doc.data();
+                filterDropdown.innerHTML += `<button class="filter-btn" data-filter="${doc.id}">${escapeHtml(c.name || doc.id)}</button>`;
+            });
+            
+            const newFilterBtns = document.querySelectorAll('.filter-btn');
+            newFilterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    newFilterBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    applyFilters();
+                    if (filterDropdown.classList.contains('show')) {
+                        filterDropdown.classList.remove('show');
+                    }
+                });
+            });
+        }
+
         allProducts = [];
         querySnapshot.forEach((doc) => {
             allProducts.push({ id: doc.id, ...doc.data() });
         });
         
-        const stockSnapshot = await getDocs(collection(db, "products_stock"));
         stockData = {};
         stockSnapshot.forEach((doc) => {
             stockData[doc.id] = doc.data();
@@ -147,20 +172,6 @@ function renderProducts(products) {
 }
 
 function handleFilters() {
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            applyFilters();
-            
-            // Close dropdown on mobile after selecting a filter if it's open
-            const filterDropdown = document.getElementById('filter-dropdown');
-            if (filterDropdown && filterDropdown.classList.contains('show')) {
-                filterDropdown.classList.remove('show');
-            }
-        });
-    });
-
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
     }

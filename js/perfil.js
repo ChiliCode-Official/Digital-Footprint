@@ -546,6 +546,37 @@ async function loadAdminData() {
             });
         } catch(e) { console.error('Admin users error:', e); }
     }
+
+    // 5. Collections
+    const divCollections = document.getElementById('admin-collections-list');
+    const newProdSel = document.getElementById('new-prod-category');
+    const editProdSel = document.getElementById('edit-prod-category');
+    if (divCollections) {
+        divCollections.innerHTML = '';
+        if (newProdSel) newProdSel.innerHTML = '';
+        if (editProdSel) editProdSel.innerHTML = '';
+        
+        try {
+            const qCols = await getDocs(collection(db, 'collections'));
+            if (qCols.empty) {
+                divCollections.innerHTML = `<p style="color:var(--text-muted);">No hay colecciones creadas.</p>`;
+                if (newProdSel) newProdSel.innerHTML = `<option value="">Sin colecciones</option>`;
+                if (editProdSel) editProdSel.innerHTML = `<option value="">Sin colecciones</option>`;
+            }
+            qCols.forEach(cDoc => {
+                const c = cDoc.data();
+                const optHtml = `<option value="${cDoc.id}">${escapeHtml(c.name || cDoc.id)}</option>`;
+                if (newProdSel) newProdSel.innerHTML += optHtml;
+                if (editProdSel) editProdSel.innerHTML += optHtml;
+                
+                divCollections.innerHTML += `
+                    <div style="background:var(--bg-main); padding: 10px; border-radius: 8px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--glass-border);">
+                        <strong>${escapeHtml(c.name || cDoc.id)}</strong>
+                        <button class="btn-secondary" style="color:var(--danger); border-color:var(--danger);" onclick="deleteCollection('${cDoc.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+            });
+        } catch(e) { console.error('Admin collections error:', e); }
+    }
 }
 
 // ─── Admin Actions ────────────────────────────────────────────────────────────

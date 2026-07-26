@@ -198,13 +198,14 @@ async function handleLogin() {
             const userSnap = await getDoc(userRef);
 
             if (!userSnap.exists()) {
+                const referredBy = localStorage.getItem('ghostkey_referred_by') || null;
                 await setDoc(userRef, {
                     email: user.email,
                     balance: 0,
                     wishlist: [],
                     cart: {},
                     referralCode: user.uid.substring(0, 8).toUpperCase(),
-                    referredBy: null
+                    referredBy: referredBy
                 });
             }
             window.location.href = 'perfil.html';
@@ -222,13 +223,14 @@ async function handleLogin() {
             };
             try {
                 const userRef = doc(db, 'users', mockUser.uid);
+                const referredBy = localStorage.getItem('ghostkey_referred_by') || null;
                 await setDoc(userRef, {
                     email: mockUser.email,
                     balance: 0,
                     wishlist: [],
                     cart: {},
                     referralCode: mockUser.uid.substring(0, 8).toUpperCase(),
-                    referredBy: null
+                    referredBy: referredBy
                 }, { merge: true });
             } catch(e) {}
             window.location.href = 'perfil.html';

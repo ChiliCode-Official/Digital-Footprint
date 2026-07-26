@@ -463,7 +463,9 @@ async function processCartPurchase() {
     await runTransaction(db, async (transaction) => {
         const userRef = doc(db, 'users', currentUser.uid);
         const uSnap = await transaction.get(userRef);
-        const currentBal = uSnap.data().balance || 0;
+        const userData = uSnap.data();
+        const currentBal = userData.balance || 0;
+        const referredBy = userData.referredBy;
         
         let calculatedTotal = 0;
         const productsData = [];
@@ -549,6 +551,16 @@ async function processCartPurchase() {
             balance: currentBal - calculatedTotal,
             cart: {}
         });
+
+        if (referredBy) {
+            const referrerRef = doc(db, 'users', referredBy);
+            const referrerSnap = await transaction.get(referrerRef);
+            if (referrerSnap.exists()) {
+                const rData = referrerSnap.data();
+                const bonus = calculatedTotal * 0.03;
+                transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
+            }
+        }
     });
 
     alert(`¡Compra del carrito realizada con éxito! Se descontaron $${finalTotal.toFixed(2)}.`);
@@ -563,7 +575,9 @@ async function processSinglePurchase() {
     await runTransaction(db, async (transaction) => {
         const userRef = doc(db, 'users', currentUser.uid);
         const uSnap = await transaction.get(userRef);
-        const currentBal = uSnap.data().balance || 0;
+        const userData = uSnap.data();
+        const currentBal = userData.balance || 0;
+        const referredBy = userData.referredBy;
         
         const pRef = doc(db, 'products', productId);
         const pSnap = await transaction.get(pRef);
@@ -620,6 +634,16 @@ async function processSinglePurchase() {
         }
 
         transaction.update(userRef, { balance: currentBal - actualPrice });
+        
+        if (referredBy) {
+            const referrerRef = doc(db, 'users', referredBy);
+            const referrerSnap = await transaction.get(referrerRef);
+            if (referrerSnap.exists()) {
+                const rData = referrerSnap.data();
+                const bonus = actualPrice * 0.03;
+                transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
+            }
+        }
         
         const newOrderRef = doc(collection(db, 'orders'));
         transaction.set(newOrderRef, {

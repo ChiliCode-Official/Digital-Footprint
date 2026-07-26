@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -408,6 +408,7 @@
                         <button class="tab-btn" data-target="tab-admin-recargas">Aprobar Recargas</button>
                         <button class="tab-btn" data-target="tab-admin-stock">Inventario / Stock</button>
                         <button class="tab-btn" data-target="tab-admin-users">Usuarios</button>
+                        <button class="tab-btn" data-target="tab-admin-collections">Colecciones</button>
                     </div>
 
                     <div id="tab-admin-pedidos" class="tab-content active">
@@ -505,6 +506,24 @@
                                 <!-- JS Injected -->
                             </tbody>
                         </table>
+                    </div>
+
+                    <div id="tab-admin-collections" class="tab-content">
+                        <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+                            <h4 style="margin-bottom: 1rem;">Crear Colección</h4>
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                                <div>
+                                    <label class="gk-label">Nombre de Colección</label>
+                                    <input type="text" id="new-collection-name" class="gk-input" placeholder="Ej. PlayStation, Steam, Xbox...">
+                                </div>
+                                <button type="button" class="btn btn-primary" id="btn-create-collection" style="margin-top: 10px;">Crear Colección</button>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom: 1rem;">Colecciones Existentes</h4>
+                        <div id="admin-collections-list" style="display: flex; flex-direction: column; gap: 15px;">
+                            <!-- JS Injected -->
+                        </div>
                     </div>
                 </div>
 
