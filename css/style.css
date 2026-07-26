@@ -4671,3 +4671,222 @@ input:focus, select:focus, textarea:focus {
     transform: scale(0.94);
   }
 }
+
+/* --- Animated Button for Recharge (chase2k25) --- */
+.pos-anim-container-btn {
+  background-color: #fff7e6;
+  display: flex;
+  width: 250px;
+  height: 75px;
+  position: relative;
+  border-radius: 5px;
+  transition: 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pos-anim-container-btn:hover {
+  transform: scale(1.03);
+  width: 150px;
+}
+
+.pos-anim-container-btn:hover .pos-left-side-btn {
+  width: 100%;
+}
+
+.pos-left-side-btn {
+  background: linear-gradient(135deg, #ff8c00, #ff4d4d);
+  width: 85px;
+  height: 75px;
+  border-radius: 4px 0 0 4px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.pos-right-side-btn {
+  width: calc(100% - 85px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  justify-content: space-between;
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
+.pos-right-side-btn:hover {
+  background-color: #ffecd1;
+}
+
+.pos-arrow-btn {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+}
+
+.pos-new-btn {
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 700;
+  margin-left: 12px;
+  color: #333;
+}
+
+.pos-card-btn {
+  width: 48px;
+  height: 30px;
+  background-color: #ffb366;
+  border-radius: 4px;
+  position: absolute;
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 5px 5px 5px -2px rgba(255, 77, 77, 0.4);
+}
+
+.pos-card-line-btn {
+  width: 42px;
+  height: 8px;
+  background-color: #ffcc99;
+  border-radius: 1px;
+  margin-top: 4px;
+}
+
+.pos-buttons-btn {
+  width: 5px;
+  height: 5px;
+  background-color: #cc4b00;
+  box-shadow: 0 -6px 0 0 #992d00, 0 6px 0 0 #ff6a1a;
+  border-radius: 50%;
+  margin-top: 3px;
+  transform: rotate(90deg);
+  margin: 6px 0 0 -18px;
+}
+
+.pos-anim-container-btn:hover .pos-card-btn {
+  animation: slide-top-btn 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+.pos-anim-container-btn:hover .pos-post-btn {
+  animation: slide-post-btn 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes slide-top-btn {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-45px) rotate(90deg); }
+  60% { transform: translateY(-45px) rotate(90deg); }
+  100% { transform: translateY(-5px) rotate(90deg); }
+}
+
+.pos-post-btn {
+  width: 42px;
+  height: 50px;
+  background-color: #f5f5f5;
+  position: absolute;
+  z-index: 11;
+  bottom: 6px;
+  top: 75px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pos-post-line-btn {
+  width: 32px;
+  height: 5px;
+  background-color: #666;
+  position: absolute;
+  border-radius: 0 0 2px 2px;
+  right: 5px;
+  top: 5px;
+}
+
+.pos-post-line-btn:before {
+  content: "";
+  position: absolute;
+  width: 32px;
+  height: 5px;
+  background-color: #888;
+  top: -5px;
+}
+
+.pos-screen-btn {
+  width: 32px;
+  height: 15px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 14px;
+  right: 5px;
+  border-radius: 2px;
+}
+
+.pos-numbers-btn {
+  width: 7px;
+  height: 7px;
+  background-color: #999;
+  box-shadow: 0 -11px 0 0 #999, 0 11px 0 0 #999;
+  border-radius: 1px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 17px;
+  top: 34px;
+}
+
+.pos-numbers-line2-btn {
+  width: 7px;
+  height: 7px;
+  background-color: #bbb;
+  box-shadow: 0 -11px 0 0 #bbb, 0 11px 0 0 #bbb;
+  border-radius: 1px;
+  position: absolute;
+  transform: rotate(90deg);
+  left: 17px;
+  top: 45px;
+}
+
+@keyframes slide-post-btn {
+  50% { transform: translateY(0); }
+  100% { transform: translateY(-45px); }
+}
+
+.pos-icon-btn {
+  position: absolute;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 800;
+  width: 100%;
+  left: 0;
+  top: 0;
+  color: #d32f2f;
+  text-align: center;
+}
+
+.pos-anim-container-btn:hover .pos-icon-btn {
+  animation: fade-in-fwd-btn 0.3s 0.7s backwards;
+}
+
+@keyframes fade-in-fwd-btn {
+  0% { opacity: 0; transform: translateY(-3px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media only screen and (max-width: 480px) {
+  .pos-anim-container-btn {
+    transform: scale(0.9);
+  }
+  .pos-anim-container-btn:hover {
+    transform: scale(0.93);
+  }
+}
+
+.pos-anim-container-btn.expanding {
+  transform: scale(1.5) !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s ease-in-out !important;
+}

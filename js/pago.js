@@ -148,9 +148,28 @@ async function setupRechargeMode(balance, suggestedAmount) {
     `;
     
     actionArea.innerHTML = `
-        <button id="btn-process-recharge" class="btn-primary" style="width:100%; padding: 14px; font-size: 1.1rem; border-radius: 12px;">
-            <i class="fa-solid fa-paper-plane"></i> Confirmar Depositar
-        </button>
+        <div class="pos-anim-container-btn" id="btn-process-recharge" style="margin: 0 auto;">
+          <div class="pos-left-side-btn">
+            <div class="pos-card-btn">
+              <div class="pos-card-line-btn"></div>
+              <div class="pos-buttons-btn"></div>
+            </div>
+            <div class="pos-post-btn">
+              <div class="pos-post-line-btn"></div>
+              <div class="pos-screen-btn">
+                <div class="pos-icon-btn">!</div>
+              </div>
+              <div class="pos-numbers-btn"></div>
+              <div class="pos-numbers-line2-btn"></div>
+            </div>
+          </div>
+          <div class="pos-right-side-btn">
+            <div class="pos-new-btn" id="btn-process-text">Confirmar Pago</div>
+            <svg class="pos-arrow-btn" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 451.846 451.847">
+              <path d="M345.441 248.292L151.154 442.573c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744L278.318 225.92 106.409 54.017c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.287 194.284c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373z" class="active-path" fill="#4b953b"></path>
+            </svg>
+          </div>
+        </div>
     `;
 
     // Load account logic from Firestore filtered by tipo
@@ -267,28 +286,44 @@ async function processRecharge() {
         showError("Debes iniciar sesión para realizar esta operación.");
         return;
     }
-
+    
     const btn = document.getElementById('btn-process-recharge');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registrando depósito...';
+    const textEl = document.getElementById('btn-process-text');
+    if (btn) {
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.7';
+    }
+    if (textEl) textEl.textContent = 'Procesando...';
     
     try {
-        const reqRef = await addDoc(collection(db, 'balance_requests'), {
+        const reqRef = doc(collection(db, 'balance_requests'));
+        const methodLabel = selectedMethodBtn ? selectedMethodBtn.querySelector('span').textContent.trim() : 'Transferencia';
+        
+        await setDoc(reqRef, {
             uid: currentUser.uid,
-            userEmail: currentUser.email || 'usuario@ghostkey.app',
+            userEmail: currentUser.email,
             amount: amount,
             method: methodLabel,
-            status: "pendiente",
+            status: 'pendiente',
             timestamp: serverTimestamp()
         });
         
-        setupWaitingScreen(reqRef.id, amount, methodLabel);
+        if (btn) {
+            btn.classList.add('expanding');
+        }
+        
+        setTimeout(() => {
+            setupWaitingScreen(reqRef.id, amount, methodLabel);
+        }, 600);
         
     } catch (e) {
         console.error("Error in processRecharge:", e);
         showError("Error al registrar la solicitud: " + (e.message || "Fallo en Firestore"));
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar Depositar';
+        if (btn) {
+            btn.style.pointerEvents = 'auto';
+            btn.style.opacity = '1';
+        }
+        if (textEl) textEl.textContent = 'Confirmar Pago';
     }
 }
 
