@@ -1,6 +1,6 @@
 import { db, auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { doc, getDoc, collection, getDocs, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let currentUser = null;
 let cartItems = [];
@@ -36,6 +36,30 @@ function createCartModalHTML() {
     document.body.appendChild(modal);
 
     document.getElementById('close-cart-btn')?.addEventListener('click', closeCart);
+    
+    const container = document.getElementById('cart-items-container');
+    if (container) {
+        container.addEventListener('click', async (e) => {
+            const removeBtn = e.target.closest('.btn-remove-cart');
+            if (removeBtn && currentUser) {
+                const pid = removeBtn.dataset.pid;
+                try {
+                    removeBtn.disabled = true;
+                    removeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                    const ref = doc(db, 'users', currentUser.uid);
+                    await updateDoc(ref, {
+                        [`cart.${pid}`]: deleteField()
+                    });
+                    await updateCartBadge();
+                    await loadCartContent();
+                } catch (err) {
+                    console.error("Error removing from cart:", err);
+                    removeBtn.disabled = false;
+                    removeBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                }
+            }
+        });
+    }
     modal.addEventListener('click', (e) => {
         if (e.target === modal) closeCart();
     });
@@ -118,7 +142,10 @@ async function loadCartContent() {
                         <div class="cart-item-price">$${p.price} x ${qty} = $${itemTotal.toFixed(2)}</div>
                         ${stockNoticeHtml}
                     </div>
-                    <a href="producto.html?id=${pid}" class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem;">Ver</a>
+                    <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">
+                        <a href="producto.html?id=${pid}" class="btn-primary" style="padding: 4px 10px; font-size: 0.75rem; text-align:center;">Ver</a>
+                        <button class="btn-secondary btn-remove-cart" data-pid="${pid}" style="padding: 4px 10px; font-size: 0.75rem; color:var(--danger); border-color:var(--danger);" title="Eliminar del carrito"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 `;
                 container.appendChild(itemDiv);
             }

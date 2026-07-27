@@ -413,13 +413,11 @@ async function loadIndexProducts() {
     }
 
     try {
-        let heroProd = null;
+        let heroProds = [];
         try {
-            const qHero = query(collection(db, "products"), where("isFeatured", "==", true), limit(1));
+            const qHero = query(collection(db, "products"), where("isFeatured", "==", true), limit(5));
             const heroSnap = await getDocs(qHero);
-            if (!heroSnap.empty) {
-                heroProd = heroSnap.docs[0];
-            }
+            heroSnap.forEach(doc => heroProds.push(doc));
         } catch(heroErr) {
             console.warn("Featured query warning:", heroErr);
         }
@@ -427,27 +425,63 @@ async function loadIndexProducts() {
         const qProds = query(collection(db, "products"), limit(6));
         const prodsSnap = await getDocs(qProds);
 
-        if (!heroProd && !prodsSnap.empty) {
-            heroProd = prodsSnap.docs[0];
+        if (heroProds.length === 0 && !prodsSnap.empty) {
+            heroProds.push(prodsSnap.docs[0]);
         }
 
-        if (heroProd) {
-            const hData = heroProd.data();
+        if (heroProds.length > 0) {
             const banner = document.getElementById('hero-banner');
+            const heroBgImg = document.getElementById('hero-bg-img');
+            const titleEl = document.getElementById('hero-title');
+            const priceEl = document.getElementById('hero-price');
+            const buyBtn = document.getElementById('hero-buy-btn');
+            
             if (banner) {
                 banner.style.display = 'flex';
-                const heroBgImg = document.getElementById('hero-bg-img');
+                let currentHeroIndex = 0;
+                
                 if (heroBgImg) {
-                    heroBgImg.src = hData.image || '';
-                } else {
-                    banner.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${hData.image}')`;
+                    heroBgImg.style.transition = 'opacity 0.4s ease';
                 }
-                const titleEl = document.getElementById('hero-title');
-                if (titleEl) titleEl.textContent = hData.name;
-                const priceEl = document.getElementById('hero-price');
-                if (priceEl) priceEl.textContent = `$${hData.price} MXN`;
-                const buyBtn = document.getElementById('hero-buy-btn');
-                if (buyBtn) buyBtn.href = `producto.html?id=${heroProd.id}`;
+                if (titleEl) {
+                    titleEl.style.transition = 'opacity 0.4s ease';
+                }
+
+                const updateHeroUI = () => {
+                    const heroProd = heroProds[currentHeroIndex];
+                    const hData = heroProd.data();
+                    
+                    if (heroBgImg) heroBgImg.style.opacity = '0';
+                    if (titleEl) titleEl.style.opacity = '0';
+                    if (priceEl) priceEl.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        if (heroBgImg) {
+                            heroBgImg.src = hData.image || '';
+                            heroBgImg.style.opacity = '1';
+                        } else {
+                            banner.style.backgroundImage = `linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url('${hData.image}')`;
+                        }
+                        if (titleEl) {
+                            titleEl.textContent = hData.name;
+                            titleEl.style.opacity = '1';
+                        }
+                        if (priceEl) {
+                            priceEl.textContent = `${hData.price} MXN`;
+                            priceEl.style.opacity = '1';
+                        }
+                        if (buyBtn) buyBtn.href = `producto.html?id=${heroProd.id}`;
+                    }, 400);
+
+                    currentHeroIndex = (currentHeroIndex + 1) % heroProds.length;
+                };
+
+                updateHeroUI();
+                
+                if (heroProds.length > 1) {
+                    if (window.heroInterval) clearInterval(window.heroInterval);
+                    window.heroInterval = setInterval(updateHeroUI, 3000);
+                }
             }
         }
 

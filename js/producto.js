@@ -334,7 +334,6 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
             }
         });
     }
-}
 
 const addCartBtn = document.getElementById('add-cart-btn');
 if (addCartBtn) {
@@ -477,6 +476,27 @@ async function loadProductReviews(pid) {
         console.error("Error loading product reviews:", err);
         container.innerHTML = `<p style="color: var(--danger);">No se pudieron cargar las reseñas.</p>`;
     }
+}
+
+
+const shareBtn = document.getElementById('btn-share-product');
+if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            const originalIcon = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            shareBtn.style.color = 'var(--success)';
+            shareBtn.style.borderColor = 'var(--success)';
+            setTimeout(() => {
+                shareBtn.innerHTML = originalIcon;
+                shareBtn.style.color = '';
+                shareBtn.style.borderColor = '';
+            }, 2000);
+        } catch(e) {
+            alert('Enlace copiado: ' + window.location.href);
+        }
+    });
 }
 
 loadProductDetails();
