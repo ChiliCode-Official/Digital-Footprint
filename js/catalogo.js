@@ -161,7 +161,11 @@ function handleFilters() {
         searchInput.addEventListener('input', applyFilters);
     }
     
-    // Listen to new filters
+    const priceSelect = document.getElementById('price-select');
+    if (priceSelect) {
+        priceSelect.addEventListener('change', applyFilters);
+    }
+
     const priceRadios = document.querySelectorAll('input[name="price-filter"]');
     priceRadios.forEach(r => r.addEventListener('change', applyFilters));
     
@@ -187,13 +191,13 @@ function applyFilters() {
     }
     
     // Apply Price Filter
+    const priceSelect = document.getElementById('price-select');
     const checkedPrice = document.querySelector('input[name="price-filter"]:checked');
-    if (checkedPrice) {
-        const val = checkedPrice.value;
-        if (val === 'under-100') filtered = filtered.filter(p => p.price < 100);
-        else if (val === '100-500') filtered = filtered.filter(p => p.price >= 100 && p.price <= 500);
-        else if (val === 'over-500') filtered = filtered.filter(p => p.price > 500);
-    }
+    const val = priceSelect ? priceSelect.value : (checkedPrice ? checkedPrice.value : 'all');
+    
+    if (val === 'under-100') filtered = filtered.filter(p => p.price < 100);
+    else if (val === '100-500') filtered = filtered.filter(p => p.price >= 100 && p.price <= 500);
+    else if (val === 'over-500') filtered = filtered.filter(p => p.price > 500);
     
     // Apply Sort
     const sortSelect = document.getElementById('sort-select');

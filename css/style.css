@@ -3327,14 +3327,13 @@ input:focus, select:focus, textarea:focus {
     height: auto !important;
     overflow-y: visible !important;
   }
-  }
   .main-container {
     transform: scale(0.82);
     margin: -15px auto;
   }
   
   /* Amazon-style horizontal scrolling products gallery on mobile */
-  .products-grid, #catalog-grid, .horizontal-scroll {
+  .products-grid, .horizontal-scroll {
     display: flex !important;
     grid-template-columns: none !important;
     overflow-x: auto !important;
@@ -3343,7 +3342,7 @@ input:focus, select:focus, textarea:focus {
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
   }
-  .products-grid .card, #catalog-grid .card, .horizontal-scroll .card {
+  .products-grid .card, .horizontal-scroll .card {
     min-width: 210px !important;
     max-width: 220px !important;
     flex-shrink: 0 !important;
@@ -4506,40 +4505,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Mobile Catalog Amazon UX */
-@media (max-width: 768px) {
-  #catalog-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  #catalog-grid .card {
-    min-height: auto;
-    height: auto;
-    max-width: 100% !important;
-    min-width: 100% !important;
-  }
-  
-  #catalog-grid .card__content {
-    flex-direction: row;
-    padding: 10px;
-    align-items: flex-start;
-  }
-  
-  #catalog-grid .card__image {
-    width: 120px;
-    height: 120px;
-    flex-shrink: 0;
-  }
-  
-  #catalog-grid .card__details {
-    flex: 1;
-    margin-left: 15px;
-    justify-content: center;
-  }
-
-  /* Make search full width */
-  #amz-search-container {
+#amz-search-container {
     width: 100% !important;
   }
 }
@@ -5152,4 +5118,126 @@ input:focus, select:focus, textarea:focus {
 }
 .gk-friends-panel-backdrop.open {
     display: block;
+}
+
+
+/* ===== AMAZON-STYLE CATALOG GRID & LAYOUT ===== */
+.catalog-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    width: 100%;
+}
+.catalog-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    position: sticky;
+    top: 80px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.catalog-sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.catalog-sidebar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.catalog-main {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+.catalog-grid, #catalog-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+    gap: 1.5rem !important;
+    overflow-x: visible !important;
+    flex-direction: unset !important;
+    width: 100% !important;
+    margin-top: 1rem;
+}
+.catalog-grid .card, #catalog-grid .card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    flex-shrink: 1 !important;
+}
+
+@media (max-width: 768px) {
+    .catalog-layout {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .catalog-sidebar {
+        width: 100% !important;
+        position: static !important;
+        padding: 0.85rem 1rem !important;
+        border-radius: 12px !important;
+        top: auto;
+    }
+    .catalog-sidebar-inner {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+    .catalog-sidebar-group {
+        flex: 1;
+        min-width: 0;
+    }
+    .catalog-sidebar-title {
+        display: none !important;
+    }
+    .catalog-grid, #catalog-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+    }
+    .catalog-grid .card, #catalog-grid .card {
+        margin: 0 !important;
+    }
+}
+@media (max-width: 480px) {
+    .catalog-grid, #catalog-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+}
+
+
+/* ===== ADMIN PANEL & TABLES MOBILE RESPONSIVENESS ===== */
+.table-responsive-wrap {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin-bottom: 1rem;
+}
+.data-table {
+    width: 100% !important;
+    min-width: 600px !important;
+    border-collapse: collapse;
+}
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+@media (max-width: 650px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .admin-form-grid > * {
+        grid-column: span 1 !important;
+    }
+    .modal-content {
+        max-width: 95% !important;
+        padding: 1.25rem !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
 }

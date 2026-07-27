@@ -358,7 +358,7 @@
                             <h3 style="color: var(--accent-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
                                 <i class="fa-solid fa-users-viewfinder"></i> Mis Amigos Referidos Registrados
                             </h3>
-                            <div style="overflow-x: auto;">
+                            <div class="table-responsive-wrap">
                                 <table class="orders-table" style="width: 100%; border-collapse: collapse;">
                                     <thead>
                                         <tr style="border-bottom: 1px solid var(--glass-border); text-align: left; color: var(--text-muted); font-size: 0.85rem;">
@@ -380,7 +380,7 @@
                             <h3 style="color: var(--accent-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
                                 <i class="fa-solid fa-clock-rotate-left"></i> Historial de Solicitudes de Recarga
                             </h3>
-                            <div style="overflow-x: auto;">
+                            <div class="table-responsive-wrap">
                                 <table class="orders-table" style="width: 100%; border-collapse: collapse;">
                                     <thead>
                                         <tr style="border-bottom: 1px solid var(--glass-border); text-align: left; color: var(--text-muted); font-size: 0.85rem;">
@@ -476,6 +476,7 @@
 
                     <div id="tab-admin-pedidos" class="tab-content active">
                         <!-- Pedidos bajo pedido -->
+                        <div class="table-responsive-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -491,7 +492,7 @@
                     </div>
 
                     <div id="tab-admin-recargas" class="tab-content">
-                        <div style="overflow-x:auto;">
+                        <div class="table-responsive-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -513,7 +514,7 @@
                         <!-- Add product form -->
                         <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
                             <h4 style="margin-bottom: 1rem;">Agregar Nuevo Producto</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="admin-form-grid">
                                 <input type="text" id="new-prod-name" placeholder="Nombre">
                                 <input type="number" id="new-prod-price" placeholder="Precio">
                                 <input type="number" id="new-prod-min-quantity" placeholder="Cant. Mínima (Mayoreo)" min="1" value="1">
@@ -527,7 +528,7 @@
                             <textarea id="new-prod-desc" placeholder="Descripción" style="width: 100%; margin-top: 10px;"></textarea>
                             
                             <h4 style="margin: 1rem 0;">Configuración de Stock</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="admin-form-grid">
                                 <select id="new-prod-status">
                                     <option value="disponible">Disponible (Usa pool de abajo)</option>
                                     <option value="bajo_pedido">Bajo pedido</option>
@@ -541,6 +542,7 @@
                             <button class="btn-primary" onclick="createProduct()" style="margin-top: 1rem; width: 100%;">Guardar Producto</button>
                         </div>
 
+                        <div class="table-responsive-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -556,9 +558,11 @@
                                 <!-- JS -->
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     
                     <div id="tab-admin-users" class="tab-content">
+                        <div class="table-responsive-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -571,6 +575,7 @@
                                 <!-- JS Injected -->
                             </tbody>
                         </table>
+                        </div>
                     </div>
 
                     <div id="tab-admin-collections" class="tab-content">
@@ -601,7 +606,7 @@
         <div class="modal-content" style="max-width: 600px;">
             <h3>Editar Producto</h3>
             <input type="hidden" id="edit-prod-id">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;">
+            <div class="admin-form-grid" style="margin-top: 1rem;">
                 <div>
                     <label style="font-size: 0.8rem; color: var(--text-muted);">Nombre</label>
                     <input type="text" id="edit-prod-name" placeholder="Nombre" style="width:100%;">
@@ -634,7 +639,7 @@
             </div>
             
             <h4 style="margin: 1rem 0 5px 0;">Configuración de Stock</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="admin-form-grid">
                 <div>
                     <label style="font-size: 0.8rem; color: var(--text-muted);">Estado</label>
                     <select id="edit-prod-status" style="width:100%;">

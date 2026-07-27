@@ -144,35 +144,30 @@
     </style>
     <div class="gk-page-body" style="padding-top: 2rem;">
         <div class="catalog-layout">
-            <aside class="catalog-sidebar">
-                <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);">Filtros</h2>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <h3 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.8rem; text-transform: uppercase;">Precio</h3>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
-                            <input type="radio" name="price-filter" value="all" checked> Todos
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
-                            <input type="radio" name="price-filter" value="under-100"> Menos de $100
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
-                            <input type="radio" name="price-filter" value="100-500"> $100 a $500
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
-                            <input type="radio" name="price-filter" value="over-500"> Más de $500
-                        </label>
+                        <aside class="catalog-sidebar">
+                <h2 class="catalog-sidebar-title" style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-sliders" style="color: var(--accent-primary);"></i> Filtros
+                </h2>
+                <div class="catalog-sidebar-inner">
+                    <div class="catalog-sidebar-group">
+                        <label style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Precio</label>
+                        <select id="price-select" style="width: 100%; background: var(--bg-main); border: 1px solid var(--glass-border); padding: 8px 12px; border-radius: 8px; color: var(--text-main); font-family: inherit; font-size: 0.88rem; outline: none; cursor: pointer;">
+                            <option value="all">Todos los precios</option>
+                            <option value="under-100">Menos de $100</option>
+                            <option value="100-500">$100 a $500</option>
+                            <option value="over-500">Más de $500</option>
+                        </select>
                     </div>
-                </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <h3 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.8rem; text-transform: uppercase;">Ordenar</h3>
-                    <select id="sort-select" style="width: 100%; background: var(--bg-main); border: 1px solid var(--glass-border); padding: 8px; border-radius: 8px; color: var(--text-main); font-family: inherit;">
-                        <option value="default">Relevancia</option>
-                        <option value="price-asc">Precio: de menor a mayor</option>
-                        <option value="price-desc">Precio: de mayor a menor</option>
-                        <option value="newest">Lo más nuevo</option>
-                    </select>
+                    <div class="catalog-sidebar-group">
+                        <label style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Ordenar</label>
+                        <select id="sort-select" style="width: 100%; background: var(--bg-main); border: 1px solid var(--glass-border); padding: 8px 12px; border-radius: 8px; color: var(--text-main); font-family: inherit; font-size: 0.88rem; outline: none; cursor: pointer;">
+                            <option value="default">Relevancia</option>
+                            <option value="price-asc">Precio: menor a mayor</option>
+                            <option value="price-desc">Precio: mayor a menor</option>
+                            <option value="newest">Lo más nuevo</option>
+                        </select>
+                    </div>
                 </div>
             </aside>
             

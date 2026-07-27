@@ -736,6 +736,18 @@ window.createCollection = async function() {
     }
 };
 
+window.deleteCollection = async function(colId) {
+    if (!confirm('¿Seguro que deseas eliminar esta colección?')) return;
+    try {
+        await deleteDoc(doc(db, 'collections', colId));
+        alert('Colección eliminada exitosamente.');
+        loadAdminData();
+    } catch(e) {
+        console.error('Error al eliminar colección:', e);
+        alert('Error al eliminar la colección: ' + e.message);
+    }
+};
+
 window.openEditModal = async function(prodId) {
     try {
         const [pSnap, sSnap] = await Promise.all([
