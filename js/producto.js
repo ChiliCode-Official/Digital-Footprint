@@ -3,6 +3,17 @@ import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "htt
 import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { updateCartBadge } from './cart.js';
 
+
+function normalizeImageUrl(url) {
+    if (!url) return '';
+    let clean = String(url).trim();
+    if (clean.includes('imgur.com') && !clean.includes('i.imgur.com')) {
+        const id = clean.split('/').pop().split('.')[0];
+        return `https://i.imgur.com/${id}.png`;
+    }
+    return clean;
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)

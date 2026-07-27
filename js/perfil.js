@@ -86,7 +86,7 @@ function showProfile(user) {
     }
 
     try {
-        if (user.email === ADMIN_EMAIL) {
+        if ((user.email || '').toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
             if (adminView)  adminView.style.display  = 'block';
             if (clientView) clientView.style.display = 'none';
             loadAdminData();
@@ -459,11 +459,22 @@ async function loadClientData(uid) {
         const tbodyReferrals = document.getElementById('client-referrals-body');
         if (tbodyReferrals) {
             tbodyReferrals.innerHTML = '';
-            const refSnap = await getDocs(query(collection(db, 'users'), where('referredBy', '==', uid)));
-            if (refSnap.empty) {
+            const [snap1, snap2] = await Promise.all([
+                getDocs(query(collection(db, 'users'), where('referredBy', '==', uid))),
+                (currentUser && currentUser.email) ? getDocs(query(collection(db, 'users'), where('referredBy', '==', currentUser.email))) : { empty: true, docs: [] }
+            ]);
+            const refDocs = [];
+            const seenUids = new Set();
+            [...snap1.docs, ...(snap2.docs || [])].forEach(docSnap => {
+                if (!seenUids.has(docSnap.id)) {
+                    seenUids.add(docSnap.id);
+                    refDocs.push(docSnap);
+                }
+            });
+            if (refDocs.length === 0) {
                 tbodyReferrals.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:1.5rem;">Aún no tienes amigos registrados con tu código. ¡Comparte tu enlace!</td></tr>`;
             } else {
-                refSnap.forEach(d => {
+                refDocs.forEach(d => {
                     const u = d.data();
                     tbodyReferrals.innerHTML += `
                         <tr>
