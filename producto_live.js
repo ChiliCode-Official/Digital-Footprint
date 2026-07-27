@@ -78,6 +78,10 @@ if (btnGift) {
 }
 
 
+let productData = null;
+let currentQty = 1;
+let currentUser = null;
+
 async function loadProductDetails() {
     if (!productId) {
         if (pTitle) pTitle.textContent = "Producto no especificado";

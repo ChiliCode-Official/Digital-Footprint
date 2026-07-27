@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Virtual - Producto</title>
+
+    <meta name="description" content="Compra cuentas premium, claves de juegos y saldo virtual en GhostKey. Entrega rápida, transacciones seguras y soporte dedicado.">
+    <meta name="keywords" content="cuentas premium, claves juegos, saldo virtual, GhostKey, tienda digital, videojuegos">
+    <meta name="author" content="GhostKey Oficial">
+    <meta property="og:title" content="GhostKey - Tienda Digital Premium">
+    <meta property="og:description" content="Compra cuentas premium, claves de juegos y saldo virtual.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ghostkey.online/">
+    <meta property="og:image" content="https://i.imgur.com/LbMnNUg.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .product-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .product-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--glass-border);
+        }
+        .buy-panel {
+            background: var(--bg-panel);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: sticky;
+            top: 100px;
+            overflow: visible;
+        }
+        .gift-input-group {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .gift-input-group.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 1024px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png"></head>
+<body>
+    <!-- ===== GLOBAL NAVBAR (GhostKey) ===== -->
+    <style>
+        html, body { height: auto !important; overflow: visible !important; overflow-x: hidden !important; }
+        body { display: block !important; min-height: 100vh; }
+        .gk-navbar { position: sticky; top: 0; z-index: 1000; background: var(--bg-card); border-bottom: 2px solid var(--accent-primary); display: flex; align-items: center; gap: 12px; padding: 0 16px; height: 60px; box-shadow: 0 2px 16px rgba(0,0,0,0.4); }
+        .gk-nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+        .gk-nav-logo img { width: 36px; height: 36px; border-radius: 8px; }
+        .gk-nav-logo span { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+        .gk-search-wrap { flex: 1; display: flex; align-items: center; background: var(--bg-main); border: 2px solid var(--glass-border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; max-width: 700px; }
+        .gk-search-wrap:focus-within { border-color: var(--accent-primary); }
+        .gk-search-wrap input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); padding: 8px 12px; font-size: 0.95rem; font-family: inherit; }
+        .gk-search-wrap input::placeholder { color: var(--text-muted); }
+        .gk-search-btn-nav { background: var(--accent-primary); border: none; cursor: pointer; padding: 10px 14px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; color: #fff; font-size: 1rem; }
+        .gk-search-btn-nav:hover { background: var(--accent-secondary, #7c5cbf); }
+        .gk-nav-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .gk-nav-btn { background: transparent; border: none; color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; text-decoration: none; transition: background 0.2s; white-space: nowrap; }
+        .gk-nav-btn:hover { background: var(--bg-main); }
+        .gk-nav-btn .lbl { display: none; }
+        @media(min-width:768px) { .gk-nav-btn .lbl { display: inline; } }
+        .gk-nav-balance { background: rgba(161,120,232,0.12); border: 1px solid var(--accent-primary); color: var(--accent-primary); font-weight: 700; }
+        .gk-user-chip { display: flex; align-items: center; gap: 8px; background: var(--bg-main); border: 1px solid var(--glass-border); border-radius: 30px; padding: 4px 12px 4px 4px; cursor: pointer; transition: border-color 0.2s; text-decoration: none; }
+        .gk-user-chip:hover { border-color: var(--accent-primary); }
+        .gk-user-chip img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+        .gk-user-chip span { font-size: 0.85rem; color: var(--text-main); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none; }
+        @media(min-width:600px) { .gk-user-chip span { display: inline; } }
+        .gk-page-body { max-width: 1400px; margin: 0 auto; padding: 0 16px 100px; }
+        .gk-dock { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top: 1px solid var(--glass-border); display: none; align-items: center; justify-content: space-around; padding: 8px 0; z-index: 1001; }
+        @media(max-width: 768px) { .gk-dock { display: flex; } .gk-page-body { padding-bottom: 80px; } }
+        .gk-dock-item { display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; color: var(--text-muted); font-size: 0.6rem; padding: 4px 12px; border-radius: 8px; transition: color 0.2s; border: none; background: transparent; cursor: pointer; font-family: inherit; }
+        .gk-dock-item i { font-size: 1.2rem; }
+        .gk-dock-item.active { color: var(--accent-primary); }
+    </style>
+    <nav class="gk-navbar">
+        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey"><span>GhostKey</span></a>
+        <div class="gk-search-wrap">
+            <input id="gk-nav-search" type="text" placeholder="Buscar productos..." autocomplete="off">
+            <button class="gk-search-btn-nav" id="gk-nav-search-btn" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="gk-nav-actions">
+            <a href="pago.html" class="gk-nav-btn gk-nav-balance" id="nav-balance-btn" title="Mi saldo">
+                <i class="fa-solid fa-wallet"></i>
+                <span class="label" id="nav-balance-label">Saldo</span>
+            </a>
+            <button class="gk-nav-btn" id="nav-friends-btn" title="Amigos">
+                <i class="fa-solid fa-users"></i>
+                <span class="label">Amigos</span>
+            </button>
+            <a href="cart.html" class="gk-nav-btn" title="Carrito">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="label">Carrito</span>
+            </a>
+            <div class="gk-user-chip" id="user-profile-btn" title="Mi perfil" onclick="window.location='perfil.html'">
+                <img id="user-avatar" class="user-avatar" src="https://ui-avatars.com/api/?name=G&background=A182E8&color=fff" alt="Avatar" referrerpolicy="no-referrer">
+                <span id="user-name">Cuenta</span>
+            </div>
+        </div>
+    </nav>
+    <script>
+        // Search redirect
+        (function(){
+            var btn = document.getElementById('gk-nav-search-btn');
+            var inp = document.getElementById('gk-nav-search');
+            if(btn && inp){
+                btn.addEventListener('click', function(){ var q=inp.value.trim(); if(q) window.location.href='catalogo.html?search='+encodeURIComponent(q); });
+                inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ var q=inp.value.trim(); if(q) window.location.href='catalogo.html?search='+encodeURIComponent(q); } });
+            }
+        })();
+    </script>
+    <div class="gk-page-body">
+            <header class="top-bar">
+                <button class="btn-secondary" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+            </header>
+
+            <section class="product-detail-container">
+                <!-- Left: Image and Description -->
+                <div>
+                    <img src="" alt="Cargando......" id="p-image" class="product-cover">
+                    <h1 id="p-title" style="margin-top: 1.5rem; font-size: 2.5rem;">Cargando......</h1>
+                    <p id="p-desc" class="text-muted" style="margin-top: 1rem; line-height: 1.6;">...</p>
+                </div>
+                
+                <!-- Right: Buy Panel -->
+                <div class="buy-panel">
+                    <div>
+                        <span id="p-badge" class="stock-badge" style="position:static; display:inline-block; margin-bottom:10px;">...</span>
+                        <h2 id="p-price" style="font-size: 2rem; color: var(--accent-primary);">$0.00</h2>
+                    </div>
+
+                    <!-- Favorite Button -->
+                    <div id="favorite-wrapper" style="display: none;">
+                        <input type="checkbox" id="favorite" name="favorite-checkbox" class="favorite-input" value="favorite-button">
+                        <label for="favorite" class="favorite-container">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                          <div class="action">
+                            <span class="option-1">Add to Favorites</span>
+                            <span class="option-2">Added to Favorites</span>
+                          </div>
+                        </label>
+                    </div>
+
+                    <div id="auth-state-message" style="color: var(--warning); font-size: 0.9rem;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Necesitas iniciar sesión para comprar.
+                    </div>
+
+                    <div id="buy-controls" style="display: none; flex-direction: column; gap: 1rem;" class="product-actions">
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Tu saldo disponible: <strong id="user-current-balance" style="color: var(--accent-primary);">$0.00</strong></p>
+                        
+                        <div>
+                            <!-- From Uiverse.io by vinodjangid07 --> 
+                            <button id="btn-toggle-gift" class="reward-btn" type="button">
+                              <span class="IconContainer">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 60 20"
+                                  class="box-top box"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-width="4"
+                                    stroke="#6A8EF6"
+                                    d="M2 18L58 18"
+                                  ></path>
+                                  <circle
+                                    stroke-width="5"
+                                    stroke="#6A8EF6"
+                                    fill="#101218"
+                                    r="7"
+                                    cy="9.5"
+                                    cx="20.5"
+                                  ></circle>
+                                  <circle
+                                    stroke-width="5"
+                                    stroke="#6A8EF6"
+                                    fill="#101218"
+                                    r="7"
+                                    cy="9.5"
+                                    cx="38.5"
+                                  ></circle>
+                                </svg>
+
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 58 44"
+                                  class="box-body box"
+                                >
+                                  <mask fill="white" id="path-1-inside-1_81_19">
+                                    <rect rx="3" height="44" width="58"></rect>
+                                  </mask>
+                                  <rect
+                                    mask="url(#path-1-inside-1_81_19)"
+                                    stroke-width="8"
+                                    stroke="#6A8EF6"
+                                    fill="#101218"
+                                    rx="3"
+                                    height="44"
+                                    width="58"
+                                  ></rect>
+                                  <line
+                                    stroke-width="6"
+                                    stroke="#6A8EF6"
+                                    y2="29"
+                                    x2="58"
+                                    y1="29"
+                                    x1="-3.61529e-09"
+                                  ></line>
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-width="5"
+                                    stroke="#6A8EF6"
+                                    d="M45.0005 20L36 3"
+                                  ></path>
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-width="5"
+                                    stroke="#6A8EF6"
+                                    d="M21 3L13.0002 19.9992"
+                                  ></path>
+                                </svg>
+
+                                <span class="coin"></span>
+                              </span>
+                              <span class="text">Regalar a un amigo</span>
+                            </button>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; border: 1px solid var(--glass-border);">
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Cantidad</span>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <button id="btn-qty-minus" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 5px; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">-</button>
+                                <span id="qty-display" style="font-weight: 700; font-size: 1.1rem; width: 20px; text-align: center;">1</span>
+                                <button id="btn-qty-plus" style="background: var(--accent-primary); color: white; border: none; border-radius: 5px; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
+                            </div>
+                        </div>
+
+                        <!-- From Uiverse.io by fthisilak --> 
+                        <button id="buy-btn" class="pay-btn" type="button">
+                          <span class="btn-text">Comprar Ahora</span>
+                          <div class="icon-container">
+                            <svg viewBox="0 0 24 24" class="icon card-icon">
+                              <path
+                                d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                            <svg viewBox="0 0 24 24" class="icon payment-icon">
+                              <path
+                                d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                            <svg viewBox="0 0 24 24" class="icon dollar-icon">
+                              <path
+                                d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+
+                            <svg viewBox="0 0 24 24" class="icon wallet-icon default-icon">
+                              <path
+                                d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+
+                            <svg viewBox="0 0 24 24" class="icon check-icon">
+                              <path
+                                d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </div>
+                        </button>
+                        
+                        <button id="add-cart-btn" class="btn-secondary" style="margin-top: 5px; padding: 12px; border-radius: 8px; border: 1px solid var(--accent-primary); color: var(--accent-primary); display: flex; justify-content: center; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-cart-plus"></i> Agregar al Carrito
+                        </button>
+                        <p id="buy-error" style="color: var(--danger); font-size: 0.8rem; display: none;"></p>
+                        <div id="buy-notice" style="display: none;"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Product Reviews Section -->
+            <section class="reviews-section" style="margin-top: 3rem; margin-bottom: 3rem; width: 100%;">
+                <h2 class="section-title">Opiniones de los Usuarios</h2>
+                <div id="product-reviews-container" style="display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 1rem; margin-top: 1.5rem;">
+                    <!-- Reviews will be injected here by JS -->
+                    <p style="color: var(--text-muted);">Cargando... reseñas...</p>
+                </div>
+            </section>
+        
+    </div>
+    
+    
+
+    <!-- Multi-Step Gift Modal -->
+    <div class="modal" id="gift-multi-modal">
+        <div class="modal-content" style="max-width: 480px; text-align: center; padding: 1.5rem; position: relative;">
+            
+            <!-- Step 1: Input Email -->
+            <div id="gift-step-1">
+                <h3 style="color: var(--accent-primary); font-size: 1.3rem;">Regalar a un Amigo</h3>
+                
+                <!-- Friends quick-select -->
+                <div id="gift-friends-list" style="max-height:160px; overflow-y:auto; margin:12px 0; padding-right:4px;">
+                    <p style="color:var(--text-muted);font-size:0.82rem;text-align:center;">Cargando... amigos...</p>
+                </div>
+                
+                <p style="margin-top: 8px; font-size: 0.88rem; color: var(--text-muted);">O ingresa el correo de tu amigo manualmente:</p>
+                <div class="brutalist-container" style="width: 100%; margin-top: 1rem;">
+                  <input
+                    id="gift-email-input-modal"
+                    placeholder="AMIGO@EMAIL.COM"
+                    class="brutalist-input smooth-type"
+                    type="email"
+                  />
+                  <label class="brutalist-label">CORREO DEL AMIGO</label>
+                </div>
+                <p id="gift-modal-error" style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none;"></p>
+                <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
+                    <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('gift-multi-modal').classList.remove('active')">Cancelar</button>
+                    <button class="btn-primary" style="flex:1;" id="btn-gift-next-1">Continuar</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Confirmation -->
+            <div id="gift-step-2" style="display: none;">
+                <h3 style="color: var(--warning); font-size: 1.3rem;">¿Estás Seguro?</h3>
+                <p style="margin-top: 8px; font-size: 0.95rem; color: var(--text-main);">
+                    Estás a punto de regalar <strong id="gift-confirm-product-name" style="color:var(--accent-primary);">Producto</strong> 
+                    a <strong id="gift-confirm-email">correo@amigo.com</strong> por <strong id="gift-confirm-price" style="color:var(--danger);">$0.00 MXN</strong>.
+                </p>
+                <div style="display: flex; gap: 10px; margin-top: 2rem;">
+                    <button class="btn-secondary" style="flex:1;" onclick="document.getElementById('gift-step-2').style.display='none'; document.getElementById('gift-step-1').style.display='block';">Atrás</button>
+                    <button class="btn-primary" style="flex:1;" id="btn-gift-confirm-buy">Confirmar Regalo</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Success Astronaut -->
+            <div id="gift-step-3" style="display: none;">
+                <h3 style="color: var(--accent-primary); font-size: 1.3rem;">¡Regalo Enviado con Ã‰xito! ðŸŽ</h3>
+                <p id="gift-modal-message" style="margin-top: 8px; font-size: 0.95rem; color: var(--text-main);">
+                    Nos esforzaremos al máximo para entregar tu regalo a tu amigo con la mayor rapidez posible.
+                </p>
+
+                <div class="astronaut-space-container">
+                    <!-- Astronaut CSS Animation -->
+                    <div class="box-of-star1"><div class="star star-position1"></div><div class="star star-position2"></div><div class="star star-position3"></div><div class="star star-position4"></div><div class="star star-position5"></div><div class="star star-position6"></div><div class="star star-position7"></div></div>
+                    <div class="box-of-star2"><div class="star star-position1"></div><div class="star star-position2"></div><div class="star star-position3"></div><div class="star star-position4"></div><div class="star star-position5"></div><div class="star star-position6"></div><div class="star star-position7"></div></div>
+                    <div class="box-of-star3"><div class="star star-position1"></div><div class="star star-position2"></div><div class="star star-position3"></div><div class="star star-position4"></div><div class="star star-position5"></div><div class="star star-position6"></div><div class="star star-position7"></div></div>
+                    <div class="box-of-star4"><div class="star star-position1"></div><div class="star star-position2"></div><div class="star star-position3"></div><div class="star star-position4"></div><div class="star star-position5"></div><div class="star star-position6"></div><div class="star star-position7"></div></div>
+                    <div data-js="astro" class="astronaut">
+                        <div class="head"></div>
+                        <div class="arm arm-left"></div>
+                        <div class="arm arm-right"></div>
+                        <div class="body"><div class="panel"></div></div>
+                        <div class="leg leg-left"></div>
+                        <div class="leg leg-right"></div>
+                        <div class="schoolbag"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 1.5rem; flex-direction: column;">
+                    <button class="btn-primary" id="share-whatsapp-btn" style="background: #25D366; color: #fff;">
+                        <i class="fa-brands fa-whatsapp"></i> Compartir
+                    </button>
+                    <button class="btn-secondary" onclick="window.location.href='perfil.html'">Ir a mi Perfil</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script type="module" src="js/producto.js"></script>
+    <script type="module" src="js/mobile-nav.js"></script>
+    <script type="module" src="js/cart.js"></script>
+    <!-- ===== MOBILE BOTTOM DOCK ===== -->
+    <nav class="gk-dock">
+        <a href="index.html" class="gk-dock-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Inicióo</span>
+        </a>
+        <a href="catalogo.html" class="gk-dock-item">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>Catálogo</span>
+        </a>
+        <button class="gk-dock-item" id="dock-friends-btn">
+            <i class="fa-solid fa-users"></i>
+            <span>Amigos</span>
+        </button>
+        <a href="pago.html" class="gk-dock-item">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Saldo</span>
+        </a>
+        <a href="perfil.html" class="gk-dock-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+<!-- ===== FRIENDS SIDE PANEL ===== -->
+    <div class="gk-friends-panel-backdrop" id="friends-backdrop"></div>
+    <aside class="gk-friends-panel" id="friends-panel">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+            <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-users" style="color:var(--accent-primary);"></i> Amigos & Referidos
+            </h3>
+            <button id="close-friends-panel" style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.2rem;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Search -->
+        <div class="brutalist-container" style="width: 100%; margin-top: 4px;">
+            <input id="search-friend-input" placeholder="Correo o UID de amigo..." class="brutalist-input smooth-type" type="text" style="padding: 10px; font-size: 14px; border-width: 2px;" />
+            <label class="brutalist-label" style="top: -20px; font-size: 10px;">BUSCAR / AÑADIR</label>
+        </div>
+        <button type="button" class="btn-primary" id="search-friend-btn" style="width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fa-solid fa-user-plus"></i> Buscar Amigo
+        </button>
+
+        <!-- Friends List -->
+        <div style="flex:1;">
+            <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+                Miembros de la Comunidad
+            </h4>
+            <div class="friends-list" id="friends-list" style="display: flex; flex-direction: column; gap: 8px;">
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando... amigos...</p>
+            </div>
+        </div>
+
+        <!-- Referral -->
+        <div class="referral-box" style="background: var(--bg-card); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius-md, 12px);">
+            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">
+                <i class="fa-solid fa-gift"></i> Tu Enlace de Invitación
+            </h4>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+                ¡Gana 3% en saldo cuando tus amigos compren usando tu link!
+            </p>
+            <div style="display:flex; gap: 6px;">
+                <input type="text" id="ref-link-input" readonly value="Inicióa sesión para ver tu enlace" style="flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
+                <button class="btn-primary" id="copy-ref-btn" style="padding: 6px 10px; font-size: 0.8rem;"><i class="fa-solid fa-copy"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    
+    <script type="module" src="js/friends-panel.js"></script>
+</body>
+</html>
