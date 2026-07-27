@@ -66,6 +66,107 @@ if (btnGift) {
     });
 }
 
+
+let productData = null;
+let currentQty = 1;
+let currentUser = null;
+
+async function loadProductDetails() {
+    if (!productId) {
+        if (pTitle) pTitle.textContent = "Producto no especificado";
+        if (pDesc) pDesc.textContent = "No se proporcionó un ID de producto válido.";
+        return;
+    }
+
+    try {
+        const pRef = doc(db, 'products', productId);
+        const pSnap = await getDoc(pRef);
+
+        if (!pSnap.exists()) {
+            if (pTitle) pTitle.textContent = "Producto no encontrado";
+            if (pDesc) pDesc.textContent = "El producto que buscas ya no existe o fue eliminado.";
+            return;
+        }
+
+        productData = { id: pSnap.id, ...pSnap.data() };
+
+        if (pImage) {
+            const fallbackImg = 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400';
+            pImage.src = productData.image || fallbackImg;
+            pImage.onerror = () => { pImage.src = fallbackImg; pImage.onerror = null; };
+        }
+        if (pTitle) pTitle.textContent = productData.name || 'Producto';
+        if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible.';
+        if (pPrice) pPrice.textContent = `$${Number(productData.price || 0).toFixed(2)} MXN`;
+
+        // Check product stock status
+        try {
+            const sRef = doc(db, 'products_stock', productId);
+            const sSnap = await getDoc(sRef);
+            if (sSnap.exists()) {
+                const sData = sSnap.data();
+                if (sData.status === 'disponible') {
+                    const pool = sData.credentialsPool || "";
+                    const count = pool.split('\n').filter(line => line.trim() !== "").length;
+                    if (pBadge) {
+                        pBadge.textContent = count > 0 ? `En stock (${count})` : 'Agotado';
+                        pBadge.style.background = count > 0 ? 'var(--success)' : 'var(--danger)';
+                    }
+                } else if (sData.status === 'bajo_pedido') {
+                    if (pBadge) {
+                        pBadge.textContent = 'Bajo pedido';
+                        pBadge.style.background = 'var(--warning)';
+                    }
+                } else {
+                    if (pBadge) {
+                        pBadge.textContent = 'Agotado';
+                        pBadge.style.background = 'var(--danger)';
+                    }
+                }
+            } else {
+                if (pBadge) {
+                    pBadge.textContent = 'Bajo pedido';
+                    pBadge.style.background = 'var(--warning)';
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching stock:', e);
+        }
+
+        // Listen to Auth State for buying
+        setPersistence(auth, browserLocalPersistence).catch(console.error);
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                if (authMsg) authMsg.style.display = 'none';
+                if (buyControls) buyControls.style.display = 'flex';
+                
+                try {
+                    const uRef = doc(db, 'users', user.uid);
+                    const uSnap = await getDoc(uRef);
+                    if (uSnap.exists()) {
+                        const bal = uSnap.data().balance || 0;
+                        if (userBalanceDisplay) userBalanceDisplay.textContent = `$${Number(bal).toFixed(2)} MXN`;
+                    }
+                } catch(e) {
+                    console.error('Error fetching user balance:', e);
+                }
+            } else {
+                if (authMsg) authMsg.style.display = 'block';
+                if (buyControls) buyControls.style.display = 'none';
+            }
+        });
+
+        // Load reviews
+        loadProductReviews(productId);
+
+    } catch (err) {
+        console.error("Error loading product details:", err);
+        if (pTitle) pTitle.textContent = "Error al cargar producto";
+    }
+}
+
+
 async function loadFriendsInGiftModal() {
     if (!currentUser) return;
     const container = document.getElementById('gift-friends-list');
