@@ -5241,3 +5241,19 @@ input:focus, select:focus, textarea:focus {
         overflow-y: auto !important;
     }
 }
+
+/* Fix button overflow */
+button, .btn-primary, .btn-secondary {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.product-actions button {
+    flex: 1 1 auto;
+}

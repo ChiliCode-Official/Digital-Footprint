@@ -222,3 +222,27 @@ export async function updateCartBadge() {
         console.error("Error updating cart badge:", err);
     }
 }
+
+
+// Global listener for removing cart items
+document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-remove-cart');
+    if (btn) {
+        if (!currentUser) return;
+        const pid = btn.dataset.pid;
+        if (!pid) return;
+        try {
+            const { doc, updateDoc, deleteField } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            const uRef = doc(db, 'users', currentUser.uid);
+            await updateDoc(uRef, {
+                [`cart.${pid}`]: deleteField()
+            });
+            alert('Producto eliminado del carrito.');
+            // Reload cart
+            openCart();
+            updateCartBadge();
+        } catch(err) {
+            console.error('Error removing from cart:', err);
+        }
+    }
+});

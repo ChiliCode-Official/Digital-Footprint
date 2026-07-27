@@ -102,7 +102,10 @@ async function loadProductDetails() {
             pImage.src = productData.image || fallbackImg;
             pImage.onerror = () => { pImage.src = fallbackImg; pImage.onerror = null; };
         }
-        if (pTitle) pTitle.textContent = productData.name || 'Producto';
+        if (pTitle) {
+            pTitle.textContent = productData.name || 'Producto';
+            pTitle.classList.remove('skeleton');
+        }
         if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible.';
         if (pPrice) pPrice.textContent = `$${Number(productData.price || 0).toFixed(2)} MXN`;
 
@@ -169,7 +172,10 @@ async function loadProductDetails() {
 
     } catch (err) {
         console.error("Error loading product details:", err);
-        if (pTitle) pTitle.textContent = "Error al cargar producto";
+        if (pTitle) {
+            pTitle.textContent = "Error al cargar producto";
+            pTitle.classList.remove('skeleton');
+        }
     }
 }
 
