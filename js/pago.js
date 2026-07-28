@@ -644,14 +644,10 @@ async function processSinglePurchase() {
 
         transaction.update(userRef, { balance: currentBal - actualPrice });
         
-        if (referredBy) {
-            const referrerRef = doc(db, 'users', referredBy);
-            const referrerSnap = await transaction.get(referrerRef);
-            if (referrerSnap.exists()) {
-                const rData = referrerSnap.data();
-                const bonus = actualPrice * 0.03;
-                transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
-            }
+        if (referrerSnap && referrerSnap.exists()) {
+            const rData = referrerSnap.data();
+            const bonus = actualPrice * 0.03;
+            transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
         }
         
         const newOrderRef = doc(collection(db, 'orders'));

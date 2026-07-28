@@ -304,6 +304,16 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     const uSnap = await transaction.get(userRef);
                     if (!uSnap.exists()) throw "El usuario no existe!";
                     const currentBal = uSnap.data().balance || 0;
+
+                    // --- REPAIR: Fetch referrer before any writes ---
+                    let referrerSnap = null;
+                    let referrerRef = null;
+                    const referredBy = uSnap.data().referredBy;
+                    if (referredBy) {
+                        referrerRef = doc(db, 'users', referredBy);
+                        referrerSnap = await transaction.get(referrerRef);
+                    }
+
                     
                     if (currentBal < totalPrice) throw "Saldo insuficiente.";
 
@@ -321,15 +331,10 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     const newBalance = uSnap.data().balance - totalPrice;
                     transaction.update(userRef, { balance: newBalance });
                     
-                    const referredBy = uSnap.data().referredBy;
-                    if (referredBy) {
-                        const referrerRef = doc(db, 'users', referredBy);
-                        const referrerSnap = await transaction.get(referrerRef);
-                        if (referrerSnap.exists()) {
-                            const rData = referrerSnap.data();
-                            const bonus = totalPrice * 0.03;
-                            transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
-                        }
+                    if (referrerSnap && referrerSnap.exists()) {
+                        const rData = referrerSnap.data();
+                        const bonus = totalPrice * 0.03;
+                        transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
                     }
                     
                     const newOrderRef = doc(collection(db, 'orders'));
@@ -425,6 +430,16 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     const uSnap = await transaction.get(userRef);
                     if (!uSnap.exists()) throw "El usuario no existe!";
                     const currentBal = uSnap.data().balance || 0;
+
+                    // --- REPAIR: Fetch referrer before any writes ---
+                    let referrerSnap = null;
+                    let referrerRef = null;
+                    const referredBy = uSnap.data().referredBy;
+                    if (referredBy) {
+                        referrerRef = doc(db, 'users', referredBy);
+                        referrerSnap = await transaction.get(referrerRef);
+                    }
+
                     
                     if (currentBal < totalPrice) throw "Saldo insuficiente.";
 
@@ -442,15 +457,10 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     const newBalance = uSnap.data().balance - totalPrice;
                     transaction.update(userRef, { balance: newBalance });
                     
-                    const referredBy = uSnap.data().referredBy;
-                    if (referredBy) {
-                        const referrerRef = doc(db, 'users', referredBy);
-                        const referrerSnap = await transaction.get(referrerRef);
-                        if (referrerSnap.exists()) {
-                            const rData = referrerSnap.data();
-                            const bonus = totalPrice * 0.03;
-                            transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
-                        }
+                    if (referrerSnap && referrerSnap.exists()) {
+                        const rData = referrerSnap.data();
+                        const bonus = totalPrice * 0.03;
+                        transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
                     }
                     
                     const newOrderRef = doc(collection(db, 'orders'));
