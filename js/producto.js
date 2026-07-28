@@ -313,19 +313,6 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     
                     if (sSnap.exists() && sSnap.data().status === 'disponible') {
                         let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
-                        if (pool.length < currentQty) throw "Stock insuficiente.";
-                        credsToGive = pool.splice(0, currentQty);
-                        transaction.update(stockRef, { credentialsPool: pool.join('\n') });
-                    }
-
-                    const newBalance = uSnap.data().balance - totalPrice;
-                    transaction.update(userRef, { balance: newBalance });
-                    
-                    const newOrderRef = doc(collection(db, 'orders'));
-                    transaction.set(newOrderRef, {
-                        uid: currentUser.uid,
-                        userEmail: currentUser.email,
-                        productId: productId,
                         productName: productData.name,
                         price: totalPrice,
                         quantity: currentQty,
