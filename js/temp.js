@@ -1,7 +1,5 @@
-import { auth, db } from './firebase-config.js';
-import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { updateCartBadge } from './cart.js';
+
+
 
 
 function normalizeImageUrl(url) {
