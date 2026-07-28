@@ -427,6 +427,17 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     const newBalance = uSnap.data().balance - totalPrice;
                     transaction.update(userRef, { balance: newBalance });
                     
+                    const referredBy = uSnap.data().referredBy;
+                    if (referredBy) {
+                        const referrerRef = doc(db, 'users', referredBy);
+                        const referrerSnap = await transaction.get(referrerRef);
+                        if (referrerSnap.exists()) {
+                            const rData = referrerSnap.data();
+                            const bonus = totalPrice * 0.03;
+                            transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
+                        }
+                    }
+                    
                     const newOrderRef = doc(collection(db, 'orders'));
                     const orderPayload = {
                         uid: currentUser.uid,
@@ -446,8 +457,7 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     transaction.set(newOrderRef, orderPayload);
                 });
 
-                alert("¡Compra exitosa! Ve a tu perfil para ver tus pedidos.");
-                window.location.href = 'perfil.html';
+                showPremiumSuccess("Tus productos ya están en tu panel.", "perfil.html");
                 
             } catch (e) {
                 console.error(e);
@@ -648,3 +658,42 @@ if (shareBtn) {
 }
 
 loadProductDetails();
+
+
+function showPremiumSuccess(message, redirectUrl) {
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.background = 'rgba(10, 10, 15, 0.85)';
+    modal.style.backdropFilter = 'blur(10px)';
+    modal.style.zIndex = '999999';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.opacity = '0';
+    modal.style.transition = 'opacity 0.4s ease';
+
+    modal.innerHTML = `
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; text-align: center; transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 40px rgba(34, 197, 94, 0.2);">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(34, 197, 94, 0.1); border: 2px solid #22c55e; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);">
+                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 2.5rem;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 10px; font-size: 1.5rem; font-weight: 600;">¡Compra Exitosa!</h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; max-width: 250px; margin: 0 auto;">${message}</p>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+        modal.firstElementChild.style.transform = 'scale(1)';
+    });
+
+    setTimeout(() => {
+        window.location.href = redirectUrl;
+    }, 2500);
+}
