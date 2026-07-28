@@ -312,10 +312,10 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     const sSnap = await transaction.get(stockRef);
                     
                     if (sSnap.exists() && sSnap.data().status === 'disponible') {
-                        let pool = (sSnap.data().credentialsPool || "").split('\\n').filter(l => l.trim() !== "");
+                        let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
                         if (pool.length < currentQty) throw "Stock insuficiente.";
                         credsToGive = pool.splice(0, currentQty);
-                        transaction.update(stockRef, { credentialsPool: pool.join('\\n') });
+                        transaction.update(stockRef, { credentialsPool: pool.join('\n') });
                     }
 
                     const newBalance = uSnap.data().balance - totalPrice;
@@ -332,7 +332,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         status: (sSnap.exists() && sSnap.data().status === 'disponible') ? 'entregado' : 'pendiente',
                         isGift: true,
                         giftRecipient: pendingGiftEmail,
-                        textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\\n') : 'Pendiente',
+                        textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\n') : 'Pendiente',
                         timestamp: serverTimestamp()
                     });
                 });
@@ -418,10 +418,10 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     const sSnap = await transaction.get(stockRef);
                     
                     if (sSnap.exists() && sSnap.data().status === 'disponible') {
-                        let pool = (sSnap.data().credentialsPool || "").split('\\n').filter(l => l.trim() !== "");
+                        let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
                         if (pool.length < currentQty) throw "Stock insuficiente.";
                         credsToGive = pool.splice(0, currentQty);
-                        transaction.update(stockRef, { credentialsPool: pool.join('\\n') });
+                        transaction.update(stockRef, { credentialsPool: pool.join('\n') });
                     }
 
                     const newBalance = uSnap.data().balance - totalPrice;
@@ -437,7 +437,7 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                         quantity: currentQty,
                         status: (sSnap.exists() && sSnap.data().status === 'disponible') ? 'entregado' : 'pendiente',
                         isGift: false,
-                        textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\\n') : 'Pendiente',
+                        textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\n') : 'Pendiente',
                         timestamp: serverTimestamp()
                     };
                     if (selectedDuration) {

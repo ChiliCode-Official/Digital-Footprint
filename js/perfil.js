@@ -247,9 +247,26 @@ async function loadClientData(uid) {
         if (tbody)              tbody.innerHTML = '';
         if (deliveredContainer) deliveredContainer.innerHTML = '';
 
-        const ordersSnap = await getDocs(query(collection(db, 'orders'), where('uid', '==', uid)));
+        
+        const [ordersSnap, giftsSnap] = await Promise.all([
+            getDocs(query(collection(db, 'orders'), where('uid', '==', uid))),
+            (currentUser && currentUser.email) ? getDocs(query(collection(db, 'orders'), where('giftRecipient', '==', currentUser.email))) : { docs: [] }
+        ]);
 
-        for (const d of ordersSnap.docs) {
+        const allDocsMap = new Map();
+        ordersSnap.docs.forEach(d => allDocsMap.set(d.id, d));
+        if(giftsSnap.docs) {
+            giftsSnap.docs.forEach(d => allDocsMap.set(d.id, d));
+        }
+        const allDocs = Array.from(allDocsMap.values());
+        allDocs.sort((a,b) => {
+            const tA = (a.data().timestamp && a.data().timestamp.seconds) || 0;
+            const tB = (b.data().timestamp && b.data().timestamp.seconds) || 0;
+            return tB - tA;
+        });
+
+
+        for (const d of allDocs) {
             const o = d.data();
             if (o.status === 'pendiente') hasPending = true;
 
@@ -275,21 +292,28 @@ async function loadClientData(uid) {
                     </tr>`;
             }
 
-            if (o.status === 'confirmado' && deliveredContainer) {
+            const isReceivedGift = o.isGift && o.giftRecipient === (currentUser && currentUser.email);
+            if ((o.status === 'confirmado' || o.status === 'entregado') && deliveredContainer) {
                 hasDelivered = true;
                 let prodImg = 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=300';
+                let isStreaming = false;
                 if (o.productId) {
                     try {
                         const pDoc = await getDoc(doc(db, 'products', o.productId));
-                        if (pDoc.exists() && pDoc.data().image) {
-                            prodImg = normalizeImageUrl(pDoc.data().image) || prodImg;
+                        if (pDoc.exists()) {
+                            if (pDoc.data().image) prodImg = normalizeImageUrl(pDoc.data().image) || prodImg;
+                            if (pDoc.data().isStreaming) isStreaming = true;
                         }
                     } catch(e) {}
                 }
                 const card = document.createElement('div');
                 card.className = 'delivered-card';
                 card.innerHTML = `
-                    <p class="delivered-tag">ENTREGADO</p>
+                    
+                    <p class="delivered-tag" id="tag-${d.id}">
+                        ${isReceivedGift ? (o.giftOpened ? '🎁 REGALO ABIERTO' : '🎁 REGALO RECIBIDO') : (o.isGift ? '🎁 REGALO ENVIADO' : 'ENTREGADO')}
+                    </p>
+
                     <div class="delivered-wrapper">
                         <div class="delivered-card-image"><img src="${prodImg}" alt="${escapeHtml(o.productName||'Producto')}" onerror="this.src='https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=300'"></div>
                         <div class="delivered-content">
@@ -297,7 +321,7 @@ async function loadClientData(uid) {
                             <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-bottom:4px;">${dDate}</span>
                             <p class="delivered-title delivered-price">$${o.price||0}</p>
                         </div>
-                        <button class="delivered-card-btn" data-credential="${escapeHtml(o.textDelivered||'')}" data-is-gift="${o.isGift ? 'true' : 'false'}">
+                        <button class="delivered-card-btn" data-order-id="${d.id}" data-gift-opened="${o.giftOpened ? 'true' : 'false'}" data-credential="${escapeHtml(o.textDelivered||'')}" data-is-received-gift="${isReceivedGift ? 'true' : 'false'}" data-sender="${escapeHtml(o.userEmail || '')}" data-prod-name="${escapeHtml(o.productName||'')}" data-is-streaming="${isStreaming ? 'true' : 'false'}">
                             <i class="fa-solid fa-key"></i> OBTENER
                         </button>
                     </div>`;
@@ -305,50 +329,70 @@ async function loadClientData(uid) {
             }
         }
 
-        // Handle Gift Modal interactions
-        const giftModal = document.getElementById('gift-animation-modal');
-        const giftTrigger = document.getElementById('gift-anim-trigger');
-        const giftHint = document.getElementById('gift-click-hint');
-        const giftText = document.getElementById('gift-credential-text');
-        const giftVal = document.getElementById('gift-credential-value');
-        const btnCloseGift = document.getElementById('btn-close-gift');
+        // Handle New Gift Redemption Modal
+        const redemptionModal = document.getElementById('gift-redemption-modal');
+        const rTitle = document.getElementById('gift-redemption-title');
+        const rSender = document.getElementById('gift-redemption-sender');
+        const rProduct = document.getElementById('gift-redemption-product');
+        const rCreds = document.getElementById('gift-redemption-creds');
+        const rShareBtn = document.getElementById('btn-share-gift');
 
         document.querySelectorAll('.delivered-card-btn').forEach(btn => {
-            btn.onclick = () => {
+            btn.onclick = async () => {
                 const text = btn.dataset.credential;
-                const isGift = btn.dataset.isGift === 'true';
+                const isReceivedGift = btn.dataset.isReceivedGift === 'true';
+                const sender = btn.dataset.sender;
+                const prodName = btn.dataset.prodName;
+                const orderId = btn.dataset.orderId;
+                const isOpened = btn.dataset.giftOpened === 'true';
+                const isStreaming = btn.dataset.isStreaming === 'true';
+                const streamingWarning = isStreaming ? "⚠ IMPORTANTE: Prohibido cambiar datos de pago, correo, contraseña o acceder a otros perfiles. Incumplir esto resultará en EXPULSIÓN INMEDIATA Y PENALIZACIÓN." : "";
 
-                if (!text) {
+                if (!text || text === 'Pendiente') {
                     alert('El administrador está procesando tu entrega.');
                     return;
                 }
 
-                if (isGift && giftModal) {
-                    // Reset modal state
-                    giftTrigger.classList.remove('opened');
-                    giftHint.style.display = 'block';
-                    giftText.style.display = 'none';
-                    giftVal.textContent = text;
-                    giftModal.style.display = 'flex';
+                if (isReceivedGift && redemptionModal) {
+                    if (!isOpened && orderId) {
+                        try {
+                            const { doc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+                            const { db } = await import('./firebase-config.js');
+                            await updateDoc(doc(db, 'orders', orderId), { giftOpened: true });
+                            btn.dataset.giftOpened = 'true';
+                            const tagEl = document.getElementById('tag-' + orderId);
+                            if (tagEl) tagEl.textContent = '🎁 REGALO ABIERTO';
+                        } catch(e) {
+                            console.error('Error updating giftOpened:', e);
+                        }
+                    }
+                    rSender.textContent = "Enviado por: " + sender;
+                    rProduct.textContent = "Producto: " + prodName;
+                    rCreds.innerHTML = (isStreaming ? "<p style='color:var(--danger); font-size:0.75rem; margin-bottom:10px; font-weight:bold;'>" + streamingWarning + "</p>" : "") + text.replace(/\n/g, '<br>');
+                    redemptionModal.classList.add('active');
 
-                    giftTrigger.onclick = () => {
-                        giftTrigger.classList.add('opened');
-                        giftHint.style.display = 'none';
-                        setTimeout(() => {
-                            giftText.style.display = 'block';
-                        }, 1000);
-                    };
-
-                    btnCloseGift.onclick = () => {
-                        navigator.clipboard.writeText(text)
-                            .then(() => alert(`¡Regalo reclamado y credencial copiada!\n${text}`))
-                            .catch(() => alert(`Credencial:\n${text}`));
-                        giftModal.style.display = 'none';
+                    rShareBtn.onclick = async () => {
+                        try {
+                            const shareData = {
+                                title: '¡Recibí un regalo en GhostKey!',
+                                text: `Me acaban de regalar ${prodName} en GhostKey. ¡Increíble!`,
+                                url: window.location.origin
+                            };
+                            if (navigator.share) {
+                                await navigator.share(shareData);
+                            } else {
+                                await navigator.clipboard.writeText(shareData.text + " " + shareData.url);
+                                alert("Copiado al portapapeles.");
+                            }
+                        } catch(e) {
+                            console.log("Share failed", e);
+                        }
                     };
                 } else {
+                    const fullText = (isStreaming ? streamingWarning + "\n\n" : "") + "Credencial:\n" + text;
                     navigator.clipboard.writeText(text)
-                        .then(() => alert(`Credencial copiada:\n${text}`))
-                        .catch(() => alert(`Credencial:\n${text}`));
+                        .then(() => alert(`Credencial copiada:\n\n${fullText}`))
+                        .catch(() => alert(fullText));
                 }
             };
         });
