@@ -313,6 +313,30 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     
                     if (sSnap.exists() && sSnap.data().status === 'disponible') {
                         let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
+                        if (pool.length < currentQty) throw "Stock insuficiente.";
+                        credsToGive = pool.splice(0, currentQty);
+                        transaction.update(stockRef, { credentialsPool: pool.join('\n') });
+                    }
+
+                    const newBalance = uSnap.data().balance - totalPrice;
+                    transaction.update(userRef, { balance: newBalance });
+                    
+                    const referredBy = uSnap.data().referredBy;
+                    if (referredBy) {
+                        const referrerRef = doc(db, 'users', referredBy);
+                        const referrerSnap = await transaction.get(referrerRef);
+                        if (referrerSnap.exists()) {
+                            const rData = referrerSnap.data();
+                            const bonus = totalPrice * 0.03;
+                            transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
+                        }
+                    }
+                    
+                    const newOrderRef = doc(collection(db, 'orders'));
+                    const orderPayload = {
+                        uid: currentUser.uid,
+                        userEmail: currentUser.email,
+                        productId: productId,
                         productName: productData.name,
                         price: totalPrice,
                         quantity: currentQty,
@@ -321,7 +345,11 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         giftRecipient: pendingGiftEmail,
                         textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\n') : 'Pendiente',
                         timestamp: serverTimestamp()
-                    });
+                    };
+                    if (typeof selectedDuration !== 'undefined' && selectedDuration) {
+                        orderPayload.streamingDuration = selectedDuration;
+                    }
+                    transaction.set(newOrderRef, orderPayload);
                 });
 
                 // Show Astronaut Animation
