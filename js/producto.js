@@ -349,7 +349,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         const siteUrl = `${window.location.origin}${basePath}`;
                         const message = `Ã‚¡Hola! Ã°Å¸Å½Â Te acabo de regalar *${productData.name}* en GhostKey.
 
-Ã‚¡Nos esforzaremos al mÃƒ¡ximo para que lo recibas super rÃƒ¡pido! Ã°Å¸Å¡â‚¬Ã¢Å“Â¨
+¡Nos esforzaremos al máximo para que lo recibas super rápido! 🚀✨
 
 Visita GhostKey para ver tus regalos: ${siteUrl}`;
                         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
