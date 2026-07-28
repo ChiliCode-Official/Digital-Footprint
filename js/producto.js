@@ -329,10 +329,10 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         productName: productData.name,
                         price: totalPrice,
                         quantity: currentQty,
-                        status: stockData.status === 'disponible' ? 'entregado' : 'pendiente',
+                        status: (sSnap.exists() && sSnap.data().status === 'disponible') ? 'entregado' : 'pendiente',
                         isGift: true,
                         giftRecipient: pendingGiftEmail,
-                        textDelivered: stockData.status === 'disponible' ? credsToGive.join('\\n') : 'Pendiente',
+                        textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\\n') : 'Pendiente',
                         timestamp: serverTimestamp()
                     });
                 });
@@ -435,9 +435,9 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                         productName: productData.name,
                         price: totalPrice,
                         quantity: currentQty,
-                        status: stockData.status === 'disponible' ? 'entregado' : 'pendiente',
+                        status: (sSnap.exists() && sSnap.data().status === 'disponible') ? 'entregado' : 'pendiente',
                         isGift: false,
-                        textDelivered: stockData.status === 'disponible' ? credsToGive.join('\\n') : 'Pendiente',
+                        textDelivered: (sSnap.exists() && sSnap.data().status === 'disponible') ? credsToGive.join('\\n') : 'Pendiente',
                         timestamp: serverTimestamp()
                     };
                     if (selectedDuration) {
