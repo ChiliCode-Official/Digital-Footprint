@@ -400,7 +400,7 @@ async function loadClientData(uid) {
         if (noticeBox)        noticeBox.style.display       = hasPending  ? 'block' : 'none';
         if (deliveredSection) deliveredSection.style.display = hasDelivered ? 'block' : 'none';
     } catch(e) {
-        console.error('Error loading client orders:', e);
+        console.error('Error loading client orders:', e); alert('Error loading client orders: ' + e.message);
     }
 
     // 3. Client Balance Requests
