@@ -95,7 +95,7 @@ async function loadProductDetails() {
             return;
         }
 
-        productData = { id: pSnap.id, ...pSnap.data() };
+        productData = { id: pSnap.id, ...pSnap.data() };\n        currentQty = productData.minQuantity || 1;\n        updateQtyUI();
 
         if (pImage) {
             const fallbackImg = 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400';
@@ -109,6 +109,24 @@ async function loadProductDetails() {
         if (pDesc) pDesc.textContent = productData.description || 'Sin descripción disponible.';
         if (pPrice) pPrice.textContent = `$${Number(productData.price || 0).toFixed(2)} MXN`;
 
+        const streamContainer = document.getElementById('streaming-options-container');
+        const streamSelect = document.getElementById('streaming-duration-select');
+        if (streamContainer && streamSelect) {
+            if (productData.isStreaming && productData.streamingOptions) {
+                streamContainer.style.display = 'block';
+                streamSelect.innerHTML = '<option value="">Selecciona una opción</option>';
+                const opts = productData.streamingOptions.split(',').map(o => o.trim()).filter(o => o);
+                opts.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o;
+                    opt.textContent = o;
+                    streamSelect.appendChild(opt);
+                });
+            } else {
+                streamContainer.style.display = 'none';
+            }
+        }
+
         // Check product stock status
         try {
             const sRef = doc(db, 'products_stock', productId);
@@ -117,7 +135,8 @@ async function loadProductDetails() {
                 const sData = sSnap.data();
                 if (sData.status === 'disponible') {
                     const pool = sData.credentialsPool || "";
-                    const count = pool.split('\n').filter(line => line.trim() !== "").length;
+                    const count = pool.split('
+').filter(line => line.trim() !== "").length;
                     if (pBadge) {
                         pBadge.textContent = count > 0 ? `En stock (${count})` : 'Agotado';
                         pBadge.style.background = count > 0 ? 'var(--success)' : 'var(--danger)';
@@ -292,10 +311,12 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     const sSnap = await transaction.get(stockRef);
                     
                     if (sSnap.exists() && sSnap.data().status === 'disponible') {
-                        let pool = (sSnap.data().credentialsPool || "").split('\n').filter(l => l.trim() !== "");
+                        let pool = (sSnap.data().credentialsPool || "").split('
+').filter(l => l.trim() !== "");
                         if (pool.length < currentQty) throw "Stock insuficiente.";
                         credsToGive = pool.splice(0, currentQty);
-                        transaction.update(stockRef, { credentialsPool: pool.join('\n') });
+                        transaction.update(stockRef, { credentialsPool: pool.join('
+') });
                     }
 
                     const newBalance = uSnap.data().balance - totalPrice;
@@ -312,7 +333,8 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         status: stockData.status === 'disponible' ? 'entregado' : 'pendiente',
                         isGift: true,
                         giftRecipient: pendingGiftEmail,
-                        textDelivered: stockData.status === 'disponible' ? credsToGive.join('\n') : 'Pendiente',
+                        textDelivered: stockData.status === 'disponible' ? credsToGive.join('
+') : 'Pendiente',
                         timestamp: serverTimestamp()
                     });
                 });
@@ -327,7 +349,11 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         e.preventDefault();
                         const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
                         const siteUrl = `${window.location.origin}${basePath}`;
-                        const message = `Ã‚¡Hola! Ã°Å¸Å½Â Te acabo de regalar *${productData.name}* en GhostKey.\n\nÃ‚¡Nos esforzaremos al mÃƒ¡ximo para que lo recibas super rÃƒ¡pido! Ã°Å¸Å¡â‚¬Ã¢Å“Â¨\n\nVisita GhostKey para ver tus regalos: ${siteUrl}`;
+                        const message = `Ã‚¡Hola! Ã°Å¸Å½Â Te acabo de regalar *${productData.name}* en GhostKey.
+
+Ã‚¡Nos esforzaremos al mÃƒ¡ximo para que lo recibas super rÃƒ¡pido! Ã°Å¸Å¡â‚¬Ã¢Å“Â¨
+
+Visita GhostKey para ver tus regalos: ${siteUrl}`;
                         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
                     };
                 }
@@ -341,35 +367,150 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
         });
     }
 
+    if (btnBuy) {
+        btnBuy.addEventListener('click', async () => {
+            if (!currentUser) {
+                alert("Debes iniciar sesión para comprar.");
+                return;
+            }
+            if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
+                alert("Cantidad inválida.");
+                return;
+            }
+            const totalPrice = productData.price * currentQty;
+
+            let selectedDuration = '';
+            if (productData.isStreaming) {
+                const sSelect = document.getElementById('streaming-duration-select');
+                if (!sSelect || !sSelect.value) {
+                    alert("Por favor, selecciona una duración de suscripción.");
+                    return;
+                }
+                selectedDuration = sSelect.value;
+            }
+
+            // Check Balance
+            if (userDocData && userDocData.balance < totalPrice) {
+                window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}`;
+                return;
+            }
+
+            const confirmMsg = selectedDuration ? 
+                `¿Confirmar compra de ${currentQty}x ${productData.name} (${selectedDuration}) por $${totalPrice.toFixed(2)} MXN?` :
+                `¿Confirmar compra de ${currentQty}x ${productData.name} por $${totalPrice.toFixed(2)} MXN?`;
+                
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            btnBuy.disabled = true;
+            btnBuy.textContent = "Procesando...";
+
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const userRef = doc(db, 'users', currentUser.uid);
+                    const uSnap = await transaction.get(userRef);
+                    if (!uSnap.exists()) throw "El usuario no existe!";
+                    const currentBal = uSnap.data().balance || 0;
+                    
+                    if (currentBal < totalPrice) throw "Saldo insuficiente.";
+
+                    let credsToGive = [];
+                    const stockRef = doc(db, 'products_stock', productId);
+                    const sSnap = await transaction.get(stockRef);
+                    
+                    if (sSnap.exists() && sSnap.data().status === 'disponible') {
+                        let pool = (sSnap.data().credentialsPool || "").split('
+').filter(l => l.trim() !== "");
+                        if (pool.length < currentQty) throw "Stock insuficiente.";
+                        credsToGive = pool.splice(0, currentQty);
+                        transaction.update(stockRef, { credentialsPool: pool.join('
+') });
+                    }
+
+                    const newBalance = uSnap.data().balance - totalPrice;
+                    transaction.update(userRef, { balance: newBalance });
+                    
+                    const newOrderRef = doc(collection(db, 'orders'));
+                    const orderPayload = {
+                        uid: currentUser.uid,
+                        userEmail: currentUser.email,
+                        productId: productId,
+                        productName: productData.name,
+                        price: totalPrice,
+                        quantity: currentQty,
+                        status: stockData.status === 'disponible' ? 'entregado' : 'pendiente',
+                        isGift: false,
+                        textDelivered: stockData.status === 'disponible' ? credsToGive.join('
+') : 'Pendiente',
+                        timestamp: serverTimestamp()
+                    };
+                    if (selectedDuration) {
+                        orderPayload.streamingDuration = selectedDuration;
+                    }
+                    transaction.set(newOrderRef, orderPayload);
+                });
+
+                alert("¡Compra exitosa! Ve a tu perfil para ver tus pedidos.");
+                window.location.href = 'perfil.html';
+                
+            } catch (e) {
+                console.error(e);
+                alert("Error: " + String(e));
+                btnBuy.disabled = false;
+                btnBuy.textContent = "Comprar Ahora";
+            }
+        });
+    }
+
 const addCartBtn = document.getElementById('add-cart-btn');
 if (addCartBtn) {
     addCartBtn.addEventListener('click', async () => {
-        if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
-            alert("Cantidad invÃƒ¡lida.");
+        if (!currentUser) {
+            alert("Debes iniciar sesión para usar el carrito.");
             return;
         }
+        if (isNaN(currentQty) || currentQty <= 0 || !Number.isFinite(currentQty)) {
+            alert("Cantidad inválida.");
+            return;
+        }
+
+        let selectedDuration = '';
+        if (productData && productData.isStreaming) {
+            const sSelect = document.getElementById('streaming-duration-select');
+            if (!sSelect || !sSelect.value) {
+                alert("Por favor, selecciona una duración de suscripción.");
+                return;
+            }
+            selectedDuration = sSelect.value;
+        }
+
         if (stockData && stockData.status === 'disponible') {
             let pool = stockData.credentialsPool || "";
-            let count = pool.split('\n').filter(l => l.trim() !== "").length;
+            let count = pool.split('
+').filter(l => l.trim() !== "").length;
             if (currentQty > count) {
                 alert("La cantidad excede el stock disponible.");
                 return;
             }
-        }
-        if (!currentUser) {
-            alert("Debes iniciar sesión para usar el carrito.");
-            return;
         }
         try {
             const uRef = doc(db, 'users', currentUser.uid);
             const userSnap = await getDoc(uRef);
             if (userSnap.exists()) {
                 let currentCart = userSnap.data().cart || {};
-                let existingQty = currentCart[productId] || 0;
-                currentCart[productId] = existingQty + currentQty;
+                let existingObj = currentCart[productId];
+                let existingQty = 0;
+                if (typeof existingObj === 'number') existingQty = existingObj;
+                else if (existingObj && existingObj.qty) existingQty = existingObj.qty;
+                
+                currentCart[productId] = {
+                    qty: existingQty + currentQty,
+                    duration: selectedDuration
+                };
                 await updateDoc(uRef, { cart: currentCart });
                 updateCartBadge();
-                alert("Ã‚¡Producto añadido al carrito!");
+                alert("¡Producto añadido al carrito!");
             }
         } catch(e) {
             console.error(e);
@@ -383,7 +524,8 @@ function checkAndDisplayStockNotice() {
     if (!buyNotice) return;
     if (stockData && stockData.status === 'disponible') {
         let pool = stockData.credentialsPool || "";
-        let count = pool.split('\n').filter(l => l.trim() !== "").length;
+        let count = pool.split('
+').filter(l => l.trim() !== "").length;
         if (currentQty > count) {
             const immediate = Math.max(0, count);
             const pending = currentQty - immediate;
@@ -435,7 +577,205 @@ if(btnMinus) {
 
 if(btnPlus) {
     btnPlus.addEventListener('click', () => {
-        currentQty++;
+        const minQ = productData ? (productData.minQuantity || 1) : 1;
+        if (currentQty === 0) {
+            currentQty = minQ;
+        } else if (currentQty < minQ) {
+            currentQty = minQ;
+        } else {
+            currentQty++;
+        }
+        updateQtyUI();
+    });
+}
+
+async function loadProductReviews(pid) {
+    const container = document.getElementById('product-reviews-container');
+    if (!container) return;
+
+    try {
+        const q = query(collection(db, "reviews"), where("productId", "==", pid), orderBy("timestamp", "desc"));
+        let snap;
+        try {
+            snap = await getDocs(q);
+        } catch (err) {
+            const fallbackQ = query(collection(db, "reviews"), where("productId", "==", pid));
+            snap = await getDocs(fallbackQ);
+        }
+
+        if (snap.empty) {
+            container.innerHTML = `<p style="color: var(--text-muted);">Todavía no hay reseñas para este producto.</p>`;
+            return;
+        }
+
+        container.innerHTML = '';
+        snap.forEach(docSnap => {
+            const r = docSnap.data();
+            const ratingVal = Math.min(5, Math.max(1, parseInt(r.rating) || 5));
+            const starsHtml = '<i class="fa-solid fa-star"></i>'.repeat(ratingVal) + '<i class="fa-regular fa-star"></i>'.repeat(5 - ratingVal);
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.minWidth = "280px";
+            card.innerHTML = `
+                <div class="review-stars">${starsHtml}</div>
+                <div class="review-body">
+                    <p class="text">${escapeHtml(r.text || '')}</p>
+                    <span class="username">@${escapeHtml(r.username || 'Usuario')}</span>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+    } catch (err) {
+        console.error("Error loading product reviews:", err);
+        container.innerHTML = `<p style="color: var(--danger);">No se pudieron cargar las reseñas.</p>`;
+    }
+}
+
+
+const shareBtn = document.getElementById('btn-share-product');
+if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            const originalIcon = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            shareBtn.style.color = 'var(--success)';
+            shareBtn.style.borderColor = 'var(--success)';
+            setTimeout(() => {
+                shareBtn.innerHTML = originalIcon;
+                shareBtn.style.color = '';
+                shareBtn.style.borderColor = '';
+            }, 2000);
+        } catch(e) {
+            alert('Enlace copiado: ' + window.location.href);
+        }
+    });
+}
+
+loadProductDetails();
+
+        }
+        updateQtyUI();
+    });
+}
+
+if(btnPlus) {
+    btnPlus.addEventListener("click", () => {
+        const minQ = productData ? (productData.minQuantity || 1) : 1;
+        if (currentQty === 0) {
+            currentQty = minQ;
+        } else if (currentQty < minQ) {
+            currentQty = minQ;
+        } else {
+            currentQty++;
+        }
+        updateQtyUI();
+    });
+}
+
+async function loadProductReviews(pid) {
+    const container = document.getElementById("product-reviews-container");
+    if (!container) return;
+
+').filter(l => l.trim() !== "").length;
+            if (currentQty > count) {
+                alert("La cantidad excede el stock disponible.");
+                return;
+            }
+        }
+        try {
+            const uRef = doc(db, 'users', currentUser.uid);
+            const userSnap = await getDoc(uRef);
+            if (userSnap.exists()) {
+                let currentCart = userSnap.data().cart || {};
+                let existingObj = currentCart[productId];
+                let existingQty = 0;
+                if (typeof existingObj === 'number') existingQty = existingObj;
+                else if (existingObj && existingObj.qty) existingQty = existingObj.qty;
+                
+                currentCart[productId] = {
+                    qty: existingQty + currentQty,
+                    duration: selectedDuration
+                };
+                await updateDoc(uRef, { cart: currentCart });
+                updateCartBadge();
+                alert("¡Producto añadido al carrito!");
+            }
+        } catch(e) {
+            console.error(e);
+            alert("Error al añadir al carrito.");
+        }
+    });
+}
+
+function checkAndDisplayStockNotice() {
+    const buyNotice = document.getElementById('buy-notice');
+    if (!buyNotice) return;
+    if (stockData && stockData.status === 'disponible') {
+        let pool = stockData.credentialsPool || "";
+        let count = pool.split('
+').filter(l => l.trim() !== "").length;
+        if (currentQty > count) {
+            const immediate = Math.max(0, count);
+            const pending = currentQty - immediate;
+            buyNotice.style.display = 'block';
+            buyNotice.style.background = 'rgba(234,179,8,0.12)';
+            buyNotice.style.border = '1px solid var(--warning)';
+            buyNotice.style.color = 'var(--warning)';
+            buyNotice.style.padding = '10px 14px';
+            buyNotice.style.borderRadius = '10px';
+            buyNotice.style.fontSize = '0.85rem';
+            buyNotice.style.marginTop = '10px';
+            buyNotice.innerHTML = `<i class="fa-solid fa-clock"></i> <strong>Aviso de Entrega:</strong> ${immediate > 0 ? `Tienes ${immediate} u. disponible(s) de inmediato. ` : ''}Las ${pending} u. restante(s) se entregarán bajo pedido.`;
+        } else {
+            buyNotice.style.display = 'none';
+        }
+    } else {
+        buyNotice.style.display = 'none';
+    }
+}
+
+function updateQtyUI() {
+    const qtyDisplay = document.getElementById('qty-display');
+    const pPrice = document.getElementById('p-price');
+    
+    if(qtyDisplay) qtyDisplay.textContent = currentQty;
+    
+    if(pPrice && productData) {
+        const total = productData.price * currentQty;
+        pPrice.textContent = `$${total.toFixed(2)}`;
+    }
+
+    checkAndDisplayStockNotice();
+}
+
+const btnMinus = document.getElementById('btn-qty-minus');
+const btnPlus = document.getElementById('btn-qty-plus');
+
+if(btnMinus) {
+    btnMinus.addEventListener('click', () => {
+        const minQ = productData ? (productData.minQuantity || 1) : 1;
+        if (currentQty > minQ) {
+            currentQty--;
+        } else if (currentQty === minQ) {
+            currentQty = 0;
+        }
+        updateQtyUI();
+    });
+}
+
+if(btnPlus) {
+    btnPlus.addEventListener('click', () => {
+        const minQ = productData ? (productData.minQuantity || 1) : 1;
+        if (currentQty === 0) {
+            currentQty = minQ;
+        } else if (currentQty < minQ) {
+            currentQty = minQ;
+        } else {
+            currentQty++;
+        }
         updateQtyUI();
     });
 }

@@ -115,7 +115,15 @@ async function loadCartContent() {
         let totalSum = 0;
 
         for (const pid of cartItems) {
-            const qty = cartObj[pid];
+            const cartItemObj = cartObj[pid];
+            let qty = 0;
+            let duration = '';
+            if (typeof cartItemObj === 'number') {
+                qty = cartItemObj;
+            } else if (cartItemObj) {
+                qty = parseInt(cartItemObj.qty) || 0;
+                duration = cartItemObj.duration || '';
+            }
             const pSnap = await getDoc(doc(db, 'products', pid));
             if (pSnap.exists()) {
                 const p = pSnap.data();
@@ -138,7 +146,7 @@ async function loadCartContent() {
                 itemDiv.innerHTML = `
                     <img src="${p.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=100'}" class="cart-item-img">
                     <div class="cart-item-info">
-                        <div class="cart-item-title">${escapeHtml(p.name)}</div>
+                        <div class="cart-item-title">${escapeHtml(p.name)} ${duration ? `<span style="font-size:0.8rem; color:var(--text-muted);">(${escapeHtml(duration)})</span>` : ''}</div>
                         <div class="cart-item-price">$${p.price} x ${qty} = $${itemTotal.toFixed(2)}</div>
                         ${stockNoticeHtml}
                     </div>
@@ -200,7 +208,12 @@ export async function updateCartBadge() {
         const uSnap = await getDoc(doc(db, 'users', currentUser.uid));
         if (uSnap.exists()) {
             const cartObj = uSnap.data().cart || {};
-            const count = Object.values(cartObj).reduce((sum, val) => sum + parseInt(val), 0);
+            const count = Object.values(cartObj).reduce((sum, val) => {
+                let q = 0;
+                if (typeof val === 'number') q = val;
+                else if (val && val.qty) q = parseInt(val.qty);
+                return sum + (q || 0);
+            }, 0);
             
             document.querySelectorAll('.fa-bag-shopping, .fa-shopping-bag, .action-btn i.fa-bag-shopping').forEach(icon => {
                 const parent = icon.closest('a, button');

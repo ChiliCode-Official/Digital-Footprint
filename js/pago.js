@@ -472,7 +472,15 @@ async function processCartPurchase() {
 
         // Fetch all product data and stock in transaction
         for (const pid of cartItems) {
-            const pQty = parseInt(cartObj[pid]);
+            let pQtyObj = cartObj[pid];
+            let pQty = 0;
+            let duration = '';
+            if (typeof pQtyObj === 'number') {
+                pQty = pQtyObj;
+            } else if (pQtyObj) {
+                pQty = parseInt(pQtyObj.qty) || 0;
+                duration = pQtyObj.duration || '';
+            }
             if (isNaN(pQty) || !Number.isFinite(pQty) || pQty <= 0) {
                 throw new Error("Cantidad inválida en el carrito.");
             }
@@ -485,7 +493,7 @@ async function processCartPurchase() {
                     throw new Error(`Precio inválido en producto: ${p.name}`);
                 }
                 calculatedTotal += (price * pQty);
-                productsData.push({ id: pid, qty: pQty, price: price, name: p.name });
+                productsData.push({ id: pid, qty: pQty, price: price, name: p.name, duration: duration });
             }
         }
         
@@ -529,7 +537,7 @@ async function processCartPurchase() {
             }
 
             const newOrderRef = doc(collection(db, 'orders'));
-            transaction.set(newOrderRef, {
+            const orderPayload = {
                 uid: currentUser.uid,
                 userEmail: currentUser.email,
                 productId: prod.id,
@@ -543,7 +551,9 @@ async function processCartPurchase() {
                 textDelivered: credsToGive.join('\n'),
                 isGift: false,
                 timestamp: serverTimestamp()
-            });
+            };
+            if (prod.duration) orderPayload.streamingDuration = prod.duration;
+            transaction.set(newOrderRef, orderPayload);
         }
 
         // Deduct balance and clear cart

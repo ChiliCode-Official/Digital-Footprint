@@ -716,17 +716,26 @@ window.createProduct = async function() {
     const featured= document.getElementById('new-prod-featured').checked;
     const pool    = document.getElementById('new-prod-pool').value;
 
+    const isStreaming = document.getElementById('new-prod-streaming') ? document.getElementById('new-prod-streaming').checked : false;
+    const streamingOpts = document.getElementById('new-prod-streaming-opts') ? document.getElementById('new-prod-streaming-opts').value.trim() : '';
+
     if (!name || isNaN(price)) { alert('Nombre y Precio son obligatorios.'); return; }
 
     try {
         const pRef = doc(collection(db, 'products'));
-        await setDoc(pRef, { name, price, minQuantity: minQty, category, image: img, description: desc, isFeatured: featured });
+        await setDoc(pRef, { name, price, minQuantity: minQty, category, image: img, description: desc, isFeatured: featured, isStreaming: isStreaming, streamingOptions: streamingOpts });
         await setDoc(doc(db, 'products_stock', pRef.id), { status, credentialsPool: pool });
         alert('Producto creado exitosamente.');
-        ['new-prod-name','new-prod-price','new-prod-img','new-prod-desc','new-prod-pool'].forEach(id => {
+        ['new-prod-name','new-prod-price','new-prod-img','new-prod-desc','new-prod-pool','new-prod-streaming-opts'].forEach(id => {
             const el = document.getElementById(id); if (el) el.value = '';
         });
         const featEl = document.getElementById('new-prod-featured'); if (featEl) featEl.checked = false;
+        const streamEl = document.getElementById('new-prod-streaming'); 
+        if (streamEl) {
+            streamEl.checked = false;
+            const sOpts = document.getElementById('new-prod-streaming-opts');
+            if(sOpts) sOpts.style.display = 'none';
+        }
         loadAdminData();
     } catch(e) { console.error(e); alert('Error creando producto.'); }
 };
@@ -780,6 +789,16 @@ window.openEditModal = async function(prodId) {
         set('edit-prod-status', s.status||'disponible');
         set('edit-prod-pool', s.credentialsPool||'');
         const featEl = document.getElementById('edit-prod-featured'); if (featEl) featEl.checked = !!p.isFeatured;
+        
+        const streamEl = document.getElementById('edit-prod-streaming');
+        const sOptsEl = document.getElementById('edit-prod-streaming-opts');
+        if (streamEl) {
+            streamEl.checked = !!p.isStreaming;
+            if (sOptsEl) {
+                sOptsEl.style.display = streamEl.checked ? 'block' : 'none';
+                sOptsEl.value = p.streamingOptions || '';
+            }
+        }
 
         const modal = document.getElementById('edit-product-modal'); if (modal) modal.classList.add('active');
     } catch(e) { console.error(e); }
@@ -804,11 +823,14 @@ window.saveEditedProduct = async function() {
     const status  = document.getElementById('edit-prod-status').value;
     const featured= document.getElementById('edit-prod-featured').checked;
     const pool    = document.getElementById('edit-prod-pool').value;
+    
+    const isStreaming = document.getElementById('edit-prod-streaming') ? document.getElementById('edit-prod-streaming').checked : false;
+    const streamingOpts = document.getElementById('edit-prod-streaming-opts') ? document.getElementById('edit-prod-streaming-opts').value.trim() : '';
 
     if (!name || isNaN(price)) { alert('Nombre y Precio son obligatorios.'); return; }
 
     try {
-        await updateDoc(doc(db, 'products', prodId), { name, price, minQuantity: minQty, category, image: img, description: desc, isFeatured: featured });
+        await updateDoc(doc(db, 'products', prodId), { name, price, minQuantity: minQty, category, image: img, description: desc, isFeatured: featured, isStreaming: isStreaming, streamingOptions: streamingOpts });
         await setDoc(doc(db, 'products_stock', prodId), { status, credentialsPool: pool }, { merge: true });
         window.closeEditModal();
         alert('Producto actualizado correctamente.');
