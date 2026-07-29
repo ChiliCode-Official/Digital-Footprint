@@ -219,119 +219,55 @@ function injectAuthModal() {
     if (document.getElementById('auth-modal')) return;
     const modalHtml = `
     <div id="auth-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:var(--bg-card); width:90%; max-width:400px; padding:2rem; border-radius:12px; border:1px solid var(--accent-primary); box-shadow:0 0 30px rgba(161,120,232,0.2); position:relative;">
+        <div style="background:var(--bg-card); width:90%; max-width:400px; padding:2rem; border-radius:12px; border:1px solid var(--accent-primary); box-shadow:0 0 30px rgba(161,120,232,0.2); position:relative; text-align:center;">
             <button id="close-auth-modal" style="position:absolute; top:12px; right:15px; background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; transition:color 0.2s;">&times;</button>
             
-            <div style="text-align:center; margin-bottom:1.5rem;">
-                <img src="https://i.imgur.com/Wq4wBb7.png" style="width:40px; border-radius:8px; margin-bottom:10px;">
-                <h2 style="margin:0; font-size:1.5rem; color:var(--text-main);">Bienvenido a GhostKey</h2>
+            <div style="margin-bottom: 1.5rem;">
+                <img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey Logo" style="width: 140px; height: 140px; object-fit: contain; margin: 0 auto; display: block; border-radius: 12px;">
             </div>
             
-            <div style="display:flex; gap:10px; margin-bottom:1.5rem;">
-                <button id="tab-login" style="flex:1; padding:10px; background:var(--accent-primary); border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600; transition:all 0.2s;">Iniciar Sesión</button>
-                <button id="tab-register" style="flex:1; padding:10px; background:var(--bg-main); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-weight:600; transition:all 0.2s;">Registrarse</button>
-            </div>
+            <h2 style="margin:0; font-size:1.8rem; color:var(--text-main);">Bienvenido</h2>
+            <p style="color:var(--text-muted); margin-top:5px; margin-bottom:2rem;">Inicia sesión para continuar en GhostKey</p>
             
-            <form id="auth-form" style="display:flex; flex-direction:column; gap:12px;">
-                <input type="email" id="auth-email" placeholder="Correo Electrónico" required style="padding:12px; background:var(--bg-main); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-main); font-family:inherit; outline:none; transition:border 0.2s;">
-                <input type="password" id="auth-password" placeholder="Contraseña" required style="padding:12px; background:var(--bg-main); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-main); font-family:inherit; outline:none; transition:border 0.2s;">
-                <div id="auth-error" style="color:var(--danger); font-size:0.85rem; display:none; text-align:center;"></div>
-                <button type="submit" id="auth-submit-btn" style="background:var(--accent-primary); color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; margin-top:5px; transition:background 0.2s;">Ingresar a mi cuenta</button>
-            </form>
-            
-            <div style="margin:25px 0; text-align:center; position:relative;">
-                <hr style="border:none; border-top:1px solid var(--glass-border);">
-                <span style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--bg-card); padding:0 15px; color:var(--text-muted); font-size:0.85rem;">o</span>
-            </div>
-            
-            <button id="auth-google-btn" type="button" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:#fff; color:#000; padding:12px; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:opacity 0.2s;">
-                <i class="fa-brands fa-google"></i> Continuar con Google
+            <button id="auth-google-btn" class="oauthButton" type="button" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; font-size: 1.05rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--glass-border); background: #fff; color: #000; cursor: pointer; margin-bottom: 15px;">
+                <svg class="icon" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+                    <path d="M1 1h22v22H1z" fill="none"></path>
+                </svg>
+                Continuar con Google
             </button>
+            
+            <label class="checkbox-wrapper" style="margin-top: 5px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="terms-checkbox" checked style="accent-color: var(--accent-primary);" />
+              <span class="label" style="font-size: 0.82rem; color: var(--text-muted);">Acepto los términos y condiciones</span>
+            </label>
+
+            <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; text-align: center; margin-top: 15px;">
+                Únicamente utilizamos tus datos para identificar tu cuenta. No enviamos spam. Al continuar aceptas nuestras <a href="legales.html#privacy" style="color: var(--accent-primary); text-decoration: underline;">Políticas de Privacidad</a> y <a href="legales.html#terms" style="color: var(--accent-primary); text-decoration: underline;">Términos de Servicio</a>.
+            </p>
+            <div id="auth-error" style="color:var(--danger); font-size:0.85rem; display:none; text-align:center; margin-top: 10px;"></div>
         </div>
     </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // Add interactivity
-    let isLogin = true;
     const modal = document.getElementById('auth-modal');
-    const tabLogin = document.getElementById('tab-login');
-    const tabReg = document.getElementById('tab-register');
-    const btnSubmit = document.getElementById('auth-submit-btn');
-    const form = document.getElementById('auth-form');
-    const emailInp = document.getElementById('auth-email');
-    const passInp = document.getElementById('auth-password');
     const errDiv = document.getElementById('auth-error');
 
     document.getElementById('close-auth-modal').onclick = () => modal.style.display = 'none';
 
-    tabLogin.onclick = () => {
-        isLogin = true;
-        tabLogin.style.background = 'var(--accent-primary)';
-        tabLogin.style.color = '#fff';
-        tabLogin.style.border = 'none';
-        tabReg.style.background = 'var(--bg-main)';
-        tabReg.style.color = 'var(--text-muted)';
-        tabReg.style.border = '1px solid var(--glass-border)';
-        btnSubmit.textContent = 'Ingresar a mi cuenta';
-        errDiv.style.display = 'none';
-    };
-
-    tabReg.onclick = () => {
-        isLogin = false;
-        tabReg.style.background = 'var(--accent-primary)';
-        tabReg.style.color = '#fff';
-        tabReg.style.border = 'none';
-        tabLogin.style.background = 'var(--bg-main)';
-        tabLogin.style.color = 'var(--text-muted)';
-        tabLogin.style.border = '1px solid var(--glass-border)';
-        btnSubmit.textContent = 'Crear Cuenta';
-        errDiv.style.display = 'none';
-    };
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        errDiv.style.display = 'none';
-        btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Procesando...';
-        
-        try {
-            let user = null;
-            if (isLogin) {
-                const res = await signInWithEmailAndPassword(auth, emailInp.value, passInp.value);
-                user = res.user;
-            } else {
-                const res = await createUserWithEmailAndPassword(auth, emailInp.value, passInp.value);
-                user = res.user;
-                // Create document for new user
-                const userRef = doc(db, 'users', user.uid);
-                const referredBy = localStorage.getItem('ghostkey_referred_by') || null;
-                await setDoc(userRef, {
-                    email: user.email,
-                    balance: 0,
-                    wishlist: [],
-                    cart: {},
-                    referralCode: user.uid.substring(0, 8).toUpperCase(),
-                    referredBy: referredBy
-                });
-            }
-            if (user) {
-                modal.style.display = 'none';
-                window.location.href = 'perfil.html';
-            }
-        } catch (err) {
-            errDiv.style.display = 'block';
-            if (err.code === 'auth/email-already-in-use') errDiv.textContent = 'El correo ya está registrado.';
-            else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') errDiv.textContent = 'Contraseña incorrecta.';
-            else if (err.code === 'auth/user-not-found') errDiv.textContent = 'Usuario no encontrado.';
-            else errDiv.textContent = 'Error: ' + err.message;
-        } finally {
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = isLogin ? 'Ingresar a mi cuenta' : 'Crear Cuenta';
-        }
-    };
-
     document.getElementById('auth-google-btn').onclick = async () => {
+        const termsChecked = document.getElementById('terms-checkbox').checked;
+        if (!termsChecked) {
+            errDiv.textContent = 'Debes aceptar los términos y condiciones.';
+            errDiv.style.display = 'block';
+            return;
+        }
+        errDiv.style.display = 'none';
+        
         try {
             const result = await signInWithPopup(auth, provider);
             if (result.user) {
