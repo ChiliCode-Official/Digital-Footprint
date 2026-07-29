@@ -44,32 +44,56 @@ document.addEventListener('DOMContentLoaded', () => {
     function showInstallButton() {
         if (document.getElementById('pwa-install-btn')) return;
 
-        // Create the install button
-        const installBtn = document.createElement('button');
-        installBtn.id = 'pwa-install-btn';
-        installBtn.className = 'gk-btn gk-btn-primary';
-        installBtn.innerHTML = '<i class="fa-solid fa-download"></i> Instalar App';
-        installBtn.style.marginTop = '15px';
-        installBtn.style.width = '100%';
-        installBtn.style.maxWidth = '300px';
+        const installBtnWrapper = document.createElement('div');
+        installBtnWrapper.id = 'pwa-install-wrapper';
+        installBtnWrapper.className = 'pwa-btn-wrapper';
+        installBtnWrapper.innerHTML = `
+          <button id="pwa-install-btn" class="pwa-btn">
+            <svg class="pwa-btn-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5v-12M16.5 12 12 16.5 7.5 12M3 20.25h18" stroke="currentColor" fill="none" stroke-width="2"/>
+            </svg>
+            <div class="pwa-txt-wrapper">
+              <div class="pwa-txt-1">
+                <span class="pwa-btn-letter">I</span>
+                <span class="pwa-btn-letter">n</span>
+                <span class="pwa-btn-letter">s</span>
+                <span class="pwa-btn-letter">t</span>
+                <span class="pwa-btn-letter">a</span>
+                <span class="pwa-btn-letter">l</span>
+                <span class="pwa-btn-letter">a</span>
+                <span class="pwa-btn-letter">r</span>
+              </div>
+              <div class="pwa-txt-2">
+                <span class="pwa-btn-letter">I</span>
+                <span class="pwa-btn-letter">n</span>
+                <span class="pwa-btn-letter">s</span>
+                <span class="pwa-btn-letter">t</span>
+                <span class="pwa-btn-letter">a</span>
+                <span class="pwa-btn-letter">l</span>
+                <span class="pwa-btn-letter">a</span>
+                <span class="pwa-btn-letter">n</span>
+                <span class="pwa-btn-letter">d</span>
+                <span class="pwa-btn-letter">o</span>
+              </div>
+            </div>
+          </button>
+        `;
 
         // Find a place to insert the button below the hero
         const heroSection = document.querySelector('.gk-hero');
         if (heroSection) {
-            // Append it right after the hero content, but inside the hero section, or directly after the hero
-            installBtn.style.margin = '20px auto';
-            installBtn.style.display = 'block';
-            heroSection.parentNode.insertBefore(installBtn, heroSection.nextSibling);
+            heroSection.parentNode.insertBefore(installBtnWrapper, heroSection.nextSibling);
         } else {
             // Fallback: append to body as fixed button
-            installBtn.style.position = 'fixed';
-            installBtn.style.bottom = '80px';
-            installBtn.style.left = '50%';
-            installBtn.style.transform = 'translateX(-50%)';
-            installBtn.style.zIndex = '9999';
-            document.body.appendChild(installBtn);
+            installBtnWrapper.style.position = 'fixed';
+            installBtnWrapper.style.bottom = '80px';
+            installBtnWrapper.style.left = '50%';
+            installBtnWrapper.style.transform = 'translateX(-50%)';
+            installBtnWrapper.style.zIndex = '9999';
+            document.body.appendChild(installBtnWrapper);
         }
 
+        const installBtn = document.getElementById('pwa-install-btn');
         installBtn.addEventListener('click', async () => {
             if (isIOS) {
                 showIOSTutorial();
