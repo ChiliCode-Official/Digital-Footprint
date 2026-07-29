@@ -106,9 +106,58 @@ document.addEventListener('DOMContentLoaded', () => {
                         installBtn.style.display = 'none';
                     }
                 } else {
-                    alert("Para instalar en Android, abre las opciones de Chrome (tres puntos) y selecciona 'Instalar aplicación' o 'Añadir a la pantalla de inicio'.");
+                    showGenericTutorial();
                 }
             }
+        });
+    }
+
+    function showGenericTutorial() {
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(11, 14, 20, 0.9)';
+        overlay.style.zIndex = '10000';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'flex-end';
+        overlay.style.padding = '20px';
+        overlay.style.backdropFilter = 'blur(10px)';
+        overlay.style.color = '#fff';
+        overlay.style.textAlign = 'center';
+
+        overlay.innerHTML = `
+            <div style="background: var(--bg-card); padding: 25px; border-radius: 20px; border: 1px solid var(--glass-border); position: relative; margin-bottom: 20px;">
+                <button id="close-generic-tutorial" style="position: absolute; top: 10px; right: 15px; background: none; border: none; color: #fff; font-size: 20px; cursor: pointer;">&times;</button>
+                <h3 style="margin-bottom: 15px; font-size: 1.3rem;">Instalación Manual</h3>
+                <p style="margin-bottom: 15px; color: var(--text-muted);">Parece que tu navegador no permite la instalación automática o la app ya está instalada.</p>
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; text-align: left; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                    <i class="fa-solid fa-ellipsis-vertical" style="font-size: 24px; color: var(--accent-primary);"></i>
+                    <p style="margin: 0;"><strong>Paso 1:</strong> Toca el menú de opciones (tres puntos) en tu navegador Chrome o Edge.</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px; text-align: left; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+                    <i class="fa-solid fa-download" style="font-size: 24px; color: var(--accent-primary);"></i>
+                    <p style="margin: 0;"><strong>Paso 2:</strong> Selecciona <b>"Instalar aplicación"</b> o <b>"Añadir a la pantalla de inicio"</b>.</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <i class="fa-solid fa-arrow-down" style="font-size: 30px; color: var(--accent-primary); animation: bounce 1.5s infinite;"></i>
+                </div>
+            </div>
+            <style>
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(10px); }
+                }
+            </style>
+        `;
+
+        document.body.appendChild(overlay);
+
+        document.getElementById('close-generic-tutorial').addEventListener('click', () => {
+            overlay.remove();
         });
     }
 
