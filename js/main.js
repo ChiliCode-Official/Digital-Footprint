@@ -37,6 +37,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { initWishlistButtons } from './wishlist.js';
 import './friends-panel.js';
+import { initNotifications } from './notifications.js';
 
 let currentUser = null;
 let currentUserWishlist = [];
@@ -321,6 +322,13 @@ onAuthStateChanged(auth, async (user) => {
 
     updateUserProfileUI(user);
     checkReferralBanner(user);
+    
+    // Initialize notifications listener
+    if (user) {
+        initNotifications(user.uid);
+    } else {
+        initNotifications(null);
+    }
 
     const reviewFormContainer = document.getElementById('review-form-container');
     if (reviewFormContainer) {

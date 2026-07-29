@@ -1,6 +1,7 @@
 import { db, auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, getDocs, setDoc, collection, addDoc, updateDoc, serverTimestamp, runTransaction, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { sendNotification } from './notifications.js';
 
 let currentUser = null;
 let userData = null;
@@ -118,6 +119,7 @@ function setupPurchaseMode(balance, amount) {
     const confirmBtn = document.getElementById('btn-confirm-purchase');
     confirmBtn.onclick = () => {
         if(confirmBtn.classList.contains('is-animating')) return;
+        if(navigator.vibrate) navigator.vibrate(200);
         confirmBtn.classList.add('is-animating');
         
         // Wait for the slide animation to finish (~1.2s)
@@ -683,7 +685,8 @@ async function processCartPurchase() {
             transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
         }
     });
-
+    
+    sendNotification(currentUser.uid, "¡Compra Exitosa! 🛒", `Tu compra por $${finalTotal.toFixed(2)} fue procesada correctamente.`, 'compra');
     showPremiumSuccess(`¡Compra realizada! Se descontaron ${finalTotal.toFixed(2)}.`, "perfil.html");
 }
 
@@ -781,8 +784,10 @@ async function processSinglePurchase() {
     });
 
     if (isGift) {
+        sendNotification(null, "¡Tienes un regalo! 🎁", `Alguien te ha regalado ${productName}`, 'regalo', giftEmail);
         showAstronautModal(productName, giftEmail);
     } else {
+        sendNotification(currentUser.uid, "¡Compra Exitosa! 🛒", `Adquiriste ${productName} exitosamente.`, 'compra');
         showPremiumSuccess("Tu compra fue procesada correctamente.", "perfil.html");
     }
 }

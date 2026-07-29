@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   /* Colors */
   --bg-main: #0B0E14; /* Deep dark background */
   --bg-panel: #151A23; /* Slightly lighter for panels */
@@ -5830,5 +5830,5 @@ button, .btn-primary, .btn-secondary {
 .product-actions button {
     flex: 1 1 auto;
 }
-/ *   P W A   I n s t a l l   B u t t o n   F a n c y   S t y l e s   * /  
- 
+/* PWA Install Button Fancy Styles */
+

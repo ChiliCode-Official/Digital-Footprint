@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ghostkey-pwa-cache-v1';
+const CACHE_NAME = 'ghostkey-pwa-cache-v2';
 const urlsToCache = [
   './index.html',
   './css/style.css',

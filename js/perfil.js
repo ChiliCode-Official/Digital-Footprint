@@ -12,6 +12,7 @@ import {
     doc, getDoc, collection, addDoc, setDoc, updateDoc,
     deleteDoc, increment, serverTimestamp, query, where, getDocs, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { sendNotification } from './notifications.js';
 
 const ADMIN_EMAIL = 'lrodricg30@gmail.com';
 let currentUser = null;
@@ -712,6 +713,7 @@ window.approveRecharge = async function(reqId, uid, amount) {
             transaction.update(userRef, { balance: increment(Number(amount)) });
             transaction.update(reqRef, { status: 'aprobado' });
         });
+        sendNotification(uid, "¡Recarga Exitosa! 💰", `Se han añadido $${amount} a tu saldo.`, 'transferencia');
         alert('Recarga aprobada exitosamente.');
         loadAdminData();
     } catch(e) { console.error(e); alert('Error al aprobar recarga: ' + e.message); }
@@ -730,7 +732,15 @@ window.deliverOrder = async function(orderId) {
     const input = document.getElementById(`deliver-${orderId}`);
     if (!input || !input.value.trim()) { alert('Ingresa la credencial a entregar.'); return; }
     try {
+        const orderSnap = await getDoc(doc(db, 'orders', orderId));
         await updateDoc(doc(db, 'orders', orderId), { status: 'confirmado', textDelivered: input.value.trim() });
+        
+        if (orderSnap.exists()) {
+            const oData = orderSnap.data();
+            const targetUid = oData.uid;
+            sendNotification(targetUid, "¡Pedido Entregado! 🎉", `Tu credencial para ${oData.productName} está lista.`, 'credencial');
+        }
+
         alert('Pedido entregado.');
         loadAdminData();
     } catch(e) { console.error(e); alert('Error al entregar.'); }

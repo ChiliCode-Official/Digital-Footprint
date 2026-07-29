@@ -2,6 +2,7 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { updateCartBadge } from './cart.js';
+import { sendNotification } from './notifications.js';
 
 
 function normalizeImageUrl(url) {
@@ -356,6 +357,9 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                     transaction.set(newOrderRef, orderPayload);
                 });
+                
+                // Send notification to recipient email
+                sendNotification(null, "¡Tienes un regalo! 🎁", `Alguien te ha regalado ${productData.name}`, 'regalo', pendingGiftEmail);
 
                 // Show Astronaut Animation
                 document.getElementById('gift-step-2').style.display = 'none';
@@ -387,6 +391,7 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
 
     if (btnBuy) {
         btnBuy.addEventListener('click', async () => {
+            if (navigator.vibrate) navigator.vibrate(200);
             if (!currentUser) {
                 alert("Debes iniciar sesión para comprar.");
                 return;
