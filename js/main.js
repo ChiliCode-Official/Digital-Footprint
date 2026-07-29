@@ -157,14 +157,14 @@ function updateUserProfileUI(user) {
     } else {
         if (userNameDisplay) {
             userNameDisplay.classList.remove('user-name--skeleton');
-            userNameDisplay.textContent = 'Inicióar sesión';
+            userNameDisplay.textContent = 'Iniciar sesión';
         }
         if (userAvatar) {
             userAvatar.classList.remove('user-avatar--skeleton');
-            userAvatar.src = 'https://ui-avatars.com/api/?name=?&background=1C222E&color=9CA3AF';
+            userAvatar.src = 'https://ui-avatars.com/api/?name=Invitado&background=1C222E&color=9CA3AF';
             userAvatar.alt = 'Invitado';
         }
-        userProfileBtn.title = 'Inicióar sesión con Google';
+        userProfileBtn.title = 'Iniciar sesión con Google';
     }
     
     const logoutBtn = document.getElementById('logout-btn-header');

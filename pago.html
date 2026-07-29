@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -174,26 +174,14 @@
 
             <section class="pago-container" id="pago-content" style="display:none;">
                 <!-- Left: Animation -->
-                <div style="display:flex; justify-content:center; align-items:center; background:var(--bg-card); border-radius:12px; padding:2rem;">
-                    <!-- POS Payment Machine Animation (Uiverse Admin12121) -->
-                    <div class="pay-anim-container">
-                     <div class="pay-anim-left">
-                      <div class="pay-anim-card">
-                       <div class="pay-anim-card-line"></div>
-                       <div class="pay-anim-buttons"></div>
-                      </div>
-                      <div class="pay-anim-post">
-                       <div class="pay-anim-post-line"></div>
-                       <div class="pay-anim-screen">
-                        <div class="pay-anim-dollar" id="pos-dollar-sign">$</div>
-                       </div>
-                      </div>
-                     </div>
-                     <div class="pay-anim-right">
-                      <div class="pay-anim-text" id="pos-status-text">Calculando...</div>
-                       <svg viewBox="0 0 451.846 451.847" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="var(--accent-primary)" d="M345.441 248.292L151.154 442.573c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744L278.318 225.92 106.409 54.017c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.287 194.284c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373z"></path></svg>
-                     </div>
+                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:var(--bg-card); border-radius:12px; padding:2rem; min-height: 250px;">
+                    <!-- Typewriter Animation (Nawsome) -->
+                    <div class="typewriter">
+                        <div class="slide"><i></i></div>
+                        <div class="paper"></div>
+                        <div class="keyboard"></div>
                     </div>
+                    <div id="pos-status-text" style="margin-top: 2.5rem; font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--text-main); text-align: center;">Calculando...</div>
                 </div>
 
                 <!-- Right: Logic Form -->

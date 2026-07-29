@@ -274,12 +274,30 @@ async function setupRechargeMode(balance, suggestedAmount) {
 
     // Select Amount logic
     const inputAmount = document.getElementById('custom-recharge-amount');
+    const posStatusText = document.getElementById('pos-status-text');
+    
+    function updateTypingText() {
+        if (posStatusText && inputAmount) {
+            const val = parseFloat(inputAmount.value);
+            if (val > 0) {
+                posStatusText.textContent = `Monto: $${val}`;
+            } else {
+                posStatusText.textContent = 'Calculando...';
+            }
+        }
+    }
+    
+    if (inputAmount) {
+        inputAmount.addEventListener('input', updateTypingText);
+    }
+    
     const rOpts = document.querySelectorAll('.r-opt');
     rOpts.forEach(btn => {
         btn.onclick = () => {
             rOpts.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             inputAmount.value = btn.getAttribute('data-val');
+            updateTypingText();
         };
     });
 
@@ -315,6 +333,21 @@ async function processRecharge() {
     
     if (isNaN(amount) || !Number.isFinite(amount) || amount < 15) {
         showError("El monto debe ser un número válido mayor o igual a $15 MXN.");
+        const btn = document.getElementById('btn-process-recharge');
+        if (btn) {
+            btn.classList.add('error-state');
+            const iconEl = btn.querySelector('.pos-icon-btn');
+            const textEl = btn.querySelector('.pos-new-btn');
+            
+            if (textEl) textEl.textContent = 'Nueva Alerta';
+            if (iconEl) iconEl.textContent = '!';
+            
+            setTimeout(() => {
+                btn.classList.remove('is-animating', 'error-state');
+                if (textEl) textEl.textContent = 'Confirmar Pago';
+                if (iconEl) iconEl.textContent = '$';
+            }, 3000);
+        }
         return;
     }
     
