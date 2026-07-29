@@ -1,0 +1,122 @@
+/* =============================================================
+   GhostKey — Floating WhatsApp Help Bubble
+   Position: bottom-right, above the mobile dock
+   ============================================================= */
+
+/* ---- Wrapper ---- */
+.gk-help-bubble-wrap {
+    position: fixed;
+    bottom: 90px; /* above mobile dock on mobile */
+    right: 20px;
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none; /* children re-enable */
+}
+
+@media (min-width: 769px) {
+    .gk-help-bubble-wrap {
+        bottom: 28px; /* desktop: no dock */
+    }
+}
+
+/* ---- "¿Necesitas ayuda?" tooltip ---- */
+.gk-help-tooltip {
+    pointer-events: auto;
+    background: rgba(15, 16, 24, 0.95);
+    border: 1px solid rgba(161,130,232,0.25);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 20px 20px 4px 20px;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    /* start hidden */
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.gk-help-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.gk-help-tooltip i {
+    color: #25D366;
+    margin-right: 5px;
+}
+
+/* ---- The spinning orb button ---- */
+.gk-help-orb {
+    pointer-events: auto;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* The animated container (from Uiverse by gogo_3618) */
+.gk-help-orb .loader {
+  position: relative;
+  width: 56px;
+  overflow: hidden;
+  height: 56px;
+  background: #c9d5e0;
+  border-radius: 16px;
+  transform-style: preserve-3d;
+  mix-blend-mode: normal; /* changed from hard-light for dark theme visibility */
+  box-shadow:
+    7px 7px 7px -1.5px rgba(0, 0, 0, 0.15),
+    inset 4px 4px 3px rgba(255, 255, 255, 0.75),
+    -4px -4px 8px rgba(255, 255, 255, 0.55),
+    inset -0.5px -0.5px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.gk-help-orb:hover .loader {
+    transform: scale(1.05);
+}
+
+.gk-help-orb .circle {
+  position: absolute;
+  inset: 10px;
+  background: #acbaca;
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  box-shadow:
+    1.5px 1.5px 4px 0 #152b4a66,
+    inset 1.5px 1.5px 1.5px rgba(255, 255, 255, 0.55),
+    -1.5px -1.5px 3px rgba(255, 255, 255, 1);
+}
+
+.gk-help-orb .circle::before {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  background: linear-gradient(#2196f3, #e91e63);
+  mix-blend-mode: color-burn;
+  border-radius: 50%;
+  animation: gk_anim 2s linear infinite;
+}
+
+.gk-help-orb .circle::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  filter: blur(0.5px);
+  background: #acbaca;
+  border-radius: 50%;
+  z-index: 1000;
+}
+
+@keyframes gk_anim {
+  0% { transform: rotate(0deg); fill: blur(1px); }
+  100% { transform: rotate(360deg); fill: blur(2px); }
+}

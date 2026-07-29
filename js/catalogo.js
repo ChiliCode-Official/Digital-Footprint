@@ -150,7 +150,32 @@ function renderProducts(products) {
     }
 }
 
+async function loadCollectionsForFilter() {
+    const colSelect = document.getElementById('collection-select');
+    if (!colSelect) return;
+    try {
+        const snap = await getDocs(collection(db, 'collections'));
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            const option = document.createElement('option');
+            option.value = docSnap.id;
+            option.textContent = data.name;
+            colSelect.appendChild(option);
+        });
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeCategory = urlParams.get('cat');
+        if (activeCategory) {
+            colSelect.value = activeCategory;
+        }
+    } catch(e) {
+        console.error("Error loading collections filter:", e);
+    }
+}
+
 function handleFilters() {
+    loadCollectionsForFilter();
+    
     const urlParams = new URLSearchParams(window.location.search);
     const urlSearch = urlParams.get('search');
     
@@ -173,11 +198,24 @@ function handleFilters() {
     if (sortSelect) {
         sortSelect.addEventListener('change', applyFilters);
     }
+    
+    const collectionSelect = document.getElementById('collection-select');
+    if (collectionSelect) {
+        collectionSelect.addEventListener('change', (e) => {
+            // Update URL without reloading to keep state
+            const url = new URL(window.location);
+            if(e.target.value === 'all') url.searchParams.delete('cat');
+            else url.searchParams.set('cat', e.target.value);
+            window.history.pushState({}, '', url);
+            applyFilters();
+        });
+    }
 }
 
 function applyFilters() {
+    const colSelect = document.getElementById('collection-select');
     const urlParams = new URLSearchParams(window.location.search);
-    const activeCategory = urlParams.get('cat') || 'all';
+    const activeCategory = (colSelect && colSelect.value !== 'all') ? colSelect.value : (urlParams.get('cat') || 'all');
     const searchTerm = searchInput ? searchInput.value.toLowerCase() : (urlParams.get('search') || '').toLowerCase();
     
     let filtered = allProducts;

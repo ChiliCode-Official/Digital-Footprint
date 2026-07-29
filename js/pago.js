@@ -466,6 +466,13 @@ async function processCartPurchase() {
         const userData = uSnap.data();
         const currentBal = userData.balance || 0;
         const referredBy = userData.referredBy;
+
+        let referrerSnap = null;
+        let referrerRef = null;
+        if (referredBy) {
+            referrerRef = doc(db, 'users', referredBy);
+            referrerSnap = await transaction.get(referrerRef);
+        }
         
         let calculatedTotal = 0;
         const productsData = [];
@@ -500,10 +507,17 @@ async function processCartPurchase() {
         if (currentBal < calculatedTotal) throw new Error("Saldo insuficiente (el carrito pudo haber cambiado de precio).");
         finalTotal = calculatedTotal;
 
+                // Fetch all stock data first to avoid read-after-write
+        const stockSnaps = {};
+        for (const prod of productsData) {
+            const stockRef = doc(db, 'products_stock', prod.id);
+            stockSnaps[prod.id] = await transaction.get(stockRef);
+        }
+
         // Process each product
         for (const prod of productsData) {
             const stockRef = doc(db, 'products_stock', prod.id);
-            const sSnap = await transaction.get(stockRef);
+            const sSnap = stockSnaps[prod.id];
             
             let credsToGive = [];
             let availableCount = 0;
@@ -562,14 +576,10 @@ async function processCartPurchase() {
             cart: {}
         });
 
-        if (referredBy) {
-            const referrerRef = doc(db, 'users', referredBy);
-            const referrerSnap = await transaction.get(referrerRef);
-            if (referrerSnap.exists()) {
-                const rData = referrerSnap.data();
-                const bonus = calculatedTotal * 0.03;
-                transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
-            }
+        if (referrerSnap && referrerSnap.exists()) {
+            const rData = referrerSnap.data();
+            const bonus = calculatedTotal * 0.03;
+            transaction.update(referrerRef, { balance: (rData.balance || 0) + bonus });
         }
     });
 

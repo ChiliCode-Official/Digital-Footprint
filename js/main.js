@@ -207,31 +207,98 @@ function updateUserProfileUI(user) {
     }
 }
 
-async function handleLogin() {
-    if (currentUser) {
-        window.location.href = 'perfil.html';
-        return;
-    }
 
-    try {
-        let user = null;
+// Inject Auth Modal
+function injectAuthModal() {
+    if (document.getElementById('auth-modal')) return;
+    const modalHtml = `
+    <div id="auth-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:var(--bg-card); width:90%; max-width:400px; padding:2rem; border-radius:12px; border:1px solid var(--accent-primary); box-shadow:0 0 30px rgba(161,120,232,0.2); position:relative;">
+            <button id="close-auth-modal" style="position:absolute; top:12px; right:15px; background:none; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; transition:color 0.2s;">&times;</button>
+            
+            <div style="text-align:center; margin-bottom:1.5rem;">
+                <img src="https://i.imgur.com/Wq4wBb7.png" style="width:40px; border-radius:8px; margin-bottom:10px;">
+                <h2 style="margin:0; font-size:1.5rem; color:var(--text-main);">Bienvenido a GhostKey</h2>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-bottom:1.5rem;">
+                <button id="tab-login" style="flex:1; padding:10px; background:var(--accent-primary); border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:600; transition:all 0.2s;">Iniciar Sesión</button>
+                <button id="tab-register" style="flex:1; padding:10px; background:var(--bg-main); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-muted); cursor:pointer; font-weight:600; transition:all 0.2s;">Registrarse</button>
+            </div>
+            
+            <form id="auth-form" style="display:flex; flex-direction:column; gap:12px;">
+                <input type="email" id="auth-email" placeholder="Correo Electrónico" required style="padding:12px; background:var(--bg-main); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-main); font-family:inherit; outline:none; transition:border 0.2s;">
+                <input type="password" id="auth-password" placeholder="Contraseña" required style="padding:12px; background:var(--bg-main); border:1px solid var(--glass-border); border-radius:8px; color:var(--text-main); font-family:inherit; outline:none; transition:border 0.2s;">
+                <div id="auth-error" style="color:var(--danger); font-size:0.85rem; display:none; text-align:center;"></div>
+                <button type="submit" id="auth-submit-btn" style="background:var(--accent-primary); color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; margin-top:5px; transition:background 0.2s;">Ingresar a mi cuenta</button>
+            </form>
+            
+            <div style="margin:25px 0; text-align:center; position:relative;">
+                <hr style="border:none; border-top:1px solid var(--glass-border);">
+                <span style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:var(--bg-card); padding:0 15px; color:var(--text-muted); font-size:0.85rem;">o</span>
+            </div>
+            
+            <button id="auth-google-btn" type="button" style="width:100%; display:flex; align-items:center; justify-content:center; gap:10px; background:#fff; color:#000; padding:12px; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:opacity 0.2s;">
+                <i class="fa-brands fa-google"></i> Continuar con Google
+            </button>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Add interactivity
+    let isLogin = true;
+    const modal = document.getElementById('auth-modal');
+    const tabLogin = document.getElementById('tab-login');
+    const tabReg = document.getElementById('tab-register');
+    const btnSubmit = document.getElementById('auth-submit-btn');
+    const form = document.getElementById('auth-form');
+    const emailInp = document.getElementById('auth-email');
+    const passInp = document.getElementById('auth-password');
+    const errDiv = document.getElementById('auth-error');
+
+    document.getElementById('close-auth-modal').onclick = () => modal.style.display = 'none';
+
+    tabLogin.onclick = () => {
+        isLogin = true;
+        tabLogin.style.background = 'var(--accent-primary)';
+        tabLogin.style.color = '#fff';
+        tabLogin.style.border = 'none';
+        tabReg.style.background = 'var(--bg-main)';
+        tabReg.style.color = 'var(--text-muted)';
+        tabReg.style.border = '1px solid var(--glass-border)';
+        btnSubmit.textContent = 'Ingresar a mi cuenta';
+        errDiv.style.display = 'none';
+    };
+
+    tabReg.onclick = () => {
+        isLogin = false;
+        tabReg.style.background = 'var(--accent-primary)';
+        tabReg.style.color = '#fff';
+        tabReg.style.border = 'none';
+        tabLogin.style.background = 'var(--bg-main)';
+        tabLogin.style.color = 'var(--text-muted)';
+        tabLogin.style.border = '1px solid var(--glass-border)';
+        btnSubmit.textContent = 'Crear Cuenta';
+        errDiv.style.display = 'none';
+    };
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        errDiv.style.display = 'none';
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Procesando...';
+        
         try {
-            const result = await signInWithPopup(auth, provider);
-            user = result.user;
-        } catch (popupErr) {
-            console.warn("Popup authentication blocked/failed, trying redirect...", popupErr);
-            if (popupErr.code === 'auth/operation-not-supported-in-this-environment' || location.protocol === 'file:') {
-                throw popupErr;
-            }
-            await signInWithRedirect(auth, provider);
-            return;
-        }
-
-        if (user) {
-            const userRef = doc(db, 'users', user.uid);
-            const userSnap = await getDoc(userRef);
-
-            if (!userSnap.exists()) {
+            let user = null;
+            if (isLogin) {
+                const res = await signInWithEmailAndPassword(auth, emailInp.value, passInp.value);
+                user = res.user;
+            } else {
+                const res = await createUserWithEmailAndPassword(auth, emailInp.value, passInp.value);
+                user = res.user;
+                // Create document for new user
+                const userRef = doc(db, 'users', user.uid);
                 const referredBy = localStorage.getItem('ghostkey_referred_by') || null;
                 await setDoc(userRef, {
                     email: user.email,
@@ -242,34 +309,63 @@ async function handleLogin() {
                     referredBy: referredBy
                 });
             }
-            window.location.href = 'perfil.html';
+            if (user) {
+                modal.style.display = 'none';
+                window.location.href = 'perfil.html';
+            }
+        } catch (err) {
+            errDiv.style.display = 'block';
+            if (err.code === 'auth/email-already-in-use') errDiv.textContent = 'El correo ya está registrado.';
+            else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') errDiv.textContent = 'Contraseña incorrecta.';
+            else if (err.code === 'auth/user-not-found') errDiv.textContent = 'Usuario no encontrado.';
+            else errDiv.textContent = 'Error: ' + err.message;
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = isLogin ? 'Ingresar a mi cuenta' : 'Crear Cuenta';
         }
-    } catch (error) {
-        console.error("Login Error:", error);
-        const email = prompt("Google Auth no está habilitado en este origen (" + (error.code || 'local file') + ").\n\nIngresa tu correo para acceder en modo prueba:");
-        if (email && email.trim() !== '') {
-            const cleanEmail = email.trim();
-            const mockUser = {
-                uid: 'usr-' + Math.random().toString(36).substring(2, 10),
-                email: cleanEmail,
-                displayName: cleanEmail.split('@')[0],
-                photoURL: `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanEmail)}&background=A182E8&color=fff`
-            };
-            try {
-                const userRef = doc(db, 'users', mockUser.uid);
-                const referredBy = localStorage.getItem('ghostkey_referred_by') || null;
-                await setDoc(userRef, {
-                    email: mockUser.email,
-                    balance: 0,
-                    wishlist: [],
-                    cart: {},
-                    referralCode: mockUser.uid.substring(0, 8).toUpperCase(),
-                    referredBy: referredBy
-                }, { merge: true });
-            } catch(e) {}
-            window.location.href = 'perfil.html';
+    };
+
+    document.getElementById('auth-google-btn').onclick = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            if (result.user) {
+                const userRef = doc(db, 'users', result.user.uid);
+                const userSnap = await getDoc(userRef);
+                if (!userSnap.exists()) {
+                    const referredBy = localStorage.getItem('ghostkey_referred_by') || null;
+                    await setDoc(userRef, {
+                        email: result.user.email,
+                        balance: 0,
+                        wishlist: [],
+                        cart: {},
+                        referralCode: result.user.uid.substring(0, 8).toUpperCase(),
+                        referredBy: referredBy
+                    });
+                }
+                modal.style.display = 'none';
+                window.location.href = 'perfil.html';
+            }
+        } catch (popupErr) {
+            console.warn("Popup error:", popupErr);
+            if (popupErr.code === 'auth/operation-not-supported-in-this-environment' || location.protocol === 'file:') {
+                errDiv.textContent = "Google Auth no soportado en este entorno.";
+                errDiv.style.display = 'block';
+            } else {
+                await signInWithRedirect(auth, provider);
+            }
         }
+    };
+}
+
+async function handleLogin() {
+    if (currentUser) {
+        window.location.href = 'perfil.html';
+        return;
     }
+    
+    injectAuthModal();
+    const modal = document.getElementById('auth-modal');
+    modal.style.display = 'flex';
 }
 
 if (userProfileBtn) {
@@ -309,6 +405,9 @@ onAuthStateChanged(auth, async (user) => {
 
     if (document.getElementById('products-container')) {
         loadIndexProducts();
+    }
+    if (document.getElementById('categories-grid')) {
+        loadCategories();
     }
     if (document.getElementById('reviews-container')) {
         loadReviews();
@@ -403,6 +502,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ── CATEGORY GRADIENTS & ICONS ──────────────────────────────────────────────
+const CAT_STYLES = [
+    { bg: 'linear-gradient(135deg, #1a0f3a, #2d1b69)', icon: 'fa-gamepad' },
+    { bg: 'linear-gradient(135deg, #1a0a2e, #3d1057)', icon: 'fa-film' },
+    { bg: 'linear-gradient(135deg, #0a1a2e, #1057a8)', icon: 'fa-laptop-code' },
+    { bg: 'linear-gradient(135deg, #1a2a0a, #2d5710)', icon: 'fa-user-check' },
+    { bg: 'linear-gradient(135deg, #2a1a0a, #572d10)', icon: 'fa-gift' },
+    { bg: 'linear-gradient(135deg, #2a0a1a, #571035)', icon: 'fa-music' },
+    { bg: 'linear-gradient(135deg, #0a2a1a, #105730)', icon: 'fa-shield-halved' },
+    { bg: 'linear-gradient(135deg, #1a1a2a, #2d2d57)', icon: 'fa-bolt' },
+];
+
+async function loadCategories() {
+    const grid = document.getElementById('categories-grid');
+    if (!grid) return;
+    try {
+        const snap = await getDocs(collection(db, 'collections'));
+        if (snap.empty) {
+            grid.innerHTML = `
+                <a href="catalogo.html" class="gk-cat-card">
+                    <div class="gk-cat-bg" style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d);"></div>
+                    <div class="gk-cat-overlay"></div>
+                    <div class="gk-cat-icon"><i class="fa-solid fa-grid"></i></div>
+                    <div class="gk-cat-label">Ver Todo</div>
+                </a>`;
+            return;
+        }
+        let html = '';
+        let i = 0;
+        snap.forEach(docSnap => {
+            const data = docSnap.data();
+            const name = data.name || docSnap.id;
+            const style = CAT_STYLES[i % CAT_STYLES.length];
+            html += `
+                <a href="catalogo.html?cat=${encodeURIComponent(docSnap.id)}" class="gk-cat-card">
+                    <div class="gk-cat-bg" style="background: ${style.bg};"></div>
+                    <div class="gk-cat-overlay"></div>
+                    <div class="gk-cat-icon"><i class="fa-solid ${style.icon}"></i></div>
+                    <div class="gk-cat-label">${name}</div>
+                </a>`;
+            i++;
+        });
+        // Always add a "Ver Todo" card at the end
+        html += `
+            <a href="catalogo.html" class="gk-cat-card">
+                <div class="gk-cat-bg" style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d);"></div>
+                <div class="gk-cat-overlay"></div>
+                <div class="gk-cat-icon"><i class="fa-solid fa-grid"></i></div>
+                <div class="gk-cat-label">Ver Todo</div>
+            </a>`;
+        grid.innerHTML = html;
+    } catch (e) {
+        console.error('Error loading categories:', e);
+        grid.innerHTML = `
+            <a href="catalogo.html" class="gk-cat-card">
+                <div class="gk-cat-bg" style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d);"></div>
+                <div class="gk-cat-overlay"></div>
+                <div class="gk-cat-icon"><i class="fa-solid fa-grid"></i></div>
+                <div class="gk-cat-label">Ver Todo</div>
+            </a>`;
+    }
+}
 
 async function loadIndexProducts() {
     const container = document.getElementById('products-container');

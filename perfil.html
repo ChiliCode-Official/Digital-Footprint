@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -15,6 +15,9 @@
     <meta property="og:image" content="https://i.imgur.com/LbMnNUg.png">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/help-bubble.css">
+
+    <link rel="stylesheet" href="css/mobile-dock.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .profile-header {
@@ -239,7 +242,7 @@
   100% { transform: scale(1) rotate(0deg); }
 }
 </style>
-<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png"></head>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LbMnNUg.png"></head>
 <body>
     <!-- ===== GLOBAL NAVBAR (GhostKey) ===== -->
     <style>
@@ -274,7 +277,7 @@
         .gk-dock-item.active { color: var(--accent-primary); }
     </style>
     <nav class="gk-navbar">
-        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey"><span>GhostKey</span></a>
+        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey"></a>
         <div class="gk-search-wrap">
             <input id="gk-nav-search" type="text" placeholder="Buscar productos..." autocomplete="off">
             <button class="gk-search-btn-nav" id="gk-nav-search-btn" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -288,7 +291,7 @@
                 <i class="fa-solid fa-users"></i>
                 <span class="label">Amigos</span>
             </button>
-            <a href="cart.html" class="gk-nav-btn" title="Carrito">
+            <a href="javascript:void(0)" class="gk-nav-btn" title="Carrito">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="label">Carrito</span>
             </a>
@@ -830,28 +833,43 @@
         </div>
     </div>
     <!-- ===== MOBILE BOTTOM DOCK ===== -->
-    <nav class="gk-dock">
-        <a href="index.html" class="gk-dock-item">
-            <i class="fa-solid fa-house"></i>
-            <span>Inicióo</span>
+    <!-- ===== SEARCH OVERLAY (mobile) ===== -->
+    <div id="gk-search-overlay" class="gk-search-overlay" role="dialog" aria-label="Buscar">
+        <div class="gk-search-overlay-header">
+            <div class="gk-search-overlay-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="gk-search-overlay-input" type="text" placeholder="Buscar..." autocomplete="off">
+            </div>
+            <button id="search-cancel-btn" class="gk-search-cancel">Cancelar</button>
+        </div>
+        <div id="gk-search-suggestions" class="gk-search-overlay-suggestions"></div>
+    </div>
+
+    <!-- ===== MOBILE BOTTOM DOCK (Eneba-style) ===== -->
+    <nav class="gk-dock" role="navigation" aria-label="Navegación principal">
+        <a href="index.html" class="gk-dock-item" id="dock-home-btn" aria-label="GhostKey inicio">
+            <span class="dock-icon">
+                <span class="gk-dock-logo-icon"><img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey"></span>
+            </span>
+            <span class="dock-label">GhostKey</span>
         </a>
-        <a href="catalogo.html" class="gk-dock-item">
-            <i class="fa-solid fa-gamepad"></i>
-            <span>Catálogo</span>
-        </a>
-        <button class="gk-dock-item" id="dock-friends-btn">
-            <i class="fa-solid fa-users"></i>
-            <span>Amigos</span>
+        <button class="gk-dock-item" id="dock-search-btn" aria-label="Buscar">
+            <span class="dock-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span class="dock-label">Buscar</span>
         </button>
-        <a href="pago.html" class="gk-dock-item">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Saldo</span>
+        <a href="javascript:void(0)" class="gk-dock-item" id="dock-cart-btn" aria-label="Carrito">
+            <span class="dock-icon" style="position:relative;">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="dock-cart-badge" class="gk-dock-badge hidden">0</span>
+            </span>
+            <span class="dock-label">Carrito</span>
         </a>
-        <a href="perfil.html" class="gk-dock-item active">
-            <i class="fa-solid fa-user"></i>
-            <span>Perfil</span>
+        <a href="perfil.html" class="gk-dock-item active" id="dock-account-btn" aria-label="Mi cuenta">
+            <span class="dock-icon"><i class="fa-regular fa-user"></i></span>
+            <span class="dock-label">Mi cuenta</span>
         </a>
     </nav>
+    <script src="js/dock.js"></script>
 <!-- ===== FRIENDS SIDE PANEL ===== -->
     <div class="gk-friends-panel-backdrop" id="friends-backdrop"></div>
     <aside class="gk-friends-panel" id="friends-panel">
@@ -899,5 +917,25 @@
     </aside>
 
     
+    <!-- ===== FLOATING HELP BUBBLE (WhatsApp) ===== -->
+    <div class="gk-help-bubble-wrap" id="gk-help-bubble-wrap">
+        <div class="gk-help-tooltip" id="gk-help-tooltip">
+            <i class="fa-brands fa-whatsapp"></i> ¿Necesitas ayuda?
+        </div>
+        <a href="https://api.whatsapp.com/send?text=Hola,%20tengo%20una%20duda%20sobre%20mi%20cuenta%20de%20GhostKey" target="_blank" rel="noopener noreferrer" class="gk-help-orb" id="gk-help-orb" aria-label="Contactar soporte por WhatsApp">
+            <div class="loader"><div class="circle"></div></div>
+        </a>
+    </div>
+    <script>
+    (function(){
+        var tooltip = document.getElementById('gk-help-tooltip');
+        var orb = document.getElementById('gk-help-orb');
+        if (!tooltip || !orb) return;
+        function showTooltip() { tooltip.classList.add('visible'); setTimeout(function(){ tooltip.classList.remove('visible'); }, 3200); }
+        setTimeout(function(){ showTooltip(); setInterval(showTooltip, 18000); }, 4000);
+        orb.addEventListener('mouseenter', function(){ tooltip.classList.add('visible'); });
+        orb.addEventListener('mouseleave', function(){ tooltip.classList.remove('visible'); });
+    })();
+    </script>
 </body>
 </html>

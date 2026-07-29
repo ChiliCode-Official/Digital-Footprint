@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Virtual - MÃ©todos de Pago</title>
+    <title>GhostKey - Métodos de Pago</title>
 
     <meta name="description" content="Compra cuentas premium, claves de juegos y saldo virtual en GhostKey. Entrega rápida, transacciones seguras y soporte dedicado.">
     <meta name="keywords" content="cuentas premium, claves juegos, saldo virtual, GhostKey, tienda digital, videojuegos">
@@ -15,8 +15,11 @@
     <meta property="og:image" content="https://i.imgur.com/LbMnNUg.png">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/help-bubble.css">
+
+    <link rel="stylesheet" href="css/mobile-dock.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png"></head>
+<link rel="icon" type="image/png" href="https://i.imgur.com/LbMnNUg.png"></head>
 <body>
     <!-- ===== GLOBAL NAVBAR (GhostKey) ===== -->
     <style>
@@ -51,14 +54,14 @@
         .gk-dock-item.active { color: var(--accent-primary); }
     </style>
     <nav class="gk-navbar">
-        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey"><span>GhostKey</span></a>
+        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey"></a>
         <div class="gk-search-wrap">
             <input id="gk-nav-search" type="text" placeholder="Buscar productos..." autocomplete="off">
             <button class="gk-search-btn-nav" id="gk-nav-search-btn" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         <div class="gk-nav-actions">
             <a href="pago.html" class="gk-nav-btn gk-nav-balance" id="nav-balance-btn" title="Recargar saldo"><i class="fa-solid fa-wallet"></i><span class="lbl" id="nav-balance-label">Saldo</span></a>
-            <a href="cart.html" class="gk-nav-btn" title="Carrito"><i class="fa-solid fa-bag-shopping"></i><span class="lbl">Carrito</span></a>
+            <a href="javascript:void(0)" class="gk-nav-btn" title="Carrito"><i class="fa-solid fa-bag-shopping"></i><span class="lbl">Carrito</span></a>
             <a href="perfil.html" class="gk-user-chip" id="user-profile-btn" title="Mi perfil">
                 <img id="user-avatar" src="https://ui-avatars.com/api/?name=G&background=A182E8&color=fff" alt="Avatar" onerror="this.onerror=null;this.src=this.src;" referrerpolicy="no-referrer">
                 <span id="user-name">Cuenta</span>
@@ -81,7 +84,7 @@
             <header class="top-bar">
                 <button class="btn-secondary" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
                 <div class="top-actions">
-                    <div class="user-profile user-profile--loading" id="user-profile-btn" title="Cargando sesiÃ³nâ€¦">
+                    <div class="user-profile user-profile--loading" id="user-profile-btn" title="Cargando sesión…">
                         <img id="user-avatar" class="user-avatar" alt="" referrerpolicy="no-referrer">
                         <span id="user-name"></span>
                     </div>
@@ -92,7 +95,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                     <div>
                         <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px;">
-                            <i class="fa-solid fa-building-columns" style="color: var(--accent-primary);"></i> MÃ©todos de Pago
+                            <i class="fa-solid fa-building-columns" style="color: var(--accent-primary);"></i> Métodos de Pago
                         </h1>
                         <p style="color: var(--text-muted);">Realiza tus transferencias con los datos oficiales de GhostKey.</p>
                     </div>
@@ -101,7 +104,7 @@
 
                 <!-- Admin Add Payment Method Form (Visible only to Admin) -->
                 <div id="admin-payment-container" class="glass-panel" style="display: none; padding: 1.8rem; margin-bottom: 2rem; border-color: rgba(161, 130, 232, 0.4);">
-                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fa-solid fa-shield"></i> Administrar MÃ©todos de Pago (Panel Admin)</h3>
+                    <h3 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fa-solid fa-shield"></i> Administrar Métodos de Pago (Panel Admin)</h3>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
                         <div>
@@ -117,19 +120,19 @@
                             <input type="text" id="pm-concepto" placeholder="Ej: Tu correo o ID de usuario" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                         </div>
                         <div>
-                            <label class="payment-detail-label">Tipo de MÃ©todo</label>
+                            <label class="payment-detail-label">Tipo de Método</label>
                             <select id="pm-tipo" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                                 <option value="transferencia">Transferencia (SPEI)</option>
                                 <option value="efectivo">Efectivo / OXXO</option>
                             </select>
                         </div>
                         <div>
-                            <label class="payment-detail-label">Cuenta CLABE (18 dÃ­gitos)</label>
-                            <input type="text" id="pm-clabe" placeholder="18 dÃ­gitos" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                            <label class="payment-detail-label">Cuenta CLABE (18 dígitos)</label>
+                            <input type="text" id="pm-clabe" placeholder="18 dígitos" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
                         </div>
                     </div>
                     
-                    <button id="btn-save-payment-method" class="btn-primary" style="padding: 10px 20px;"><i class="fa-solid fa-plus"></i> Guardar MÃ©todo de Pago</button>
+                    <button id="btn-save-payment-method" class="btn-primary" style="padding: 10px 20px;"><i class="fa-solid fa-plus"></i> Guardar Método de Pago</button>
                 </div>
 
                 <!-- POS Payment Machine Animation (Uiverse Admin12121) -->
@@ -152,9 +155,33 @@
                  </div>
                 </div>
 
+                <!-- Info legend -->
+                <div style="
+                    background: linear-gradient(135deg, rgba(161,130,232,0.08), rgba(124,58,237,0.04));
+                    border: 1px solid rgba(161,130,232,0.25);
+                    border-left: 4px solid var(--accent-primary);
+                    border-radius: 12px;
+                    padding: 1.1rem 1.4rem;
+                    margin-bottom: 1.5rem;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 14px;
+                ">
+                    <i class="fa-solid fa-circle-info" style="color: var(--accent-primary); font-size: 1.3rem; margin-top: 2px; flex-shrink: 0;"></i>
+                    <div>
+                        <p style="margin: 0 0 4px; font-weight: 700; color: var(--text-main); font-size: 0.95rem;">¿Cómo recargar tu saldo?</p>
+                        <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.55;">
+                            Con cualquiera de los métodos de pago que aparecen aquí abajo puedes <strong style="color: var(--text-main);">recargar saldo en tu cuenta GhostKey</strong>.
+                            Realiza tu transferencia, incluye tu correo o UID en el concepto y envíanos el comprobante por
+                            <a href="https://api.whatsapp.com/send?text=Hola,%20quiero%20recargar%20saldo%20en%20GhostKey" target="_blank" rel="noopener noreferrer" style="color: #25D366; font-weight: 700;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>.
+                            Tu saldo se acreditará en menos de 24 horas.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Payment Methods Grid -->
                 <div id="payment-methods-list" class="payment-grid">
-                    <p style="color: var(--text-muted);">Cargando mÃ©todos de pago...</p>
+                    <p style="color: var(--text-muted);">Cargando métodos de pago...</p>
                 </div>
             </section>
         
@@ -169,16 +196,66 @@
     </nav>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast-notification">Â¡Cuenta CLABE copiada al portapapeles!</div>
+    <div id="toast" class="toast-notification">¡Cuenta CLABE copiada al portapapeles!</div>
 
     <script type="module" src="js/metodos-pago.js"></script>
     <script type="module" src="js/cart.js"></script>
-    <!-- Mobile Dock -->
-    <nav class="gk-dock">
-        <a href="index.html" class="gk-dock-item "><i class="fa-solid fa-house"></i><span>Inicio</span></a>
-        <a href="catalogo.html" class="gk-dock-item "><i class="fa-solid fa-gamepad"></i><span>Catálogo</span></a>
-        <a href="pago.html" class="gk-dock-item active"><i class="fa-solid fa-wallet"></i><span>Saldo</span></a>
-        <a href="perfil.html" class="gk-dock-item "><i class="fa-solid fa-user"></i><span>Perfil</span></a>
+    <!-- ===== SEARCH OVERLAY (mobile) ===== -->
+    <div id="gk-search-overlay" class="gk-search-overlay" role="dialog" aria-label="Buscar">
+        <div class="gk-search-overlay-header">
+            <div class="gk-search-overlay-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="gk-search-overlay-input" type="text" placeholder="Buscar..." autocomplete="off">
+            </div>
+            <button id="search-cancel-btn" class="gk-search-cancel">Cancelar</button>
+        </div>
+        <div id="gk-search-suggestions" class="gk-search-overlay-suggestions"></div>
+    </div>
+
+    <!-- ===== MOBILE BOTTOM DOCK (Eneba-style) ===== -->
+    <nav class="gk-dock" role="navigation" aria-label="Navegación principal">
+        <a href="index.html" class="gk-dock-item" id="dock-home-btn" aria-label="GhostKey inicio">
+            <span class="dock-icon">
+                <span class="gk-dock-logo-icon"><img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey"></span>
+            </span>
+            <span class="dock-label">GhostKey</span>
+        </a>
+        <button class="gk-dock-item" id="dock-search-btn" aria-label="Buscar">
+            <span class="dock-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span class="dock-label">Buscar</span>
+        </button>
+        <a href="javascript:void(0)" class="gk-dock-item" id="dock-cart-btn" aria-label="Carrito">
+            <span class="dock-icon" style="position:relative;">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="dock-cart-badge" class="gk-dock-badge hidden">0</span>
+            </span>
+            <span class="dock-label">Carrito</span>
+        </a>
+        <a href="perfil.html" class="gk-dock-item" id="dock-account-btn" aria-label="Mi cuenta">
+            <span class="dock-icon"><i class="fa-regular fa-user"></i></span>
+            <span class="dock-label">Mi cuenta</span>
+        </a>
     </nav>
+    <script src="js/dock.js"></script>
+    <!-- ===== FLOATING HELP BUBBLE (WhatsApp) ===== -->
+    <div class="gk-help-bubble-wrap" id="gk-help-bubble-wrap">
+        <div class="gk-help-tooltip" id="gk-help-tooltip">
+            <i class="fa-brands fa-whatsapp"></i> ¿Necesitas ayuda?
+        </div>
+        <a href="https://api.whatsapp.com/send?text=Hola,%20tengo%20una%20duda%20sobre%20mi%20cuenta%20de%20GhostKey" target="_blank" rel="noopener noreferrer" class="gk-help-orb" id="gk-help-orb" aria-label="Contactar soporte por WhatsApp">
+            <div class="loader"><div class="circle"></div></div>
+        </a>
+    </div>
+    <script>
+    (function(){
+        var tooltip = document.getElementById('gk-help-tooltip');
+        var orb = document.getElementById('gk-help-orb');
+        if (!tooltip || !orb) return;
+        function showTooltip() { tooltip.classList.add('visible'); setTimeout(function(){ tooltip.classList.remove('visible'); }, 3200); }
+        setTimeout(function(){ showTooltip(); setInterval(showTooltip, 18000); }, 4000);
+        orb.addEventListener('mouseenter', function(){ tooltip.classList.add('visible'); });
+        orb.addEventListener('mouseleave', function(){ tooltip.classList.remove('visible'); });
+    })();
+    </script>
 </body>
 </html>

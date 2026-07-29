@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Global listener for bag/cart icons across all pages
-    document.querySelectorAll('.fa-bag-shopping, .fa-shopping-bag, .action-btn i.fa-bag-shopping').forEach(icon => {
+    document.querySelectorAll('.fa-bag-shopping, .fa-shopping-bag, .fa-cart-shopping, .action-btn i.fa-bag-shopping').forEach(icon => {
         const btn = icon.closest('button, a');
         if (btn) {
             btn.addEventListener('click', (e) => {
@@ -215,7 +215,7 @@ export async function updateCartBadge() {
                 return sum + (q || 0);
             }, 0);
             
-            document.querySelectorAll('.fa-bag-shopping, .fa-shopping-bag, .action-btn i.fa-bag-shopping').forEach(icon => {
+            document.querySelectorAll('.fa-bag-shopping, .fa-shopping-bag, .fa-cart-shopping, .action-btn i.fa-bag-shopping').forEach(icon => {
                 const parent = icon.closest('a, button');
                 if (parent) {
                     let badge = parent.querySelector('.cart-badge-counter');

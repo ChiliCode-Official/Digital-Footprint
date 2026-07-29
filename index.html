@@ -1,78 +1,165 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostKey - Tienda Digital Premium</title>
-    <meta name="description" content="Compra cuentas premium, claves de juegos y saldo virtual en GhostKey. Entrega rápida, transacciones seguras y soporte dedicado.">
-    <meta name="keywords" content="cuentas premium, claves juegos, saldo virtual, GhostKey, tienda digital, videojuegos">
+    <title>GhostKey | Comprar Cuentas Premium y Claves de Juegos</title>
+    <meta name="description" content="Tienda digital líder para comprar cuentas premium, claves de juegos y saldo virtual. Entrega instantánea, precios bajos y seguridad garantizada en GhostKey.">
+    <meta name="keywords" content="comprar cuentas premium, claves de juegos baratas, saldo virtual, tarjetas de regalo, GhostKey tienda digital">
     <meta name="author" content="GhostKey Oficial">
-    <meta property="og:title" content="GhostKey - Tienda Digital Premium">
-    <meta property="og:description" content="Compra cuentas premium, claves de juegos y saldo virtual.">
+    <meta property="og:title" content="GhostKey | Comprar Cuentas Premium y Claves de Juegos">
+    <meta property="og:description" content="Tienda digital líder para comprar cuentas premium, claves de juegos y saldo virtual. Entrega instantánea y precios bajos.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ghostkey.online/">
     <meta property="og:image" content="https://i.imgur.com/LbMnNUg.png">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" type="image/png" href="https://i.imgur.com/Wq4wBb7.png">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/LbMnNUg.png">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/help-bubble.css">
+
+    <link rel='stylesheet' href='css/mobile-dock.css'>
+    <link rel='preconnect' href='https://fonts.googleapis.com'>
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link href='https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "GhostKey",
+      "url": "https://ghostkey.online/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://ghostkey.online/catalogo.html?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "GhostKey",
+      "url": "https://ghostkey.online/",
+      "logo": "https://i.imgur.com/LbMnNUg.png"
+    }
+    </script>
     <style>
-        /* ===== OVERRIDE GLOBAL body STYLES FOR LANDING ===== */
+        /* ====================================================
+           GHOSTKEY INDEX — PREMIUM REDESIGN
+        ==================================================== */
+        *, *::before, *::after { box-sizing: border-box; }
+
         html, body {
             height: auto !important;
             overflow: visible !important;
             overflow-x: hidden !important;
+            font-family: 'Outfit', 'Inter', system-ui, sans-serif;
         }
         body {
             display: block !important;
             min-height: 100vh;
+            background: var(--bg-main);
+            color: var(--text-main);
         }
 
-        /* --- Top Navbar --- */
+        /* ---- SCANLINE AMBIENT OVERLAY ---- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* =========================================
+           TOP NAVBAR
+        ========================================= */
         .gk-navbar {
             position: sticky;
             top: 0;
             z-index: 1000;
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--accent-primary);
+            background: rgba(11, 14, 20, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(161, 130, 232, 0.25);
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 0 16px;
-            height: 60px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+            padding: 0 20px;
+            height: 64px;
+            box-shadow: 0 1px 30px rgba(0,0,0,0.6);
         }
         .gk-nav-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             text-decoration: none;
             flex-shrink: 0;
         }
-        .gk-nav-logo img { width: 36px; height: 36px; border-radius: 8px; }
-        .gk-nav-logo span {
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--text-main);
-            display: none;
+        .gk-nav-logo img {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            filter: drop-shadow(0 0 8px rgba(161,130,232,0.6));
         }
-        @media(min-width:600px) { .gk-nav-logo span { display: inline; } }
+        .gk-nav-logo span { display: none; }
+
+        .gk-nav-separator {
+            width: 1px;
+            height: 24px;
+            background: rgba(255,255,255,0.08);
+            flex-shrink: 0;
+        }
+
+        /* Nav links desktop */
+        .gk-nav-links {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        @media(min-width: 900px) { .gk-nav-links { display: flex; } }
+        .gk-nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: color 0.2s, background 0.2s;
+            white-space: nowrap;
+        }
+        .gk-nav-link:hover, .gk-nav-link.active {
+            color: var(--text-main);
+            background: rgba(161,130,232,0.1);
+        }
+        .gk-nav-link.active { color: var(--accent-primary); }
 
         /* Search bar */
         .gk-search-wrap {
             flex: 1;
             display: flex;
             align-items: center;
-            background: var(--bg-main);
-            border: 2px solid var(--glass-border);
-            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
             overflow: hidden;
-            transition: border-color 0.2s;
-            max-width: 700px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            max-width: 520px;
         }
         .gk-search-wrap:focus-within {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(161,120,232,0.2);
+            border-color: rgba(161,130,232,0.5);
+            box-shadow: 0 0 0 3px rgba(161,120,232,0.12);
         }
         .gk-search-wrap input {
             flex: 1;
@@ -80,8 +167,8 @@
             border: none;
             outline: none;
             color: var(--text-main);
-            padding: 8px 12px;
-            font-size: 0.95rem;
+            padding: 10px 14px;
+            font-size: 0.9rem;
             font-family: inherit;
         }
         .gk-search-wrap input::placeholder { color: var(--text-muted); }
@@ -89,66 +176,75 @@
             background: var(--accent-primary);
             border: none;
             cursor: pointer;
-            padding: 10px 14px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            transition: background 0.2s, opacity 0.2s;
         }
-        .gk-search-btn:hover { background: var(--accent-secondary); }
-        .gk-search-btn svg { width: 22px; height: 22px; }
+        .gk-search-btn:hover { opacity: 0.85; }
+        .gk-search-btn svg { width: 20px; height: 20px; }
 
         /* Nav actions */
         .gk-nav-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
         }
         .gk-nav-btn {
             background: transparent;
             border: none;
-            color: var(--text-main);
+            color: var(--text-muted);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 10px;
+            padding: 7px 11px;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-family: inherit;
             text-decoration: none;
-            transition: background 0.2s;
+            transition: background 0.2s, color 0.2s;
             white-space: nowrap;
         }
-        .gk-nav-btn:hover { background: var(--bg-main); }
+        .gk-nav-btn:hover { background: rgba(255,255,255,0.06); color: var(--text-main); }
         .gk-nav-btn .label { display: none; }
         @media(min-width:768px) { .gk-nav-btn .label { display: inline; } }
         .gk-nav-balance {
-            background: rgba(161,120,232,0.12);
-            border: 1px solid var(--accent-primary);
-            color: var(--accent-primary);
+            background: rgba(161,120,232,0.1);
+            border: 1px solid rgba(161,120,232,0.3);
+            color: var(--accent-primary) !important;
             font-weight: 700;
+        }
+        .gk-nav-balance:hover {
+            background: rgba(161,120,232,0.2) !important;
+            color: var(--accent-primary) !important;
         }
         .gk-user-chip {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-main);
-            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 30px;
             padding: 4px 12px 4px 4px;
             cursor: pointer;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background 0.2s;
         }
-        .gk-user-chip:hover { border-color: var(--accent-primary); }
+        .gk-user-chip:hover {
+            border-color: rgba(161,130,232,0.4);
+            background: rgba(161,130,232,0.08);
+        }
         .gk-user-chip img {
             width: 30px; height: 30px;
             border-radius: 50%;
             object-fit: cover;
+            border: 1px solid rgba(161,130,232,0.3);
         }
         .gk-user-chip span {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
             color: var(--text-main);
             max-width: 100px;
             overflow: hidden;
@@ -158,86 +254,235 @@
         }
         @media(min-width:600px) { .gk-user-chip span { display: inline; } }
 
-        /* --- Page Body (full width, no sidebar) --- */
+        /* =========================================
+           PAGE BODY
+        ========================================= */
         .gk-page {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 16px 100px;
+            padding: 0 20px 120px;
         }
 
-        /* --- Hero Banner --- */
+        /* =========================================
+           HERO BANNER — PREMIUM REDESIGN
+        ========================================= */
         .gk-hero {
             position: relative;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            margin: 20px 0;
-            min-height: 280px;
+            margin: 24px 0 0;
+            min-height: 380px;
             display: flex;
             align-items: flex-end;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #0f0c29, #1a1040, #24243e);
+        }
+        /* Animated edge glow */
+        .gk-hero::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(161,130,232,0.6), transparent 50%, rgba(161,130,232,0.2));
+            z-index: 0;
+            opacity: 0.5;
+        }
+        .gk-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg,
+                rgba(11,14,20,0.92) 0%,
+                rgba(11,14,20,0.6) 50%,
+                transparent 100%);
+            z-index: 1;
         }
         .gk-hero-bg {
             position: absolute; inset: 0;
             object-fit: cover;
             width: 100%; height: 100%;
-            opacity: 0.45;
+            opacity: 0.55;
+            z-index: 0;
+            transition: opacity 0.4s;
         }
         .gk-hero-content {
             position: relative;
-            padding: 2rem;
-            max-width: 500px;
+            z-index: 2;
+            padding: 2.5rem;
+            max-width: 560px;
         }
         .gk-hero-tag {
-            background: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-primary), #7c5cbf);
             color: #fff;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            padding: 3px 10px;
+            padding: 4px 14px;
             border-radius: 20px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 14px;
+            box-shadow: 0 0 20px rgba(161,130,232,0.4);
         }
         .gk-hero h1 {
-            font-size: clamp(1.5rem, 5vw, 2.4rem);
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
             font-weight: 900;
             color: #fff;
-            margin: 0 0 8px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            margin: 0 0 10px;
+            line-height: 1.1;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+            letter-spacing: -0.5px;
+        }
+        .gk-hero-desc {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0 0 20px;
+            max-width: 360px;
         }
         .gk-hero-price {
-            font-size: 1.6rem;
-            font-weight: 800;
+            font-size: 2rem;
+            font-weight: 900;
             color: var(--accent-primary);
-            margin: 0 0 1.2rem;
+            margin: 0 0 1.4rem;
+            text-shadow: 0 0 30px rgba(161,130,232,0.5);
+        }
+        .gk-hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .gk-hero-dots {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 2;
+            display: flex;
+            gap: 6px;
+        }
+        .gk-hero-dot {
+            width: 6px; height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.25);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .gk-hero-dot.active {
+            width: 22px;
+            background: var(--accent-primary);
         }
 
-        /* --- Section Headers --- */
-        .gk-section { margin: 32px 0 0; }
+        /* HERO SKELETON */
+        #hero-skeleton {
+            min-height: 380px;
+            background: linear-gradient(90deg, var(--bg-card) 25%, rgba(28,34,46,0.8) 50%, var(--bg-card) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* =========================================
+           FEATURES STRIP
+        ========================================= */
+        .gk-features-strip {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        @media(min-width: 640px) { .gk-features-strip { grid-template-columns: repeat(4, 1fr); } }
+        .gk-feature-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(28, 34, 46, 0.8);
+            border: 1px solid rgba(161,130,232,0.12);
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            cursor: default;
+        }
+        .gk-feature-card:hover {
+            border-color: rgba(161,130,232,0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .gk-feature-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(161,130,232,0.2), rgba(161,130,232,0.05));
+            border: 1px solid rgba(161,130,232,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+        .gk-feature-text h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+        .gk-feature-text p {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* =========================================
+           SECTION HEADER
+        ========================================= */
+        .gk-section { margin: 40px 0 0; }
         .gk-section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            border-bottom: 2px solid var(--glass-border);
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .gk-section-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .gk-section-accent {
+            width: 4px;
+            height: 28px;
+            border-radius: 2px;
+            background: linear-gradient(180deg, var(--accent-primary), transparent);
+            flex-shrink: 0;
         }
         .gk-section-header h2 {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 800;
             color: var(--text-main);
             margin: 0;
+            letter-spacing: -0.3px;
+        }
+        .gk-section-header h2 span {
+            color: var(--accent-primary);
         }
         .gk-see-all {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             color: var(--accent-primary);
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
+            padding: 6px 14px;
+            border: 1px solid rgba(161,130,232,0.25);
+            border-radius: 20px;
+            transition: background 0.2s, border-color 0.2s;
         }
-        .gk-see-all:hover { text-decoration: underline; }
+        .gk-see-all:hover {
+            background: rgba(161,130,232,0.1);
+            border-color: rgba(161,130,232,0.5);
+        }
 
-        /* --- Horizontal Products Scroll --- */
+        /* =========================================
+           HORIZONTAL PRODUCTS SCROLL
+        ========================================= */
         .gk-hscroll {
             display: flex;
             gap: 14px;
@@ -251,154 +496,538 @@
         .gk-hscroll::-webkit-scrollbar-track { background: transparent; }
         .gk-hscroll::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 2px; }
 
-        /* --- Product Card --- */
+        /* =========================================
+           PRODUCT CARD
+        ========================================= */
         .gk-card {
             background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
             overflow: hidden;
-            width: 180px;
-            min-width: 180px;
+            width: 190px;
+            min-width: 190px;
             flex-shrink: 0;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
             scroll-snap-align: start;
             text-decoration: none;
             color: inherit;
             display: block;
+            position: relative;
+        }
+        .gk-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(161,130,232,0.06), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         .gk-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-primary);
-            box-shadow: 0 8px 24px rgba(161,120,232,0.2);
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(161,130,232,0.4);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 30px rgba(161,130,232,0.15);
+        }
+        .gk-card:hover::before { opacity: 1; }
+        .gk-card-img-wrap {
+            width: 100%;
+            aspect-ratio: 1;
+            overflow: hidden;
+            position: relative;
         }
         .gk-card-img {
             width: 100%;
-            aspect-ratio: 1;
+            height: 100%;
             object-fit: cover;
             background: var(--bg-main);
+            transition: transform 0.4s;
         }
-        .gk-card-body { padding: 10px 12px 12px; }
+        .gk-card:hover .gk-card-img { transform: scale(1.06); }
+        .gk-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11,14,20,0.8) 0%, transparent 60%);
+        }
+        .gk-card-body { padding: 12px 14px 14px; }
         .gk-card-badge {
-            font-size: 0.68rem;
-            font-weight: 700;
-            padding: 2px 8px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 9px;
             border-radius: 10px;
-            background: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-primary), #7c5cbf);
             color: #fff;
             display: inline-block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .gk-card-name {
-            font-size: 0.82rem;
-            font-weight: 600;
+            font-size: 0.83rem;
+            font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 6px;
-            line-height: 1.3;
+            margin-bottom: 7px;
+            line-height: 1.35;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .gk-card-stars { color: #ffa723; font-size: 0.72rem; margin-bottom: 4px; }
+        .gk-card-stars { color: #ffa723; font-size: 0.7rem; margin-bottom: 6px; }
+        .gk-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
         .gk-card-price {
             font-size: 1.05rem;
-            font-weight: 800;
+            font-weight: 900;
             color: var(--accent-primary);
         }
         .gk-card-original {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             text-decoration: line-through;
         }
+        .gk-card-add-btn {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-primary), #7c5cbf);
+            border: none;
+            color: #fff;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, opacity 0.2s;
+            flex-shrink: 0;
+        }
+        .gk-card-add-btn:hover { transform: scale(1.1); opacity: 0.85; }
 
-        /* --- Reviews Grid --- */
+        /* =========================================
+           CATEGORIES GRID
+        ========================================= */
+        .gk-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        @media(min-width: 640px) { .gk-categories-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media(min-width: 900px) { .gk-categories-grid { grid-template-columns: repeat(6, 1fr); } }
+        .gk-cat-card {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+        }
+        .gk-cat-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            border-color: rgba(161,130,232,0.4);
+        }
+        .gk-cat-bg {
+            position: absolute; inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.4s;
+        }
+        .gk-cat-card:hover .gk-cat-bg { transform: scale(1.08); }
+        .gk-cat-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(11,14,20,0.9) 0%, rgba(11,14,20,0.3) 100%);
+        }
+        .gk-cat-label {
+            position: absolute;
+            bottom: 10px;
+            left: 0; right: 0;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #fff;
+            padding: 0 8px;
+            line-height: 1.2;
+        }
+        .gk-cat-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            font-size: 1.6rem;
+            color: var(--accent-primary);
+            filter: drop-shadow(0 0 10px rgba(161,130,232,0.6));
+        }
+
+        /* =========================================
+           PROMO BANNER STRIP
+        ========================================= */
+        .gk-promo-strip {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin: 40px 0;
+        }
+        @media(min-width: 768px) { .gk-promo-strip { grid-template-columns: 1fr 1fr; } }
+        .gk-promo-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            padding: 32px 28px;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .gk-promo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .gk-promo-card-bg {
+            position: absolute; inset: 0;
+            background-size: cover;
+            background-position: center;
+        }
+        .gk-promo-card-overlay {
+            position: absolute; inset: 0;
+        }
+        .gk-promo-card h3 {
+            position: relative;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+            z-index: 1;
+        }
+        .gk-promo-card p {
+            position: relative;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            z-index: 1;
+            margin-bottom: 14px;
+        }
+        .gk-promo-card a {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 7px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .gk-promo-card a:hover {
+            background: rgba(255,255,255,0.22);
+            border-color: rgba(255,255,255,0.35);
+        }
+
+        /* =========================================
+           STATS BAR
+        ========================================= */
+        .gk-stats-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+        @media(min-width: 640px) { .gk-stats-bar { grid-template-columns: repeat(4, 1fr); } }
+        .gk-stat {
+            text-align: center;
+            padding: 20px 16px;
+            background: rgba(28,34,46,0.7);
+            border: 1px solid rgba(161,130,232,0.1);
+            border-radius: 14px;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .gk-stat:hover {
+            border-color: rgba(161,130,232,0.3);
+            transform: translateY(-2px);
+        }
+        .gk-stat-num {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--accent-primary), #c4a8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gk-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================================
+           NEWSLETTER BANNER
+        ========================================= */
+        .gk-newsletter {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            padding: 48px 32px;
+            margin: 40px 0;
+            background: linear-gradient(135deg, #1a0f3a, #2d1b69, #1a1040);
+            border: 1px solid rgba(161,130,232,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+        }
+        .gk-newsletter::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(161,130,232,0.15), transparent 70%);
+            top: -100px;
+            right: -100px;
+            pointer-events: none;
+        }
+        .gk-newsletter::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(161,130,232,0.1), transparent 70%);
+            bottom: -80px;
+            left: -80px;
+            pointer-events: none;
+        }
+        .gk-newsletter-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-primary);
+            background: rgba(161,130,232,0.1);
+            border: 1px solid rgba(161,130,232,0.3);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+        .gk-newsletter h2 {
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-weight: 900;
+            color: #fff;
+            margin: 0;
+            position: relative;
+        }
+        .gk-newsletter p {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.9rem;
+            max-width: 440px;
+            line-height: 1.6;
+            position: relative;
+        }
+        .gk-newsletter-form {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+        }
+        .gk-newsletter-form input {
+            flex: 1;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .gk-newsletter-form input::placeholder { color: rgba(255,255,255,0.4); }
+        .gk-newsletter-form input:focus { border-color: rgba(161,130,232,0.5); }
+        .gk-newsletter-form button {
+            background: linear-gradient(135deg, var(--accent-primary), #7c5cbf);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            color: #fff;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: inherit;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .gk-newsletter-form button:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        /* =========================================
+           REVIEWS GRID
+        ========================================= */
         .gk-reviews-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 16px;
-            margin-top: 16px;
+            margin-top: 4px;
         }
         .gk-review-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 18px;
+            background: rgba(28,34,46,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            gap: 12px;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .gk-review-card::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            font-size: 4rem;
+            color: rgba(161,130,232,0.08);
+            font-family: Georgia, serif;
+            line-height: 1;
         }
         .gk-review-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+            border-color: rgba(161,130,232,0.2);
         }
         .gk-review-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .gk-review-avatar {
-            width: 38px; height: 38px;
+            width: 40px; height: 40px;
             border-radius: 50%;
-            background: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-primary), #7c5cbf);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: #fff;
             flex-shrink: 0;
+            border: 2px solid rgba(161,130,232,0.3);
         }
         .gk-review-meta { flex: 1; }
-        .gk-review-user { font-weight: 700; font-size: 0.88rem; color: var(--text-main); }
-        .gk-review-product { font-size: 0.75rem; color: var(--text-muted); }
+        .gk-review-user { font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
+        .gk-review-product { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
         .gk-review-stars { color: #ffa723; font-size: 0.85rem; }
-        .gk-review-text { color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; }
+        .gk-review-text { color: var(--text-muted); font-size: 0.87rem; line-height: 1.55; }
 
-        /* Review form card */
+        /* Review form */
         .gk-review-form-card {
-            background: linear-gradient(135deg, rgba(161,120,232,0.08), rgba(0,0,0,0.2));
-            border: 1px dashed var(--accent-primary);
-            border-radius: 12px;
-            padding: 18px;
+            background: linear-gradient(135deg, rgba(161,120,232,0.07), rgba(0,0,0,0.15));
+            border: 1px dashed rgba(161,130,232,0.3);
+            border-radius: 14px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        /* --- Features strip --- */
-        .gk-features {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 16px 0;
-            margin: 8px 0;
-            scrollbar-width: none;
+        /* =========================================
+           HOW IT WORKS
+        ========================================= */
+        .gk-how-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
         }
-        .gk-features::-webkit-scrollbar { display: none; }
-        .gk-feature {
+        @media(min-width: 768px) { .gk-how-grid { grid-template-columns: repeat(4, 1fr); } }
+        .gk-how-card {
+            background: rgba(28,34,46,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .gk-how-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(161,130,232,0.3);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        }
+        .gk-how-num {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(161,130,232,0.2), rgba(161,130,232,0.05));
+            border: 2px solid rgba(161,130,232,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--accent-primary);
+            margin: 0 auto 14px;
+        }
+        .gk-how-icon { font-size: 1.6rem; color: var(--accent-primary); margin-bottom: 12px; }
+        .gk-how-card h4 { font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .gk-how-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+        /* Connector line */
+        .gk-how-connector {
+            display: none;
+            align-self: center;
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(90deg, rgba(161,130,232,0.3), transparent);
+        }
+
+        /* =========================================
+           TRUST BADGES
+        ========================================= */
+        .gk-trust-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 24px 0;
+        }
+        .gk-trust-badge {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 10px 16px;
-            white-space: nowrap;
-            flex-shrink: 0;
-            font-size: 0.82rem;
+            background: rgba(28,34,46,0.7);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-size: 0.8rem;
             color: var(--text-muted);
+            font-weight: 500;
+            transition: border-color 0.2s;
         }
-        .gk-feature i { color: var(--accent-primary); font-size: 1.1rem; }
+        .gk-trust-badge:hover { border-color: rgba(161,130,232,0.25); }
+        .gk-trust-badge i { color: var(--accent-primary); font-size: 0.9rem; }
 
-        /* --- Friends Side Panel --- */
+        /* =========================================
+           FRIENDS SIDE PANEL
+        ========================================= */
         .gk-friends-panel {
             position: fixed;
-            right: 0; top: 60px; bottom: 0;
+            right: 0; top: 64px; bottom: 0;
             width: 320px;
-            background: var(--bg-card);
-            border-left: 1px solid var(--glass-border);
+            background: rgba(21, 26, 35, 0.96);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(161,130,232,0.1);
             transform: translateX(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 999;
             display: flex;
             flex-direction: column;
@@ -409,18 +1038,22 @@
         .gk-friends-panel.open { transform: translateX(0); }
         .gk-friends-panel-backdrop {
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
             z-index: 998;
             display: none;
         }
         .gk-friends-panel-backdrop.open { display: block; }
 
-        /* --- Mobile Dock (bottom nav) --- */
+        /* =========================================
+           MOBILE BOTTOM DOCK
+        ========================================= */
         .gk-dock {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: var(--bg-card);
-            border-top: 1px solid var(--glass-border);
+            background: rgba(21,26,35,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(161,130,232,0.12);
             display: flex;
             align-items: center;
             justify-content: space-around;
@@ -447,16 +1080,91 @@
         .gk-dock-item i { font-size: 1.2rem; }
         .gk-dock-item.active { color: var(--accent-primary); }
 
-        /* Loading Skeletons */
-        .gk-skeleton {
-            display: flex;
-            gap: 14px;
+        /* =========================================
+           FOOTER
+        ========================================= */
+        .gk-footer {
+            background: rgba(15,18,26,0.95);
+            border-top: 1px solid rgba(161,130,232,0.1);
+            padding: 40px 20px 20px;
+            margin-top: 60px;
         }
+        .gk-footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .gk-footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        @media(min-width: 640px) { .gk-footer-grid { grid-template-columns: 2fr 1fr 1fr; } }
+        .gk-footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .gk-footer-brand img { width: 32px; height: 32px; border-radius: 8px; }
+        .gk-footer-brand span { font-weight: 900; font-size: 1.1rem; color: var(--text-main); }
+        .gk-footer-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; max-width: 280px; }
+        .gk-footer-col h5 {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            margin-bottom: 14px;
+        }
+        .gk-footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .gk-footer-col ul li a {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .gk-footer-col ul li a:hover { color: var(--accent-primary); }
+        .gk-footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .gk-footer-socials {
+            display: flex;
+            gap: 10px;
+        }
+        .gk-footer-social {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .gk-footer-social:hover {
+            background: rgba(161,130,232,0.1);
+            color: var(--accent-primary);
+            border-color: rgba(161,130,232,0.3);
+        }
+
+        /* =========================================
+           LOADING SKELETON
+        ========================================= */
         .gk-skeleton-card {
-            width: 180px;
-            min-width: 180px;
-            height: 240px;
-            border-radius: 12px;
+            width: 190px;
+            min-width: 190px;
+            height: 280px;
+            border-radius: 14px;
             background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-main) 50%, var(--bg-card) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
@@ -467,15 +1175,85 @@
             100% { background-position: -200% 0; }
         }
 
-        /* Hide the old sidebar on landing */
+        /* =========================================
+           UTILITIES
+        ========================================= */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--accent-primary), #7c5cbf);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(161,130,232,0.3);
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(161,130,232,0.45);
+        }
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-ghost:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.25);
+        }
         .gk-page-wrapper { display: block; }
 
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
         @media(max-width: 768px) {
-            .gk-hero { min-height: 200px; }
-            .gk-hero-content { padding: 1.2rem; }
-            .gk-card { width: 150px; min-width: 150px; }
+            .gk-hero { min-height: 280px; }
+            .gk-hero-content { padding: 1.5rem; }
+            .gk-card { width: 160px; min-width: 160px; }
             .gk-reviews-grid { grid-template-columns: 1fr; }
-            .gk-page { padding: 0 12px 100px; }
+            .gk-page { padding: 0 14px 110px; }
+            .gk-promo-strip { margin: 24px 0; }
+        }
+
+        /* =========================================
+           RATING STARS (review form)
+        ========================================= */
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 4px;
+        }
+        .rating input { display: none; }
+        .rating label {
+            cursor: pointer;
+            font-size: 1.6rem;
+            color: rgba(255,255,255,0.2);
+            transition: color 0.2s;
+        }
+        .rating label::before { content: "★"; }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffa723;
         }
     </style>
 </head>
@@ -483,35 +1261,31 @@
     <!-- ===== TOP NAVBAR ===== -->
     <nav class="gk-navbar">
         <a href="index.html" class="gk-nav-logo">
-            <img src="https://i.imgur.com/Wq4wBb7.png" alt="GhostKey">
+            <img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey">
             <span>GhostKey</span>
         </a>
 
-        <!-- Search Bar (Uiverse rocket) -->
-        <div class="search-amazon-container gk-search-wrap" style="border:none; background:transparent; flex:1; max-width:700px;">
+        <div class="gk-nav-separator"></div>
+
+        <!-- Desktop nav links -->
+        <div class="gk-nav-links">
+            <a href="index.html" class="gk-nav-link active">Inicio</a>
+            <a href="catalogo.html" class="gk-nav-link">Catálogo</a>
+            <a href="info.html" class="gk-nav-link">Cómo funciona</a>
+            <a href="metodos-pago.html" class="gk-nav-link">Pago</a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="gk-search-wrap">
             <input
                 id="main-search-input"
-                class="amz-search-input"
                 autocomplete="off"
                 placeholder="Buscar productos, juegos, cuentas..."
-                name="text"
                 type="text"
-                style="flex:1;"
             />
-            <span class="amz-search-btn" id="main-search-btn" title="Buscar" style="cursor:pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" class="amz-rocket-icon" viewBox="0 0 128 128">
-                    <path fill="#CA2C31" d="m3.77 71.73l16.34-16.1l27.82-4.93l-2.75 14.56L7.57 76.82l-2.43-1.05z"></path>
-                    <path fill="#A02422" d="M22.94 59.76L5.2 75.88l13.05 6.36l19.81-10.11v-4.77l4.05-10.92zm41.98 28.39l-8.57 3.72l-8.09 17.15s7.12 15.77 7.44 15.77c.32 0 4.37.32 4.37.32l14.4-16.1l3.64-27.5l-13.19 6.64z"></path>
-                    <path fill="#CA2C31" d="M56.5 100.84s4.77-.97 8.17-2.59c3.4-1.62 7.6-4.04 7.6-4.04l-1.54 13.43l-15.05 17.13s-.59-.73-3.09-6.17c-1.99-4.34-2.68-5.89-2.68-5.89l6.59-11.87z"></path>
-                    <path fill="#F7D74D" d="M31.58 80.66s-5.74-.48-12.03 7.47c-5.74 7.26-8.43 19.08-9.47 22.12s-3.53 3.66-2.7 5.05s4.42 1.31 8.85.76s8.23-1.94 8.23-1.94s-.19.48-.83 1.52c-.23.37-1.03.9-.97 1.45c.14 1.31 11.36 1.34 20.32-7.88c9.68-9.95 4.98-18.11 4.98-18.11L31.58 80.66z"></path>
-                    <path fill="#FBF0B4" d="M33.31 85.29s-6.19.33-11.31 8.28s-7.5 17.16-7.01 17.78c.48.62 10.02-2.83 12.31-2.14c1.57.48.76 2.07 1.18 2.49c.35.35 4.49.94 11.19-6.32c6.71-7.26 5.12-17.46 5.12-17.46l-11.48-2.63z"></path>
-                    <path fill="#F7D74D" d="M67.2 8.04C51.67 8.35 32.85 21.36 23.8 38.51c-2.59 4.94-4.37 9.98-5.07 14.77l23.16 11.59c3.51-3.64 7.19-6.44 10.86-8.2c10.47-5.01 22.77-3.83 31.38 6.07l22.81 11.42c.81-4.8.66-10.05-.65-15.34C100.88 36.84 83.59 7.7 67.2 8.04z"></path>
-                    <path fill="#FBF0B4" d="M103.25 74.16L80.44 62.74c8.61 9.9 7.43 22.2-2.78 29.17l22.81 11.42c5.51-6.59 6.71-17.98 2.78-29.17zm-71.67-25.8L8.73 36.94c-2.68 7.74-1.87 17.82 2.27 27.37l20.54 9.65c-5.42-9.42-5.17-19.87.04-25.6z"></path>
-                    <path fill="#fff" d="M67.65 21.37c-8.23.17-17.4 5.37-24.14 14.38c-2.73 3.67-4.9 7.8-6.2 12.12l25.52 12.77c1.64-2.65 3.47-4.85 5.44-6.49c6.04-4.97 13.47-5.83 19.16-1.31l.17.14l23.44 11.73c.29-4.29-.53-9.07-2.41-13.96c-7.09-18.65-22.38-29.78-40.98-29.38z"></path>
-                    <circle cx="80.87" cy="40.57" fill="#A02422" r="9.7"></circle>
-                    <circle cx="80.87" cy="40.57" fill="#fff" r="5.63"></circle>
-                </svg>
-            </span>
+            <button class="gk-search-btn" id="main-search-btn" title="Buscar" aria-label="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
         </div>
 
         <!-- Nav Actions -->
@@ -524,7 +1298,7 @@
                 <i class="fa-solid fa-users"></i>
                 <span class="label">Amigos</span>
             </button>
-            <a href="cart.html" class="gk-nav-btn" title="Carrito">
+            <a href="javascript:void(0)" class="gk-nav-btn" title="Carrito">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="label">Carrito</span>
             </a>
@@ -535,32 +1309,77 @@
         </div>
     </nav>
 
-    <!-- ===== SUBNAV CATEGORIES DYNAMICALLY INSERTED BY MAIN.JS ===== -->
+    <!-- ===== SUBNAV CATEGORIES (dynamic) ===== -->
 
     <!-- ===== PAGE BODY ===== -->
     <div class="gk-page">
 
-
-        <!-- HERO BANNER (dynamic) -->
+        <!-- ===================== HERO BANNER ===================== -->
         <section class="gk-hero" id="hero-banner" style="display:none;" aria-label="Producto destacado">
             <img id="hero-bg-img" class="gk-hero-bg" src="" alt="">
             <div class="gk-hero-content">
-                <span class="gk-hero-tag" id="hero-tag">Destacado</span>
-                <h1 id="hero-title">Cargando......</h1>
+                <span class="gk-hero-tag" id="hero-tag">
+                    <i class="fa-solid fa-bolt"></i> Destacado
+                </span>
+                <h1 id="hero-title">Cargando...</h1>
+                <p class="gk-hero-desc" id="hero-desc">El producto más buscado de la semana a un precio sin igual.</p>
                 <p class="gk-hero-price" id="hero-price">$0.00</p>
-                <a href="#" id="hero-buy-btn" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-bolt"></i> Comprar Ahora
-                </a>
+                <div class="gk-hero-actions">
+                    <a href="#" id="hero-buy-btn" class="btn-primary">
+                        <i class="fa-solid fa-bolt"></i> Comprar Ahora
+                    </a>
+                    <a href="catalogo.html" class="btn-ghost">
+                        <i class="fa-solid fa-grid-2"></i> Ver Catálogo
+                    </a>
+                </div>
             </div>
+            <div class="gk-hero-dots" id="hero-dots"></div>
         </section>
         <!-- Hero Skeleton -->
-        <section class="gk-hero" id="hero-skeleton" aria-busy="true" aria-label="Cargando... destacado" style="min-height:220px; background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-main) 50%, var(--bg-card) 75%); background-size:200% 100%; animation: shimmer 1.5s infinite;"></section>
+        <section class="gk-hero" id="hero-skeleton" aria-busy="true" aria-label="Cargando destacado" style="min-height:380px;"></section>
 
-        <!-- BEST SELLERS -->
+        <!-- ===================== FEATURES STRIP ===================== -->
+        <div class="gk-features-strip">
+            <div class="gk-feature-card">
+                <div class="gk-feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="gk-feature-text">
+                    <h4>Entrega Instantánea</h4>
+                    <p>Recibe tu producto al instante tras el pago</p>
+                </div>
+            </div>
+            <div class="gk-feature-card">
+                <div class="gk-feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="gk-feature-text">
+                    <h4>100% Seguro</h4>
+                    <p>Pago cifrado y garantía en todas las compras</p>
+                </div>
+            </div>
+            <div class="gk-feature-card">
+                <div class="gk-feature-icon"><i class="fa-solid fa-tag"></i></div>
+                <div class="gk-feature-text">
+                    <h4>Mejor Precio</h4>
+                    <p>Garantizamos los precios más bajos del mercado</p>
+                </div>
+            </div>
+            <div class="gk-feature-card">
+                <div class="gk-feature-icon"><i class="fa-solid fa-headset"></i></div>
+                <div class="gk-feature-text">
+                    <h4>Soporte 24/7</h4>
+                    <p>Atención al cliente siempre disponible</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== BEST SELLERS ===================== -->
         <section class="gk-section">
             <div class="gk-section-header">
-                <h2><i class="fa-solid fa-fire" style="color:var(--danger);"></i> Más Vendidos</h2>
-                <a href="catalogo.html" class="gk-see-all">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="gk-section-title-wrap">
+                    <div class="gk-section-accent"></div>
+                    <h2><span>🔥</span> Más Vendidos</h2>
+                </div>
+                <a href="catalogo.html" class="gk-see-all">
+                    Ver todos <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
             <div class="gk-hscroll" id="products-container">
                 <div class="loading-state">
@@ -607,11 +1426,125 @@
             </div>
         </section>
 
-        <!-- COMMUNITY REVIEWS -->
+        <!-- ===================== CATEGORIES ===================== -->
+        <section class="gk-section">
+            <div class="gk-section-header">
+                <div class="gk-section-title-wrap">
+                    <div class="gk-section-accent"></div>
+                    <h2>Explorar <span>Categorías</span></h2>
+                </div>
+                <a href="catalogo.html" class="gk-see-all">
+                    Ver todas <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="gk-categories-grid" id="categories-grid">
+                <!-- Categories loaded dynamically from Firestore -->
+                <div style="grid-column:1/-1; display:flex; align-items:center; justify-content:center; gap:12px; padding:2rem; color:var(--text-muted);">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Cargando categorías...
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== PROMO BANNERS ===================== -->
+        <div class="gk-promo-strip">
+            <a href="pago.html" class="gk-promo-card" style="text-decoration:none;">
+                <div class="gk-promo-card-bg" style="background: linear-gradient(135deg, #1a0f3a, #3d2080);"></div>
+                <div class="gk-promo-card-overlay" style="background: linear-gradient(135deg, rgba(11,14,20,0.8) 0%, rgba(11,14,20,0.3) 100%);"></div>
+                <h3>💜 Recarga tu Saldo</h3>
+                <p>Múltiples métodos de pago disponibles</p>
+                <a href="pago.html"><i class="fa-solid fa-wallet"></i> Recargar Ahora</a>
+            </a>
+            <a href="info.html" class="gk-promo-card" style="text-decoration:none;">
+                <div class="gk-promo-card-bg" style="background: linear-gradient(135deg, #0a1a2e, #1a3d70);"></div>
+                <div class="gk-promo-card-overlay" style="background: linear-gradient(135deg, rgba(11,14,20,0.8) 0%, rgba(11,14,20,0.3) 100%);"></div>
+                <h3>🎁 Programa de Referidos</h3>
+                <p>Gana 3% de comisión por cada amigo que traes</p>
+                <a href="info.html"><i class="fa-solid fa-share-nodes"></i> Saber Más</a>
+            </a>
+        </div>
+
+        <!-- ===================== STATS ===================== -->
+        <section class="gk-section">
+            <div class="gk-section-header">
+                <div class="gk-section-title-wrap">
+                    <div class="gk-section-accent"></div>
+                    <h2>GhostKey en <span>Números</span></h2>
+                </div>
+            </div>
+            <div class="gk-stats-bar">
+                <div class="gk-stat">
+                    <div class="gk-stat-num">10K+</div>
+                    <div class="gk-stat-label">Clientes Felices</div>
+                </div>
+                <div class="gk-stat">
+                    <div class="gk-stat-num">500+</div>
+                    <div class="gk-stat-label">Productos</div>
+                </div>
+                <div class="gk-stat">
+                    <div class="gk-stat-num">99.9%</div>
+                    <div class="gk-stat-label">Uptime</div>
+                </div>
+                <div class="gk-stat">
+                    <div class="gk-stat-num">⚡ &lt;24h</div>
+                    <div class="gk-stat-label">Entrega Promedio</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== HOW IT WORKS ===================== -->
+        <section class="gk-section">
+            <div class="gk-section-header">
+                <div class="gk-section-title-wrap">
+                    <div class="gk-section-accent"></div>
+                    <h2>¿Cómo <span>Funciona</span>?</h2>
+                </div>
+                <a href="info.html" class="gk-see-all">
+                    Más info <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="gk-how-grid">
+                <div class="gk-how-card">
+                    <div class="gk-how-num">1</div>
+                    <div class="gk-how-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h4>Elige tu producto</h4>
+                    <p>Explora nuestro catálogo con cientos de opciones</p>
+                </div>
+                <div class="gk-how-card">
+                    <div class="gk-how-num">2</div>
+                    <div class="gk-how-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <h4>Añade al carrito</h4>
+                    <p>Agrega lo que quieras y revisa tu selección</p>
+                </div>
+                <div class="gk-how-card">
+                    <div class="gk-how-num">3</div>
+                    <div class="gk-how-icon"><i class="fa-solid fa-credit-card"></i></div>
+                    <h4>Paga seguro</h4>
+                    <p>Múltiples métodos de pago disponibles</p>
+                </div>
+                <div class="gk-how-card">
+                    <div class="gk-how-num">4</div>
+                    <div class="gk-how-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <h4>¡Recibe al instante!</h4>
+                    <p>Tu clave o cuenta llega automáticamente</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="gk-trust-row">
+            <div class="gk-trust-badge"><i class="fa-solid fa-lock"></i> Pago 100% Seguro</div>
+            <div class="gk-trust-badge"><i class="fa-solid fa-shield-check"></i> Garantía de Entrega</div>
+            <div class="gk-trust-badge"><i class="fa-solid fa-clock-rotate-left"></i> Soporte 24/7</div>
+            <div class="gk-trust-badge"><i class="fa-solid fa-star"></i> Más de 5K Reseñas</div>
+        </div>
+
+        <!-- ===================== COMMUNITY REVIEWS ===================== -->
         <section class="gk-section" id="reviews-section">
             <div class="gk-section-header">
-                <h2><i class="fa-solid fa-star" style="color:#ffa723;"></i> Nuestra Comunidad</h2>
-                <span style="color:var(--text-muted); font-size:0.82rem;">¿Qué opinan nuestros usuarios?</span>
+                <div class="gk-section-title-wrap">
+                    <div class="gk-section-accent"></div>
+                    <h2>⭐ Nuestra <span>Comunidad</span></h2>
+                </div>
+                <span style="color:var(--text-muted); font-size:0.8rem;">¿Qué opinan nuestros usuarios?</span>
             </div>
 
             <!-- Write a review (only visible when logged in) -->
@@ -620,11 +1553,11 @@
                     <h3 style="margin:0; font-size:1rem; color:var(--accent-primary);">
                         <i class="fa-solid fa-pen-to-square"></i> Comparte tu experiencia
                     </h3>
-                    <select id="review-product-select" style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main);">
-                        <option value="">Cargando... tus productos...</option>
+                    <select id="review-product-select" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:var(--text-main);">
+                        <option value="">Cargando tus productos...</option>
                     </select>
-                    <textarea id="review-text" rows="3" style="width: 100%; background: var(--bg-main); border: 1px solid var(--glass-border); border-radius: 8px; color: var(--text-main); padding: 10px; resize: none; font-family: inherit; box-sizing:border-box;" placeholder="Escribe tu opinión aquí..."></textarea>
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <textarea id="review-text" rows="3" style="width:100%; background:var(--bg-main); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:var(--text-main); padding:10px; resize:none; font-family:inherit; box-sizing:border-box;" placeholder="Escribe tu opinión aquí..."></textarea>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
                         <div class="rating">
                             <input value="5" name="rate" id="star5" type="radio">
                             <label title="5 stars" for="star5"></label>
@@ -637,7 +1570,7 @@
                             <input value="1" name="rate" id="star1" type="radio">
                             <label title="1 star" for="star1"></label>
                         </div>
-                        <button id="btn-submit-review" class="btn-primary" style="padding: 0.5rem 1.5rem;">Publicar</button>
+                        <button id="btn-submit-review" class="btn-primary" style="padding:0.5rem 1.5rem;">Publicar</button>
                     </div>
                 </div>
             </div>
@@ -650,12 +1583,54 @@
 
     </div><!-- /gk-page -->
 
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="gk-footer">
+        <div class="gk-footer-inner">
+            <div class="gk-footer-grid">
+                <div>
+                    <div class="gk-footer-brand">
+                        <img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey">
+                        <span>GhostKey</span>
+                    </div>
+                    <p class="gk-footer-desc">Tienda digital líder en Latinoamérica. Cuentas premium, claves de juegos y saldo virtual con entrega instantánea y garantía total.</p>
+                </div>
+                <div class="gk-footer-col">
+                    <h5>Tienda</h5>
+                    <ul>
+                        <li><a href="catalogo.html">Catálogo</a></li>
+                        <li><a href="catalogo.html?cat=gaming">Gaming</a></li>
+                        <li><a href="catalogo.html?cat=streaming">Streaming</a></li>
+                        <li><a href="catalogo.html?cat=gift-cards">Gift Cards</a></li>
+                    </ul>
+                </div>
+                <div class="gk-footer-col">
+                    <h5>Ayuda</h5>
+                    <ul>
+                        <li><a href="info.html">Cómo funciona</a></li>
+                        <li><a href="metodos-pago.html">Métodos de pago</a></li>
+                        <li><a href="legales.html">Términos legales</a></li>
+                        <li><a href="perfil.html">Mi cuenta</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="gk-footer-bottom">
+                <span>© 2024 GhostKey. Todos los derechos reservados.</span>
+                <div class="gk-footer-socials">
+                    <a href="#" class="gk-footer-social" title="Discord"><i class="fa-brands fa-discord"></i></a>
+                    <a href="#" class="gk-footer-social" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="gk-footer-social" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="gk-footer-social" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- ===== FRIENDS SIDE PANEL ===== -->
     <div class="gk-friends-panel-backdrop" id="friends-backdrop"></div>
     <aside class="gk-friends-panel" id="friends-panel">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
             <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-users" style="color:var(--accent-primary);"></i> Amigos & Referidos
+                <i class="fa-solid fa-users" style="color:var(--accent-primary);"></i> Amigos &amp; Referidos
             </h3>
             <button id="close-friends-panel" style="background:none; border:none; cursor:pointer; color:var(--text-muted); font-size:1.2rem;">
                 <i class="fa-solid fa-xmark"></i>
@@ -663,96 +1638,103 @@
         </div>
 
         <!-- Search -->
-        <div class="brutalist-container" style="width: 100%; margin-top: 4px;">
-            <input id="search-friend-input" placeholder="Correo o UID de amigo..." class="brutalist-input smooth-type" type="text" style="padding: 10px; font-size: 14px; border-width: 2px;" />
-            <label class="brutalist-label" style="top: -20px; font-size: 10px;">BUSCAR / AÑADIR</label>
+        <div class="brutalist-container" style="width:100%; margin-top:4px;">
+            <input id="search-friend-input" placeholder="Correo o UID de amigo..." class="brutalist-input smooth-type" type="text" style="padding:10px; font-size:14px; border-width:2px;" />
+            <label class="brutalist-label" style="top:-20px; font-size:10px;">BUSCAR / AÑADIR</label>
         </div>
-        <button type="button" class="btn-primary" id="search-friend-btn" style="width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <button type="button" class="btn-primary" id="search-friend-btn" style="width:100%; padding:12px; border-radius:8px; font-weight:600; font-size:0.95rem; display:flex; align-items:center; justify-content:center; gap:8px;">
             <i class="fa-solid fa-user-plus"></i> Buscar Amigo
         </button>
 
         <!-- Friends List -->
         <div style="flex:1;">
-            <h4 style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.8rem;">
+            <h4 style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.8rem;">
                 Miembros de la Comunidad
             </h4>
-            <div class="friends-list" id="friends-list" style="display: flex; flex-direction: column; gap: 8px;">
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Cargando... amigos...</p>
+            <div class="friends-list" id="friends-list" style="display:flex; flex-direction:column; gap:8px;">
+                <p style="text-align:center; color:var(--text-muted); font-size:0.85rem;">Cargando amigos...</p>
             </div>
         </div>
 
         <!-- Referral -->
-        <div class="referral-box" style="background: var(--bg-card); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--border-radius-md, 12px);">
-            <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; color: var(--accent-primary);">
+        <div class="referral-box" style="background:var(--bg-card); border:1px solid var(--glass-border); padding:1rem; border-radius:12px;">
+            <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:4px; color:var(--accent-primary);">
                 <i class="fa-solid fa-gift"></i> Tu Enlace de Invitación
             </h4>
-            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4;">
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px; line-height:1.4;">
                 ¡Gana 3% en saldo cuando tus amigos compren usando tu link!
             </p>
-            <div style="display:flex; gap: 6px;">
-                <input type="text" id="ref-link-input" readonly value="Inicióa sesión para ver tu enlace" style="flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--glass-border); background: var(--bg-main); color: var(--text-main); font-size: 0.8rem;">
-                <button class="btn-primary" id="copy-ref-btn" style="padding: 6px 10px; font-size: 0.8rem;"><i class="fa-solid fa-copy"></i></button>
+            <div style="display:flex; gap:6px;">
+                <input type="text" id="ref-link-input" readonly value="Inicia sesión para ver tu enlace" style="flex:1; padding:6px 8px; border-radius:6px; border:1px solid var(--glass-border); background:var(--bg-main); color:var(--text-main); font-size:0.8rem;">
+                <button class="btn-primary" id="copy-ref-btn" style="padding:6px 10px; font-size:0.8rem;"><i class="fa-solid fa-copy"></i></button>
             </div>
         </div>
     </aside>
 
-    <!-- ===== MOBILE BOTTOM DOCK ===== -->
-    <nav class="gk-dock">
-        <a href="index.html" class="gk-dock-item active">
-            <i class="fa-solid fa-house"></i>
-            <span>Inicióo</span>
+    <!-- ===== SEARCH OVERLAY (mobile) ===== -->
+    <div id="gk-search-overlay" class="gk-search-overlay" role="dialog" aria-label="Buscar">
+        <div class="gk-search-overlay-header">
+            <div class="gk-search-overlay-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="gk-search-overlay-input" type="text" placeholder="Buscar..." autocomplete="off">
+            </div>
+            <button id="search-cancel-btn" class="gk-search-cancel">Cancelar</button>
+        </div>
+        <div id="gk-search-suggestions" class="gk-search-overlay-suggestions"></div>
+    </div>
+
+    <!-- ===== MOBILE BOTTOM DOCK (Eneba-style) ===== -->
+    <nav class="gk-dock" role="navigation" aria-label="Navegación principal">
+        <a href="index.html" class="gk-dock-item active" id="dock-home-btn" aria-label="GhostKey inicio">
+            <span class="dock-icon">
+                <span class="gk-dock-logo-icon"><img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey"></span>
+            </span>
+            <span class="dock-label">GhostKey</span>
         </a>
-        <a href="catalogo.html" class="gk-dock-item">
-            <i class="fa-solid fa-gamepad"></i>
-            <span>Catálogo</span>
-        </a>
-        <button class="gk-dock-item" id="dock-friends-btn">
-            <i class="fa-solid fa-users"></i>
-            <span>Amigos</span>
+        <button class="gk-dock-item" id="dock-search-btn" aria-label="Buscar">
+            <span class="dock-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <span class="dock-label">Buscar</span>
         </button>
-        <a href="pago.html" class="gk-dock-item">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Saldo</span>
+        <a href="javascript:void(0)" class="gk-dock-item" id="dock-cart-btn" aria-label="Carrito" style="position:relative;">
+            <span class="dock-icon" style="position:relative;">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="dock-cart-badge" class="gk-dock-badge hidden">0</span>
+            </span>
+            <span class="dock-label">Carrito</span>
         </a>
-        <a href="perfil.html" class="gk-dock-item">
-            <i class="fa-solid fa-user"></i>
-            <span>Perfil</span>
+        <a href="perfil.html" class="gk-dock-item" id="dock-account-btn" aria-label="Mi cuenta">
+            <span class="dock-icon"><i class="fa-regular fa-user"></i></span>
+            <span class="dock-label">Mi cuenta</span>
         </a>
     </nav>
 
-    <!-- Scripts -->
+    <!-- ===== SCRIPTS ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script type="module" src="js/firebase-config.js"></script>
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/mobile-nav.js"></script>
     <script type="module" src="js/cart.js"></script>
-    <script>
-        // Friends panel toggle
-        const friendsPanel = document.getElementById('friends-panel');
-        const friendsBackdrop = document.getElementById('friends-backdrop');
-        function openFriends() {
-            friendsPanel.classList.add('open');
-            friendsBackdrop.classList.add('open');
-        }
-        function closeFriends() {
-            friendsPanel.classList.remove('open');
-            friendsBackdrop.classList.remove('open');
-        }
-        document.getElementById('nav-friends-btn').addEventListener('click', openFriends);
-        document.getElementById('dock-friends-btn').addEventListener('click', openFriends);
-        document.getElementById('close-friends-panel').addEventListener('click', closeFriends);
-        friendsBackdrop.addEventListener('click', closeFriends);
-
-        // Search: redirect to catalog
-        function doSearch() {
-            const q = document.getElementById('main-search-input').value.trim();
-            if (q) window.location.href = `catalogo.html?search=${encodeURIComponent(q)}`;
-        }
-        document.getElementById('main-search-btn').addEventListener('click', doSearch);
-        document.getElementById('main-search-input').addEventListener('keydown', e => {
-            if (e.key === 'Enter') doSearch();
-        });
-    </script>
+    <script src="js/dock.js"></script>
     <script type="module" src="js/friends-panel.js"></script>
+    <!-- ===== FLOATING HELP BUBBLE (WhatsApp) ===== -->
+    <div class="gk-help-bubble-wrap" id="gk-help-bubble-wrap">
+        <div class="gk-help-tooltip" id="gk-help-tooltip">
+            <i class="fa-brands fa-whatsapp"></i> ¿Necesitas ayuda?
+        </div>
+        <a href="https://api.whatsapp.com/send?text=Hola,%20tengo%20una%20duda%20sobre%20mi%20cuenta%20de%20GhostKey" target="_blank" rel="noopener noreferrer" class="gk-help-orb" id="gk-help-orb" aria-label="Contactar soporte por WhatsApp">
+            <div class="loader"><div class="circle"></div></div>
+        </a>
+    </div>
+    <script>
+    (function(){
+        var tooltip = document.getElementById('gk-help-tooltip');
+        var orb = document.getElementById('gk-help-orb');
+        if (!tooltip || !orb) return;
+        function showTooltip() { tooltip.classList.add('visible'); setTimeout(function(){ tooltip.classList.remove('visible'); }, 3200); }
+        setTimeout(function(){ showTooltip(); setInterval(showTooltip, 18000); }, 4000);
+        orb.addEventListener('mouseenter', function(){ tooltip.classList.add('visible'); });
+        orb.addEventListener('mouseleave', function(){ tooltip.classList.remove('visible'); });
+    })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,435 @@
+/* =====================================================
+   GhostKey — Mobile Bottom Dock (Eneba-style)
+   Shared styles for all pages
+===================================================== */
+
+/* ---- Dock Container ---- */
+.gk-dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #0f1018;
+    border-top: 1px solid rgba(161, 130, 232, 0.15);
+    display: none;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 1001;
+    /* iOS safe area */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: constant(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 768px) {
+    .gk-dock {
+        display: flex;
+    }
+    /* Ensure page content doesn't hide behind dock */
+    body {
+        padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* ---- Dock Item ---- */
+.gk-dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    transition: color 0.2s ease;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    flex: 1;
+    max-width: 90px;
+    position: relative;
+    min-height: 56px;
+}
+
+.gk-dock-item:active {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* ---- Dock Icon ---- */
+.gk-dock-item .dock-icon {
+    font-size: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.gk-dock-item .dock-icon svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+/* ---- Dock Label ---- */
+.gk-dock-item .dock-label {
+    font-size: 0.6rem;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+/* ---- Active State ---- */
+.gk-dock-item.active {
+    color: #ffffff;
+}
+
+.gk-dock-item.active .dock-icon {
+    /* Slight scale up on active */
+    transform: scale(1.05);
+}
+
+/* Active underline indicator */
+.gk-dock-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: var(--accent-primary, #A182E8);
+    border-radius: 2px;
+}
+
+/* ---- Cart Badge ---- */
+.gk-dock-badge {
+    position: absolute;
+    top: 4px;
+    right: calc(50% - 18px);
+    min-width: 18px;
+    height: 18px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 800;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    pointer-events: none;
+    border: 2px solid #0f1018;
+    transition: transform 0.2s;
+    line-height: 1;
+}
+
+.gk-dock-badge.hidden {
+    display: none;
+}
+
+/* ---- GhostKey Logo Icon in Dock ---- */
+.gk-dock-logo-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gk-dock-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(0.3) brightness(0.8);
+    transition: filter 0.2s;
+}
+
+.gk-dock-item.active .gk-dock-logo-icon img {
+    filter: grayscale(0) brightness(1);
+}
+
+/* =====================================================
+   Eneba-style Search Overlay (mobile)
+===================================================== */
+.gk-search-overlay {
+    position: fixed;
+    inset: 0;
+    background: #0f1018;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gk-search-overlay.open {
+    transform: translateY(0);
+}
+
+.gk-search-overlay-header {
+    padding: 16px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.gk-search-overlay-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 0 14px;
+    gap: 10px;
+    transition: border-color 0.2s;
+}
+
+.gk-search-overlay-bar:focus-within {
+    border-color: rgba(161,130,232,0.5);
+}
+
+.gk-search-overlay-bar i {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.9rem;
+}
+
+.gk-search-overlay-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Outfit', inherit;
+    padding: 12px 0;
+}
+
+.gk-search-overlay-bar input::placeholder {
+    color: rgba(255,255,255,0.35);
+}
+
+.gk-search-cancel {
+    background: none;
+    border: none;
+    color: var(--accent-primary, #A182E8);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    padding: 4px;
+}
+
+.gk-search-overlay-suggestions {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.gk-search-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.95rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+.gk-search-suggestion:hover, .gk-search-suggestion:active {
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+}
+
+.gk-search-suggestion i {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.85rem;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ── Recent searches specific styles ── */
+.gk-recent-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 6px;
+}
+
+.gk-recent-header span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+}
+
+.gk-recent-clear-all {
+    background: none;
+    border: none;
+    color: var(--accent-primary, #A182E8);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+}
+
+.gk-recent-clear-all:hover {
+    opacity: 0.75;
+}
+
+/* Row: link + delete button side by side */
+.gk-recent-row {
+    padding: 0 !important;
+    gap: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.gk-recent-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background 0.15s, color 0.15s;
+    min-width: 0;
+}
+
+.gk-recent-link:hover, .gk-recent-link:active {
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+}
+
+.gk-recent-link i {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.8rem;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.gk-recent-link span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gk-recent-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.85rem;
+    padding: 14px 16px;
+    flex-shrink: 0;
+    transition: color 0.2s, background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gk-recent-delete:hover, .gk-recent-delete:active {
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.04);
+}
+
+/* "Buscar X" row */
+.gk-search-go {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+.gk-search-go i {
+    color: var(--accent-primary, #A182E8) !important;
+}
+
+/* Empty state */
+.gk-search-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 6px;
+}
+
+/* =====================================================
+   Friends Panel (shared across all pages)
+===================================================== */
+.gk-friends-panel-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 998;
+    display: none;
+}
+
+.gk-friends-panel-backdrop.open {
+    display: block;
+}
+
+.gk-friends-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: min(320px, 90vw);
+    background: rgba(15, 16, 24, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(161, 130, 232, 0.12);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    overflow-y: auto;
+}
+
+.gk-friends-panel.open {
+    transform: translateX(0);
+}
+
+/* =====================================================
+   Top Navbar (overriding per-page styles)
+===================================================== */
+@media (max-width: 768px) {
+    /* Hide navbar links & desktop elements on mobile */
+    .gk-nav-links {
+        display: none !important;
+    }
+    .gk-nav-separator {
+        display: none;
+    }
+    .gk-nav-btn.gk-nav-balance .label,
+    .gk-nav-btn .label {
+        display: none !important;
+    }
+    /* Make search smaller */
+    .gk-search-wrap {
+        max-width: 100%;
+    }
+}

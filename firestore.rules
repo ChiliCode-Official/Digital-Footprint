@@ -20,7 +20,8 @@ service cloud.firestore {
       // Users can read all users (needed for the friends panel to list users). 
       // Users can only write their own document (e.g. updating balance during a purchase).
       allow read: if isAuthenticated();
-      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create, delete: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow update: if isAuthenticated();
     }
 
     // Products collection (Catalog)
