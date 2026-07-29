@@ -74,6 +74,7 @@ export async function initNotifications(userId, userEmail) {
         unsubscribeEmail = onSnapshot(q2, handleNotification, (error) => {
             console.warn("Error listening to user Email notifications:", error);
         });
+    }
 }
 
 /**

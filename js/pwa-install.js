@@ -1,44 +1,40 @@
+let deferredPrompt = null;
+
+// Catch the install prompt globally before DOM loads
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('pwa-install-btn');
+    if (!btn) {
+        // Will be shown inside DOMContentLoaded
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isStandalone) {
         console.log("PWA already installed");
         return;
     }
 
-    let deferredPrompt = null;
-    
-    // Detect OS
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
     const isAndroid = /android/.test(userAgent);
 
-    // Only show button on mobile for better UX, or let it show on all, but we specifically target mobile
-    if (!isIOS && !isAndroid) {
-        // Desktop can also install PWA, but user asked specifically about Android/iOS flows. 
-        // We will allow it for all devices for fallback.
-    }
-
-    // Android: Listen for beforeinstallprompt
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent the mini-infobar from appearing on mobile
-        e.preventDefault();
-        // Stash the event so it can be triggered later.
-        deferredPrompt = e;
-        showInstallButton();
-    });
-
-    // If iOS, beforeinstallprompt won't fire, so we just show the button automatically
     if (isIOS) {
         showInstallButton();
-    } else if (isAndroid && !deferredPrompt) {
-        // Sometimes beforeinstallprompt fires before DOMContentLoaded
-        // Or if it didn't fire, we still show button and just do a manual fallback or wait
-        setTimeout(() => {
-            if (!document.getElementById('pwa-install-btn')) {
+    } else if (isAndroid) {
+        // Try showing right away or wait slightly for prompt
+        if (deferredPrompt) {
+            showInstallButton();
+        } else {
+            setTimeout(() => {
                 showInstallButton();
-            }
-        }, 1000);
+            }, 1000);
+        }
+    } else {
+        // Desktop
+        showInstallButton();
     }
 
     function showInstallButton() {
