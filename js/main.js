@@ -154,6 +154,7 @@ function updateUserProfileUI(user) {
             userAvatar.onerror = () => { userAvatar.src = fallbackUrl; userAvatar.onerror = null; };
         }
         userProfileBtn.title = 'Ver perfil';
+        userProfileBtn.onclick = () => { window.location.href = 'perfil.html'; };
     } else {
         if (userNameDisplay) {
             userNameDisplay.classList.remove('user-name--skeleton');
@@ -165,6 +166,11 @@ function updateUserProfileUI(user) {
             userAvatar.alt = 'Invitado';
         }
         userProfileBtn.title = 'Iniciar sesión con Google';
+        userProfileBtn.onclick = (e) => {
+            e.preventDefault();
+            const modal = document.getElementById('auth-modal');
+            if (modal) modal.style.display = 'flex';
+        };
     }
     
     const logoutBtn = document.getElementById('logout-btn-header');
