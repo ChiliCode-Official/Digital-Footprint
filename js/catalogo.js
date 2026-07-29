@@ -22,7 +22,7 @@ async function fetchUserWishlist(uid) {
 }
 
 async function loadProducts() {
-    if (catalogGrid) catalogGrid.innerHTML = getGhostLoaderHTML('Cargando catálogo...');
+    if (catalogGrid) catalogGrid.innerHTML = getGhostLoaderHTML('Cargando cat\u00E1logo...');
     try {
         let querySnapshot = { forEach: () => {} };
         let stockSnapshot = { forEach: () => {} };
@@ -43,7 +43,7 @@ async function loadProducts() {
         applyFilters(); 
     } catch (e) {
         console.error("Error loading products: ", e);
-        if (catalogGrid) catalogGrid.innerHTML = `<p style="color:var(--danger)">Error al cargar el catálogo.</p>`;
+        if (catalogGrid) catalogGrid.innerHTML = `<p style="color:var(--danger)">Error al cargar el cat\u00E1logo.</p>`;
     }
 }
 
@@ -77,7 +77,7 @@ function renderProducts(products) {
     catalogGrid.innerHTML = '';
     
     if (products.length === 0) {
-        catalogGrid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1;">No hay productos que coincidan con la búsqueda.</p>`;
+        catalogGrid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1;">No hay productos que coincidan con la b\u00FAsqueda.</p>`;
         return;
     }
 
