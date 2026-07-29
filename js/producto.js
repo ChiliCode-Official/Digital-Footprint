@@ -119,11 +119,43 @@ async function loadProductDetails() {
                 streamContainer.style.display = 'block';
                 streamSelect.innerHTML = '<option value="">Selecciona una opción</option>';
                 const opts = productData.streamingOptions.split(',').map(o => o.trim()).filter(o => o);
+                let minPrice = Infinity;
                 opts.forEach(o => {
                     const opt = document.createElement('option');
-                    opt.value = o;
-                    opt.textContent = o;
+                    let optName = o;
+                    let optPrice = parseFloat(productData.price || 0);
+                    
+                    if (o.includes(':')) {
+                        const parts = o.split(':');
+                        optName = parts[0].trim();
+                        optPrice = parseFloat(parts[1].trim()) || optPrice;
+                    }
+                    
+                    if (optPrice < minPrice) minPrice = optPrice;
+
+                    opt.value = optName;
+                    opt.textContent = o.includes(':') ? `${optName} - $${optPrice.toFixed(2)}` : optName;
+                    opt.setAttribute('data-price', optPrice);
                     streamSelect.appendChild(opt);
+                });
+
+                const hasCustomPrices = opts.some(o => o.includes(':'));
+                if (hasCustomPrices && minPrice !== Infinity) {
+                    if (pPrice) pPrice.textContent = `Desde $${minPrice.toFixed(2)} MXN`;
+                }
+
+                streamSelect.addEventListener('change', (e) => {
+                    const selectedOpt = streamSelect.options[streamSelect.selectedIndex];
+                    if (selectedOpt && selectedOpt.value) {
+                        const price = parseFloat(selectedOpt.getAttribute('data-price'));
+                        if (!isNaN(price) && pPrice) {
+                            pPrice.textContent = `$${price.toFixed(2)} MXN`;
+                        }
+                    } else if (hasCustomPrices && minPrice !== Infinity) {
+                        if (pPrice) pPrice.textContent = `Desde $${minPrice.toFixed(2)} MXN`;
+                    } else {
+                        if (pPrice) pPrice.textContent = `$${Number(productData.price || 0).toFixed(2)} MXN`;
+                    }
                 });
             } else {
                 streamContainer.style.display = 'none';
@@ -274,11 +306,25 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
             }
             if (errEl) errEl.style.display = 'none';
 
-            // Proceed to Step 2
+            // Determine price
+            let unitPrice = parseFloat(productData.price) || 0;
+            let selectedDuration = '';
+            if (productData.isStreaming) {
+                const sSelect = document.getElementById('streaming-duration-select');
+                if (sSelect && sSelect.value) {
+                    selectedDuration = sSelect.value;
+                    const selectedOpt = sSelect.options[sSelect.selectedIndex];
+                    if (selectedOpt) {
+                        const priceAttr = parseFloat(selectedOpt.getAttribute('data-price'));
+                        if (!isNaN(priceAttr)) unitPrice = priceAttr;
+                    }
+                }
+            }
+            const totalPrice = unitPrice * currentQty;
+
             document.getElementById('gift-step-1').style.display = 'none';
             document.getElementById('gift-step-2').style.display = 'block';
 
-            const totalPrice = productData.price * currentQty;
             document.getElementById('gift-confirm-product-name').textContent = `${currentQty}x ${productData.name}`;
             document.getElementById('gift-confirm-email').textContent = pendingGiftEmail;
             document.getElementById('gift-confirm-price').textContent = `$${totalPrice.toFixed(2)} MXN`;
@@ -287,11 +333,24 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
 
     if (btnConfirmBuy) {
         btnConfirmBuy.addEventListener('click', async () => {
-            const totalPrice = productData.price * currentQty;
+            let unitPrice = parseFloat(productData.price) || 0;
+            let selectedDuration = '';
+            if (productData.isStreaming) {
+                const sSelect = document.getElementById('streaming-duration-select');
+                if (sSelect && sSelect.value) {
+                    selectedDuration = sSelect.value;
+                    const selectedOpt = sSelect.options[sSelect.selectedIndex];
+                    if (selectedOpt) {
+                        const priceAttr = parseFloat(selectedOpt.getAttribute('data-price'));
+                        if (!isNaN(priceAttr)) unitPrice = priceAttr;
+                    }
+                }
+            }
+            const totalPrice = unitPrice * currentQty;
 
             // Check Balance
             if (userDocData && userDocData.balance < totalPrice) {
-                window.location.href = `pago.html?from=product&amount=${totalPrice}&isGift=true&giftEmail=${encodeURIComponent(pendingGiftEmail)}&productId=${productId}&qty=${currentQty}`;
+                window.location.href = `pago.html?from=product&amount=${totalPrice}&isGift=true&giftEmail=${encodeURIComponent(pendingGiftEmail)}&productId=${productId}&qty=${currentQty}&duration=${encodeURIComponent(selectedDuration)}`;
                 return;
             }
 
@@ -400,8 +459,7 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                 alert("Cantidad inválida.");
                 return;
             }
-            const totalPrice = productData.price * currentQty;
-
+            let unitPrice = parseFloat(productData.price) || 0;
             let selectedDuration = '';
             if (productData.isStreaming) {
                 const sSelect = document.getElementById('streaming-duration-select');
@@ -410,11 +468,17 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     return;
                 }
                 selectedDuration = sSelect.value;
+                const selectedOpt = sSelect.options[sSelect.selectedIndex];
+                if (selectedOpt) {
+                    const priceAttr = parseFloat(selectedOpt.getAttribute('data-price'));
+                    if (!isNaN(priceAttr)) unitPrice = priceAttr;
+                }
             }
+            const totalPrice = unitPrice * currentQty;
 
             // Check Balance
             if (userDocData && userDocData.balance < totalPrice) {
-                window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}`;
+                window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}&duration=${encodeURIComponent(selectedDuration)}`;
                 return;
             }
 

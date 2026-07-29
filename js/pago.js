@@ -598,12 +598,25 @@ async function processCartPurchase() {
             const pSnap = await transaction.get(pRef);
             if (pSnap.exists()) {
                 const p = pSnap.data();
-                const price = parseFloat(p.price);
-                if (isNaN(price) || !Number.isFinite(price) || price < 0) {
+                let unitPrice = parseFloat(p.price) || 0;
+                
+                if (duration && p.streamingOptions) {
+                    const opts = p.streamingOptions.split(',').map(o => o.trim()).filter(o => o);
+                    const optMatch = opts.find(o => {
+                        if (o.includes(':')) return o.split(':')[0].trim() === duration;
+                        return o === duration;
+                    });
+                    if (optMatch && optMatch.includes(':')) {
+                        const parsedOptPrice = parseFloat(optMatch.split(':')[1].trim());
+                        if (!isNaN(parsedOptPrice)) unitPrice = parsedOptPrice;
+                    }
+                }
+
+                if (isNaN(unitPrice) || !Number.isFinite(unitPrice) || unitPrice < 0) {
                     throw new Error(`Precio inválido en producto: ${p.name}`);
                 }
-                calculatedTotal += (price * pQty);
-                productsData.push({ id: pid, qty: pQty, price: price, name: p.name, duration: duration });
+                calculatedTotal += (unitPrice * pQty);
+                productsData.push({ id: pid, qty: pQty, price: unitPrice, name: p.name, duration: duration });
             }
         }
         
@@ -713,12 +726,25 @@ async function processSinglePurchase() {
         if (isNaN(parsedQty) || !Number.isFinite(parsedQty) || parsedQty <= 0) {
             throw new Error("Cantidad inválida.");
         }
-        const parsedPrice = parseFloat(pData.price);
-        if (isNaN(parsedPrice) || !Number.isFinite(parsedPrice) || parsedPrice < 0) {
+        let unitPrice = parseFloat(pData.price);
+        const singleDuration = urlParams.get('duration') || '';
+        if (singleDuration && pData.streamingOptions) {
+            const opts = pData.streamingOptions.split(',').map(o => o.trim()).filter(o => o);
+            const optMatch = opts.find(o => {
+                if (o.includes(':')) return o.split(':')[0].trim() === singleDuration;
+                return o === singleDuration;
+            });
+            if (optMatch && optMatch.includes(':')) {
+                const parsedOptPrice = parseFloat(optMatch.split(':')[1].trim());
+                if (!isNaN(parsedOptPrice)) unitPrice = parsedOptPrice;
+            }
+        }
+
+        if (isNaN(unitPrice) || !Number.isFinite(unitPrice) || unitPrice < 0) {
             throw new Error("Precio inválido en el producto.");
         }
         
-        const actualPrice = parsedPrice * parsedQty;
+        const actualPrice = unitPrice * parsedQty;
         
         if (currentBal < actualPrice) throw new Error("Saldo insuficiente.");
 

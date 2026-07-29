@@ -127,7 +127,25 @@ async function loadCartContent() {
             const pSnap = await getDoc(doc(db, 'products', pid));
             if (pSnap.exists()) {
                 const p = pSnap.data();
-                const itemTotal = (p.price || 0) * qty;
+                
+                let unitPrice = p.price || 0;
+                if (duration && p.streamingOptions) {
+                    const opts = p.streamingOptions.split(',').map(o => o.trim()).filter(o => o);
+                    const optMatch = opts.find(o => {
+                        if (o.includes(':')) {
+                            return o.split(':')[0].trim() === duration;
+                        }
+                        return o === duration;
+                    });
+                    if (optMatch && optMatch.includes(':')) {
+                        const parsedPrice = parseFloat(optMatch.split(':')[1].trim());
+                        if (!isNaN(parsedPrice)) {
+                            unitPrice = parsedPrice;
+                        }
+                    }
+                }
+
+                const itemTotal = unitPrice * qty;
                 totalSum += itemTotal;
 
                 const sSnap = await getDoc(doc(db, 'products_stock', pid));
@@ -147,7 +165,7 @@ async function loadCartContent() {
                     <img src="${p.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=100'}" class="cart-item-img">
                     <div class="cart-item-info">
                         <div class="cart-item-title">${escapeHtml(p.name)} ${duration ? `<span style="font-size:0.8rem; color:var(--text-muted);">(${escapeHtml(duration)})</span>` : ''}</div>
-                        <div class="cart-item-price">$${p.price} x ${qty} = $${itemTotal.toFixed(2)}</div>
+                        <div class="cart-item-price">$${unitPrice.toFixed(2)} x ${qty} = $${itemTotal.toFixed(2)}</div>
                         ${stockNoticeHtml}
                     </div>
                     <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">

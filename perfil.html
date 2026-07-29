@@ -613,7 +613,7 @@
                                 <label style="display:flex; align-items:center; gap:5px;">
                                     <input type="checkbox" id="new-prod-streaming" onchange="document.getElementById('new-prod-streaming-opts').style.display = this.checked ? 'block' : 'none'"> Es cuenta de Streaming
                                 </label>
-                                <input type="text" id="new-prod-streaming-opts" placeholder="Opciones (ej. 1 Mes, 2 Meses)" style="display:none; width:100%;">
+                                <input type="text" id="new-prod-streaming-opts" placeholder="Opciones y Precio (ej. 1 Mes: 50, 2 Meses: 90)" style="display:none; width:100%;">
                             </div>
                             <textarea id="new-prod-pool" placeholder="Pool de Credenciales (Una por línea, si es Disponible)" style="width: 100%; height: 80px; margin-top: 10px;"></textarea>
                             <button class="btn-primary" onclick="createProduct()" style="margin-top: 1rem; width: 100%;">Guardar Producto</button>
@@ -765,7 +765,7 @@
                 <label style="display:flex; align-items:center; gap:5px;">
                     <input type="checkbox" id="edit-prod-streaming" onchange="document.getElementById('edit-prod-streaming-opts').style.display = this.checked ? 'block' : 'none'"> Es cuenta de Streaming
                 </label>
-                <input type="text" id="edit-prod-streaming-opts" placeholder="Opciones (ej. 1 Mes, 2 Meses)" style="display:none; width:100%;">
+                <input type="text" id="edit-prod-streaming-opts" placeholder="Opciones y Precio (ej. 1 Mes: 50, 2 Meses: 90)" style="display:none; width:100%;">
             </div>
             <div style="margin-top: 10px;">
                 <label style="font-size: 0.8rem; color: var(--text-muted);">Pool de Credenciales (Una por línea)</label>
