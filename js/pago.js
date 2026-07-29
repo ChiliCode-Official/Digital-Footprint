@@ -87,16 +87,44 @@ function setupPurchaseMode(balance, amount) {
     `;
     
     actionArea.innerHTML = `
-        <button id="btn-confirm-purchase" class="btn-primary" style="width:100%; padding: 14px; font-size: 1.1rem;">
-            <i class="fa-solid fa-check"></i> Confirmar y Comprar
-        </button>
-        <button id="btn-cancel" class="btn-secondary" style="width:100%; padding: 14px; margin-top: 10px;">
+        <div class="pos-anim-container-btn" id="btn-confirm-purchase" style="margin: 0 auto; width: 100%;">
+          <div class="pos-left-side-btn">
+            <div class="pos-card-btn">
+              <div class="pos-card-line-btn"></div>
+              <div class="pos-buttons-btn"></div>
+            </div>
+            <div class="pos-post-btn">
+              <div class="pos-post-line-btn"></div>
+              <div class="pos-screen-btn">
+                <div class="pos-icon-btn" style="font-size: 14px; font-weight: bold; color: var(--accent-primary);">✓</div>
+              </div>
+              <div class="pos-numbers-btn"></div>
+              <div class="pos-numbers-line2-btn"></div>
+            </div>
+          </div>
+          <div class="pos-right-side-btn">
+            <div class="pos-new-btn" id="btn-process-text" style="font-size: 1rem; color: #fff;">Confirmar Compra</div>
+            <svg class="pos-arrow-btn" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 451.846 451.847">
+              <path d="M345.441 248.292L151.154 442.573c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744L278.318 225.92 106.409 54.017c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.287 194.284c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373z" class="active-path" fill="#fff"></path>
+            </svg>
+          </div>
+        </div>
+        <button id="btn-cancel" class="btn-secondary" style="width:100%; padding: 14px; margin-top: 15px;">
             Cancelar
         </button>
     `;
     
     document.getElementById('btn-cancel').onclick = () => window.history.back();
-    document.getElementById('btn-confirm-purchase').onclick = processPurchase;
+    const confirmBtn = document.getElementById('btn-confirm-purchase');
+    confirmBtn.onclick = () => {
+        if(confirmBtn.classList.contains('is-animating')) return;
+        confirmBtn.classList.add('is-animating');
+        
+        // Wait for the slide animation to finish (~1.2s)
+        setTimeout(() => {
+            processPurchase();
+        }, 1300);
+    };
 }
 
 let selectedAccount = null;
@@ -148,7 +176,7 @@ async function setupRechargeMode(balance, suggestedAmount) {
     `;
     
     actionArea.innerHTML = `
-        <div class="pos-anim-container-btn" id="btn-process-recharge" style="margin: 0 auto;">
+        <div class="pos-anim-container-btn theme-recharge" id="btn-process-recharge" style="margin: 0 auto; width: 100%;">
           <div class="pos-left-side-btn">
             <div class="pos-card-btn">
               <div class="pos-card-line-btn"></div>
@@ -157,16 +185,16 @@ async function setupRechargeMode(balance, suggestedAmount) {
             <div class="pos-post-btn">
               <div class="pos-post-line-btn"></div>
               <div class="pos-screen-btn">
-                <div class="pos-icon-btn">!</div>
+                <div class="pos-icon-btn" style="font-size: 16px; font-weight: bold;">$</div>
               </div>
               <div class="pos-numbers-btn"></div>
               <div class="pos-numbers-line2-btn"></div>
             </div>
           </div>
           <div class="pos-right-side-btn">
-            <div class="pos-new-btn" id="btn-process-text">Confirmar Pago</div>
+            <div class="pos-new-btn" id="btn-process-text" style="font-size: 1rem;">Confirmar Pago</div>
             <svg class="pos-arrow-btn" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 451.846 451.847">
-              <path d="M345.441 248.292L151.154 442.573c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744L278.318 225.92 106.409 54.017c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.287 194.284c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373z" class="active-path" fill="#4b953b"></path>
+              <path d="M345.441 248.292L151.154 442.573c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744L278.318 225.92 106.409 54.017c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.287 194.284c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373z" class="active-path" fill="#cfcfcf"></path>
             </svg>
           </div>
         </div>
@@ -267,7 +295,15 @@ async function setupRechargeMode(balance, suggestedAmount) {
         };
     }
     
-    document.getElementById('btn-process-recharge').onclick = processRecharge;
+    const rechargeBtn = document.getElementById('btn-process-recharge');
+    rechargeBtn.onclick = () => {
+        if(rechargeBtn.classList.contains('is-animating')) return;
+        rechargeBtn.classList.add('is-animating');
+        
+        setTimeout(() => {
+            processRecharge();
+        }, 1300);
+    };
 }
 
 async function processRecharge() {
@@ -291,10 +327,9 @@ async function processRecharge() {
     const textEl = document.getElementById('btn-process-text');
     if (btn) {
         btn.style.pointerEvents = 'none';
-        btn.style.opacity = '0.7';
     }
-    if (textEl) textEl.textContent = 'Procesando...';
-    
+    // Let the animation handle the visual feedback, no opacity change needed
+
     try {
         const reqRef = doc(collection(db, 'balance_requests'));
         // methodLabel already declared above with null-safe check
@@ -319,11 +354,21 @@ async function processRecharge() {
     } catch (e) {
         console.error("Error in processRecharge:", e);
         showError("Error al registrar la solicitud: " + (e.message || "Fallo en Firestore"));
+        
         if (btn) {
-            btn.style.pointerEvents = 'auto';
-            btn.style.opacity = '1';
+            btn.classList.add('error-state');
+            const iconEl = btn.querySelector('.pos-icon-btn');
+            
+            if (textEl) textEl.textContent = 'Nueva Alerta';
+            if (iconEl) iconEl.textContent = '!';
+            
+            setTimeout(() => {
+                btn.classList.remove('is-animating', 'error-state');
+                if (textEl) textEl.textContent = 'Confirmar Pago';
+                if (iconEl) iconEl.textContent = '$';
+                btn.style.pointerEvents = 'auto';
+            }, 3000);
         }
-        if (textEl) textEl.textContent = 'Confirmar Pago';
     }
 }
 
@@ -434,7 +479,6 @@ function setupWaitingScreen(requestId, amount, methodLabel) {
 async function processPurchase() {
     const btn = document.getElementById('btn-confirm-purchase');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
     errorEl.style.display = 'none';
 
     try {
@@ -448,8 +492,32 @@ async function processPurchase() {
     } catch (e) {
         console.error(e);
         showError(e.message || String(e));
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirmar y Comprar';
+        
+        // Trigger Error State Animation
+        if(btn) {
+            btn.classList.add('error-state');
+            const textEl = btn.querySelector('.pos-new-btn');
+            if(textEl) textEl.textContent = 'Error en Transacción';
+            const iconEl = btn.querySelector('.pos-icon-btn');
+            if(iconEl) {
+                iconEl.textContent = '!';
+                iconEl.style.color = 'var(--danger)';
+            }
+            const svgEl = btn.querySelector('.pos-arrow-btn path');
+            if(svgEl) svgEl.setAttribute('fill', 'var(--danger)');
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                btn.classList.remove('is-animating', 'error-state');
+                if(textEl) textEl.textContent = 'Confirmar Compra';
+                if(iconEl) {
+                    iconEl.textContent = '✓';
+                    iconEl.style.color = 'var(--accent-primary)';
+                }
+                if(svgEl) svgEl.setAttribute('fill', '#fff');
+                btn.disabled = false;
+            }, 3000);
+        }
     }
 }
 

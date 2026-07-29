@@ -1,0 +1,28 @@
+{
+  "name": "GhostKey Store",
+  "short_name": "GhostKey",
+  "description": "Tu tienda de juegos, productos y saldo con entregas instantáneas.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B0E14",
+  "theme_color": "#0B0E14",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/LbMnNUg.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/LbMnNUg.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/LbMnNUg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

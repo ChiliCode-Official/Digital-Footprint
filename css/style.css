@@ -4807,12 +4807,12 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.pos-anim-container-btn:hover {
+.pos-anim-container-btn.is-animating {
   transform: scale(1.03);
-  width: 150px;
+  width: 220px;
 }
 
-.pos-anim-container-btn:hover .pos-left-side-btn {
+.pos-anim-container-btn.is-animating .pos-left-side-btn {
   width: 100%;
 }
 
@@ -4892,11 +4892,11 @@ input:focus, select:focus, textarea:focus {
   margin: 6px 0 0 -18px;
 }
 
-.pos-anim-container-btn:hover .pos-card-btn {
+.pos-anim-container-btn.is-animating .pos-card-btn {
   animation: slide-top-btn 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
 }
 
-.pos-anim-container-btn:hover .pos-post-btn {
+.pos-anim-container-btn.is-animating .pos-post-btn {
   animation: slide-post-btn 0.7s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
@@ -4989,7 +4989,7 @@ input:focus, select:focus, textarea:focus {
   text-align: center;
 }
 
-.pos-anim-container-btn:hover .pos-icon-btn {
+.pos-anim-container-btn.is-animating .pos-icon-btn {
   animation: fade-in-fwd-btn 0.3s 0.7s backwards;
 }
 
@@ -5002,9 +5002,124 @@ input:focus, select:focus, textarea:focus {
   .pos-anim-container-btn {
     transform: scale(0.9);
   }
-  .pos-anim-container-btn:hover {
+  .pos-anim-container-btn.is-animating {
     transform: scale(0.93);
   }
+}
+
+/* Error State for POS Button */
+.pos-anim-container-btn.error-state {
+  background-color: #3b1515 !important;
+}
+.pos-anim-container-btn.error-state .pos-left-side-btn {
+  background: linear-gradient(135deg, #b91c1c, #ef4444) !important;
+}
+.pos-anim-container-btn.error-state .pos-right-side-btn:hover {
+  background-color: #4a1c1c !important;
+}
+.pos-anim-container-btn.error-state .pos-card-btn {
+  background-color: #fca5a5 !important;
+  box-shadow: 5px 5px 5px -2px rgba(239, 68, 68, 0.4) !important;
+}
+.pos-anim-container-btn.error-state .pos-card-line-btn {
+  background-color: #fee2e2 !important;
+}
+
+/* Theme Recharge (White/Green) */
+.pos-anim-container-btn.theme-recharge {
+  background-color: #ffffff !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-left-side-btn {
+  background-color: #5de2a3 !important;
+  background-image: none !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-right-side-btn:hover {
+  background-color: #f9f7f9 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-card-btn {
+  background-color: #c7ffbc !important;
+  box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72) !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-card-line-btn {
+  background-color: #80ea69 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-buttons-btn {
+  background-color: #379e1f !important;
+  box-shadow: 0 -10px 0 0 #26850e, 0 10px 0 0 #56be3e !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-post-btn {
+  background-color: #dddde0 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-post-line-btn {
+  background-color: #545354 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-post-line-btn:before {
+  background-color: #757375 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-screen-btn {
+  background-color: #ffffff !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-numbers-btn,
+.pos-anim-container-btn.theme-recharge .pos-numbers-line2-btn {
+  background-color: #838183 !important;
+  box-shadow: 0 -18px 0 0 #838183, 0 18px 0 0 #838183 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-icon-btn {
+  color: #4b953b !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-new-btn {
+  color: #000 !important;
+}
+.pos-anim-container-btn.theme-recharge .pos-arrow-btn path {
+  fill: #cfcfcf !important;
+}
+
+/* Theme Recharge Error State (Orange/Red) */
+.pos-anim-container-btn.theme-recharge.error-state {
+  background-color: #fff7e6 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-left-side-btn {
+  background: linear-gradient(135deg, #ff8c00, #ff4d4d) !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-right-side-btn:hover {
+  background-color: #ffecd1 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-card-btn {
+  background-color: #ffb366 !important;
+  box-shadow: 5px 5px 5px -2px rgba(255, 77, 77, 0.4) !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-card-line-btn {
+  background-color: #ffcc99 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-buttons-btn {
+  background-color: #cc4b00 !important;
+  box-shadow: 0 -6px 0 0 #992d00, 0 6px 0 0 #ff6a1a !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-post-btn {
+  background-color: #f5f5f5 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-post-line-btn {
+  background-color: #666 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-post-line-btn:before {
+  background-color: #888 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-screen-btn {
+  background-color: #ffffff !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-numbers-btn,
+.pos-anim-container-btn.theme-recharge.error-state .pos-numbers-line2-btn {
+  background-color: #999 !important;
+  box-shadow: 0 -11px 0 0 #999, 0 11px 0 0 #999 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-icon-btn {
+  color: #d32f2f !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-new-btn {
+  color: #333 !important;
+}
+.pos-anim-container-btn.theme-recharge.error-state .pos-arrow-btn path {
+  fill: #ffffff !important;
 }
 
 .pos-anim-container-btn.expanding {

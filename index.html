@@ -1257,6 +1257,19 @@
             color: #ffa723;
         }
     </style>
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GhostKey">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/LbMnNUg.png">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+            });
+        }
+    </script>
 </head>
 <body>
     <!-- ===== TOP NAVBAR ===== -->
@@ -1737,5 +1750,6 @@
         orb.addEventListener('mouseleave', function(){ tooltip.classList.remove('visible'); });
     })();
     </script>
+    <script src="js/pwa-install.js"></script>
 </body>
 </html>
