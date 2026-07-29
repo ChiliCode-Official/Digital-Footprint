@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -714,7 +714,7 @@
             z-index: 1;
             margin-bottom: 14px;
         }
-        .gk-promo-card a {
+        .gk-promo-card span.gk-promo-btn {
             position: relative;
             z-index: 1;
             display: inline-flex;
@@ -730,8 +730,9 @@
             border-radius: 20px;
             text-decoration: none;
             transition: background 0.2s, border-color 0.2s;
+            width: fit-content;
         }
-        .gk-promo-card a:hover {
+        .gk-promo-card span.gk-promo-btn:hover {
             background: rgba(255,255,255,0.22);
             border-color: rgba(255,255,255,0.35);
         }
@@ -1452,14 +1453,14 @@
                 <div class="gk-promo-card-overlay" style="background: linear-gradient(135deg, rgba(11,14,20,0.8) 0%, rgba(11,14,20,0.3) 100%);"></div>
                 <h3>💜 Recarga tu Saldo</h3>
                 <p>Múltiples métodos de pago disponibles</p>
-                <a href="pago.html"><i class="fa-solid fa-wallet"></i> Recargar Ahora</a>
+                <span class="gk-promo-btn"><i class="fa-solid fa-wallet"></i> Recargar Ahora</span>
             </a>
             <a href="info.html" class="gk-promo-card" style="text-decoration:none;">
                 <div class="gk-promo-card-bg" style="background: linear-gradient(135deg, #0a1a2e, #1a3d70);"></div>
                 <div class="gk-promo-card-overlay" style="background: linear-gradient(135deg, rgba(11,14,20,0.8) 0%, rgba(11,14,20,0.3) 100%);"></div>
                 <h3>🎁 Programa de Referidos</h3>
                 <p>Gana 3% de comisión por cada amigo que traes</p>
-                <a href="info.html"><i class="fa-solid fa-share-nodes"></i> Saber Más</a>
+                <span class="gk-promo-btn"><i class="fa-solid fa-share-nodes"></i> Saber Más</span>
             </a>
         </div>
 
