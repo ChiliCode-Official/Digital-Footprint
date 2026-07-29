@@ -579,7 +579,23 @@ async function loadIndexProducts() {
                             titleEl.style.opacity = '1';
                         }
                         if (priceEl) {
-                            priceEl.textContent = `${hData.price} MXN`;
+                            let displayPrice = `${hData.price} MXN`;
+                            if (hData.isStreaming && hData.streamingOptions) {
+                                let minPrice = Infinity;
+                                const opts = hData.streamingOptions.split(',').filter(o => o.trim() !== '');
+                                opts.forEach(o => {
+                                    if (o.includes(':')) {
+                                        const optPrice = parseFloat(o.split(':')[1].trim());
+                                        if (!isNaN(optPrice) && optPrice < minPrice) minPrice = optPrice;
+                                    }
+                                });
+                                if (minPrice !== Infinity) {
+                                    displayPrice = `Desde $${minPrice.toFixed(2)}`;
+                                } else if (hData.price == 0) {
+                                    displayPrice = `¡Gratis!`;
+                                }
+                            }
+                            priceEl.textContent = displayPrice;
                             priceEl.style.opacity = '1';
                         }
                         if (buyBtn) buyBtn.href = `producto.html?id=${heroProd.id}`;
@@ -633,6 +649,23 @@ async function loadIndexProducts() {
 
             const starsHtml = '<i class="fa-solid fa-star"></i>'.repeat(5);
 
+            let displayPrice = `$${p.price} <span class="gk-card-original">MXN</span>`;
+            if (p.isStreaming && p.streamingOptions) {
+                let minPrice = Infinity;
+                const opts = p.streamingOptions.split(',').filter(o => o.trim() !== '');
+                opts.forEach(o => {
+                    if (o.includes(':')) {
+                        const optPrice = parseFloat(o.split(':')[1].trim());
+                        if (!isNaN(optPrice) && optPrice < minPrice) minPrice = optPrice;
+                    }
+                });
+                if (minPrice !== Infinity) {
+                    displayPrice = `Desde $${minPrice.toFixed(2)}`;
+                } else if (p.price == 0) {
+                    displayPrice = `¡Gratis!`;
+                }
+            }
+
             container.innerHTML += `
                 <a href="producto.html?id=${d.id}" class="gk-card">
                     <img class="gk-card-img" src="${p.image || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400'}" alt="${p.name}" loading="lazy">
@@ -640,7 +673,7 @@ async function loadIndexProducts() {
                         <span class="gk-card-badge" style="background:${badgeBg}">${stockLabel}</span>
                         <div class="gk-card-name">${escapeHtml(p.name)}</div>
                         <div class="gk-card-stars">${starsHtml} <span style="color:var(--text-muted); font-size:0.7rem;">(4.8)</span></div>
-                        <div class="gk-card-price">$${p.price} <span class="gk-card-original">MXN</span></div>
+                        <div class="gk-card-price">${displayPrice}</div>
                     </div>
                 </a>
             `;

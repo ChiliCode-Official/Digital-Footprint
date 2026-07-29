@@ -102,6 +102,23 @@ function renderProducts(products) {
 
         const prodImg = normalizeImageUrl(prod.image) || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400';
 
+        let displayPrice = `$${Number(prod.price || 0).toFixed(2)}`;
+        if (prod.isStreaming && prod.streamingOptions) {
+            let minPrice = Infinity;
+            const opts = prod.streamingOptions.split(',').filter(o => o.trim() !== '');
+            opts.forEach(o => {
+                if (o.includes(':')) {
+                    const optPrice = parseFloat(o.split(':')[1].trim());
+                    if (!isNaN(optPrice) && optPrice < minPrice) minPrice = optPrice;
+                }
+            });
+            if (minPrice !== Infinity) {
+                displayPrice = `Desde $${minPrice.toFixed(2)}`;
+            } else if (prod.price == 0) {
+                displayPrice = `¡Gratis!`;
+            }
+        }
+
         const card = document.createElement('a');
         card.href = `producto.html?id=${prod.id}`;
         card.className = 'card';
@@ -112,14 +129,14 @@ function renderProducts(products) {
             <div class="card__content">
             <div class="card__badge" style="background:${statusColor}">${stockLabel}</div>
             <button class="wishlist-btn" data-id="${prod.id}" style="position:absolute; top:12px; left:12px; z-index:4; background:var(--bg-panel); border:1px solid var(--glass-border); color:var(--text-muted); border-radius:50%; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-heart"></i></button>
-            <div class="card__image" style="background-image: url('${prodImg}');"></div>
+            <div class="card__image" style="background-image: url('${normalizeImageUrl(prod.image) || 'https://images.unsplash.com/photo-1605901309584-818e25960b8f?auto=format&fit=crop&w=400'}');"></div>
             <div class="card__details">
                 <p class="card__title">${escapeHtml(prod.name)}</p>
                 <div class="card__reviews">
                     <span class="stars">★★★★★</span>
                     <span class="rating">4.8 (1.3k)</span>
                 </div>
-                <div class="card__price-large">$${prod.price}</div>
+                <div class="card__price-large">${displayPrice}</div>
                 <button class="card__add-btn">
                     Agregar al carrito
                 </button>
