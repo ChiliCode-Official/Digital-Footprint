@@ -159,6 +159,11 @@ async function loadCartContent() {
                     }
                 }
 
+                let notes = '';
+                if (typeof cartItemObj === 'object' && cartItemObj && cartItemObj.notes) {
+                    notes = cartItemObj.notes;
+                }
+
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-item';
                 itemDiv.innerHTML = `
@@ -166,6 +171,7 @@ async function loadCartContent() {
                     <div class="cart-item-info">
                         <div class="cart-item-title">${escapeHtml(p.name)} ${duration ? `<span style="font-size:0.8rem; color:var(--text-muted);">(${escapeHtml(duration)})</span>` : ''}</div>
                         <div class="cart-item-price">$${unitPrice.toFixed(2)} x ${qty} = $${itemTotal.toFixed(2)}</div>
+                        ${notes ? `<div style="font-size:0.75rem; color:var(--accent-primary); margin-top:2px; word-break:break-word;"><i class="fa-solid fa-pen-to-square"></i> ${escapeHtml(notes)}</div>` : ''}
                         ${stockNoticeHtml}
                     </div>
                     <div style="display:flex; flex-direction:column; gap:5px; align-items:flex-end;">

@@ -346,11 +346,11 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                 }
             }
-            const totalPrice = unitPrice * currentQty;
+            const totalPrice = unitPrice * current            const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
             if (userDocData && userDocData.balance < totalPrice) {
-                window.location.href = `pago.html?from=product&amount=${totalPrice}&isGift=true&giftEmail=${encodeURIComponent(pendingGiftEmail)}&productId=${productId}&qty=${currentQty}&duration=${encodeURIComponent(selectedDuration)}`;
+                window.location.href = `pago.html?from=product&amount=${totalPrice}&isGift=true&giftEmail=${encodeURIComponent(pendingGiftEmail)}&productId=${productId}&qty=${currentQty}&duration=${encodeURIComponent(selectedDuration)}&notes=${encodeURIComponent(customerNotes)}`;
                 return;
             }
 
@@ -414,6 +414,9 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     if (typeof selectedDuration !== 'undefined' && selectedDuration) {
                         orderPayload.streamingDuration = selectedDuration;
                     }
+                    if (customerNotes) {
+                        orderPayload.customerNotes = customerNotes;
+                    }
                     transaction.set(newOrderRef, orderPayload);
                 });
                 
@@ -430,7 +433,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                         e.preventDefault();
                         const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
                         const siteUrl = `${window.location.origin}${basePath}`;
-                        const message = `Ã‚¡Hola! Ã°Å¸Å½Â Te acabo de regalar *${productData.name}* en GhostKey.
+                        const message = `¡Hola! 🎁 Te acabo de regalar *${productData.name}* en GhostKey.
 
 ¡Nos esforzaremos al máximo para que lo recibas super rápido! 🚀✨
 
@@ -475,10 +478,11 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                 }
             }
             const totalPrice = unitPrice * currentQty;
+            const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
             if (userDocData && userDocData.balance < totalPrice) {
-                window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}&duration=${encodeURIComponent(selectedDuration)}`;
+                window.location.href = `pago.html?from=product&amount=${totalPrice}&productId=${productId}&qty=${currentQty}&duration=${encodeURIComponent(selectedDuration)}&notes=${encodeURIComponent(customerNotes)}`;
                 return;
             }
 
@@ -548,6 +552,9 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     if (selectedDuration) {
                         orderPayload.streamingDuration = selectedDuration;
                     }
+                    if (customerNotes) {
+                        orderPayload.customerNotes = customerNotes;
+                    }
                     transaction.set(newOrderRef, orderPayload);
                 });
 
@@ -584,6 +591,8 @@ if (addCartBtn) {
             selectedDuration = sSelect.value;
         }
 
+        const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
+
         if (stockData && stockData.status === 'disponible') {
             let pool = stockData.credentialsPool || "";
             let count = pool.split('\n').filter(l => l.trim() !== "").length;
@@ -604,7 +613,8 @@ if (addCartBtn) {
                 
                 currentCart[productId] = {
                     qty: existingQty + currentQty,
-                    duration: selectedDuration
+                    duration: selectedDuration,
+                    notes: customerNotes || (existingObj && existingObj.notes ? existingObj.notes : '')
                 };
                 await updateDoc(uRef, { cart: currentCart });
                 updateCartBadge();
@@ -613,6 +623,9 @@ if (addCartBtn) {
         } catch(e) {
             console.error(e);
             alert("Error al añadir al carrito.");
+        }
+    });
+}l añadir al carrito.");
         }
     });
 }

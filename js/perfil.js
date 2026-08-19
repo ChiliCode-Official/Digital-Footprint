@@ -284,10 +284,18 @@ async function loadClientData(uid) {
 
             if (tbody) {
                 const statusClass = o.status === 'pendiente' ? 'status-pending' : 'status-confirmed';
+                let prodDisplay = escapeHtml(o.productName || 'Producto');
+                if (o.streamingDuration) {
+                    prodDisplay += ` <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:bold;">(${escapeHtml(o.streamingDuration)})</span>`;
+                }
+                let notesClient = '';
+                if (o.customerNotes) {
+                    notesClient = `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;"><i class="fa-solid fa-pen-to-square"></i> <em>Nota: ${escapeHtml(o.customerNotes)}</em></div>`;
+                }
                 tbody.innerHTML += `
                     <tr>
                         <td>${dDate}</td>
-                        <td>${escapeHtml(o.productName || 'Producto')}</td>
+                        <td>${prodDisplay}${notesClient}</td>
                         <td><span class="status-badge ${statusClass}">${(o.status||'PENDIENTE').toUpperCase()}</span></td>
                         <td>${escapeHtml(o.textDelivered || 'Procesando...')}</td>
                     </tr>`;
@@ -549,14 +557,44 @@ async function loadAdminData() {
             snap.forEach(d => {
                 const o = d.data();
                 const pendingCount = typeof o.pendingQuantity === 'number' ? o.pendingQuantity : (o.quantity || 1);
+
+                let durationBadge = '';
+                if (o.streamingDuration) {
+                    durationBadge = `<span style="display:inline-flex; align-items:center; gap:4px; background:rgba(161,130,232,0.18); color:var(--accent-primary); border:1px solid var(--accent-primary); padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-clock"></i> ${escapeHtml(o.streamingDuration)}</span>`;
+                }
+
+                let notesBox = '';
+                if (o.customerNotes) {
+                    notesBox = `
+                        <div style="margin-top:6px; background:rgba(255,255,255,0.06); border-left:3px solid var(--accent-primary); padding:6px 10px; border-radius:6px; font-size:0.8rem; color:#e0e0e0; word-break:break-word;">
+                            <strong style="color:var(--accent-primary); display:block; margin-bottom:2px;"><i class="fa-solid fa-note-sticky"></i> Datos / Notas del cliente:</strong>
+                            ${escapeHtml(o.customerNotes)}
+                        </div>`;
+                }
+
+                let giftInfo = '';
+                if (o.isGift && (o.giftRecipient || o.giftEmail)) {
+                    giftInfo = `<div style="margin-top:4px; font-size:0.75rem; color:var(--warning); font-weight:600;"><i class="fa-solid fa-gift"></i> Regalo para: ${escapeHtml(o.giftRecipient || o.giftEmail)}</div>`;
+                }
+
                 tbodyOrders.innerHTML += `
                     <tr>
-                        <td>${escapeHtml(o.userEmail||'')}</td>
-                        <td>${escapeHtml(o.productName||'')} <span style="background:var(--warning);color:#000;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:bold;">Faltan: ${pendingCount} u.</span></td>
-                        <td>
-                            <div style="display:flex;gap:6px;align-items:center;">
-                                <input type="text" id="deliver-${d.id}" placeholder="Código/Credencial" style="padding:6px;border-radius:6px;background:var(--bg-main);border:1px solid var(--glass-border);color:#fff;width:160px;">
-                                <button class="btn-primary" onclick="deliverOrder('${d.id}')" style="padding:6px 12px;font-size:0.82rem;">Entregar</button>
+                        <td style="vertical-align: top;">
+                            <strong style="font-size:0.9rem;">${escapeHtml(o.userEmail||'')}</strong>
+                            ${giftInfo}
+                        </td>
+                        <td style="vertical-align: top;">
+                            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px;">
+                                <strong style="font-size:0.95rem;">${escapeHtml(o.productName||'')}</strong>
+                                ${durationBadge}
+                                <span style="background:var(--warning); color:#000; padding:2px 8px; border-radius:10px; font-size:0.75rem; font-weight:bold;">Faltan: ${pendingCount} u.</span>
+                            </div>
+                            ${notesBox}
+                        </td>
+                        <td style="vertical-align: top;">
+                            <div style="display:flex; gap:6px; align-items:center; flex-wrap: wrap;">
+                                <input type="text" id="deliver-${d.id}" placeholder="Código/Credencial" style="padding:6px; border-radius:6px; background:var(--bg-main); border:1px solid var(--glass-border); color:#fff; width:160px;">
+                                <button class="btn-primary" onclick="deliverOrder('${d.id}')" style="padding:6px 12px; font-size:0.82rem;">Entregar</button>
                             </div>
                         </td>
                     </tr>`;

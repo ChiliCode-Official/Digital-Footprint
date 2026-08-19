@@ -14,6 +14,13 @@ const productId = urlParams.get('productId');
 const qty = parseInt(urlParams.get('qty')) || 1;
 const isGift = urlParams.get('isGift') === 'true';
 const giftEmail = urlParams.get('giftEmail');
+const customerNotesParam = urlParams.get('notes') || '';
+const singleDurationParam = urlParams.get('duration') || '';
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 // UI Elements
 const pagoContent = document.getElementById('pago-content');
@@ -83,6 +90,14 @@ function setupPurchaseMode(balance, amount) {
             <p>Total a Pagar: <strong style="color: var(--danger);">-$${amount.toFixed(2)}</strong></p>
             <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 10px 0;">
             <p>Saldo Restante: <strong>$${remaining.toFixed(2)}</strong></p>
+            
+            <div style="margin-top: 1.2rem; text-align: left;">
+                <label for="pago-notes-input" style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; margin-bottom: 5px;">
+                    <i class="fa-solid fa-pen-to-square" style="color: var(--accent-primary);"></i> Datos de entrega / Notas para el vendedor:
+                </label>
+                <textarea id="pago-notes-input" placeholder="Ej: Correo para invitación Canva, usuario y contraseña para recarga, etc." style="width: 100%; min-height: 60px; padding: 10px; border-radius: 8px; background: var(--bg-main); border: 1px solid var(--glass-border); color: #fff; font-family: inherit; font-size: 0.85rem; resize: vertical; outline: none;">${escapeHtml(customerNotesParam)}</textarea>
+            </div>
+
             <p style="margin-top: 1rem; font-weight: bold; color: var(--accent-primary);">¿Estás seguro que confirmas tu compra?</p>
         </div>
     `;
@@ -585,11 +600,13 @@ async function processCartPurchase() {
             let pQtyObj = cartObj[pid];
             let pQty = 0;
             let duration = '';
+            let itemNotes = '';
             if (typeof pQtyObj === 'number') {
                 pQty = pQtyObj;
             } else if (pQtyObj) {
                 pQty = parseInt(pQtyObj.qty) || 0;
                 duration = pQtyObj.duration || '';
+                itemNotes = pQtyObj.notes || '';
             }
             if (isNaN(pQty) || !Number.isFinite(pQty) || pQty <= 0) {
                 throw new Error("Cantidad inválida en el carrito.");
@@ -616,14 +633,16 @@ async function processCartPurchase() {
                     throw new Error(`Precio inválido en producto: ${p.name}`);
                 }
                 calculatedTotal += (unitPrice * pQty);
-                productsData.push({ id: pid, qty: pQty, price: unitPrice, name: p.name, duration: duration });
+                productsData.push({ id: pid, qty: pQty, price: unitPrice, name: p.name, duration: duration, notes: itemNotes });
             }
         }
         
         if (currentBal < calculatedTotal) throw new Error("Saldo insuficiente (el carrito pudo haber cambiado de precio).");
         finalTotal = calculatedTotal;
 
-                // Fetch all stock data first to avoid read-after-write
+        const pagoNotesVal = document.getElementById('pago-notes-input')?.value.trim() || '';
+
+        // Fetch all stock data first to avoid read-after-write
         const stockSnaps = {};
         for (const prod of productsData) {
             const stockRef = doc(db, 'products_stock', prod.id);
@@ -683,6 +702,8 @@ async function processCartPurchase() {
                 timestamp: serverTimestamp()
             };
             if (prod.duration) orderPayload.streamingDuration = prod.duration;
+            const finalItemNotes = pagoNotesVal || prod.notes || '';
+            if (finalItemNotes) orderPayload.customerNotes = finalItemNotes;
             transaction.set(newOrderRef, orderPayload);
         }
 
@@ -707,6 +728,7 @@ async function processSinglePurchase() {
     if (!productId) throw new Error("Producto inválido.");
     
     let productName = "Producto";
+    const pagoNotesVal = document.getElementById('pago-notes-input')?.value.trim() || customerNotesParam || '';
     
     await runTransaction(db, async (transaction) => {
         const userRef = doc(db, 'users', currentUser.uid);
@@ -727,7 +749,7 @@ async function processSinglePurchase() {
             throw new Error("Cantidad inválida.");
         }
         let unitPrice = parseFloat(pData.price);
-        const singleDuration = urlParams.get('duration') || '';
+        const singleDuration = urlParams.get('duration') || singleDurationParam || '';
         if (singleDuration && pData.streamingOptions) {
             const opts = pData.streamingOptions.split(',').map(o => o.trim()).filter(o => o);
             const optMatch = opts.find(o => {
@@ -791,7 +813,7 @@ async function processSinglePurchase() {
         }
         
         const newOrderRef = doc(collection(db, 'orders'));
-        transaction.set(newOrderRef, {
+        const singleOrderPayload = {
             uid: currentUser.uid,
             userEmail: currentUser.email,
             productId: productId,
@@ -806,7 +828,14 @@ async function processSinglePurchase() {
             isGift: isGift,
             giftEmail: isGift ? giftEmail : null,
             timestamp: serverTimestamp()
-        });
+        };
+        if (singleDuration) {
+            singleOrderPayload.streamingDuration = singleDuration;
+        }
+        if (pagoNotesVal) {
+            singleOrderPayload.customerNotes = pagoNotesVal;
+        }
+        transaction.set(newOrderRef, singleOrderPayload);
     });
 
     if (isGift) {
