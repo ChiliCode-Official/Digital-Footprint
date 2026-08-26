@@ -137,8 +137,8 @@ function renderProducts(products) {
                     <span class="rating">4.8 (1.3k)</span>
                 </div>
                 <div class="card__price-large">${displayPrice}</div>
-                <button class="card__add-btn">
-                    Agregar al carrito
+                <button class="card__add-btn" type="button">
+                    <i class="fa-solid fa-eye"></i> Ver producto
                 </button>
             </div>
             </div>

@@ -182,12 +182,13 @@ async function setupRechargeMode(balance, suggestedAmount) {
 
         <div id="bank-info-box" style="background: rgba(161, 130, 232, 0.08); border: 1px solid var(--accent-primary); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <strong style="color: var(--accent-primary); font-size: 0.85rem;" id="pm-bank-title"><i class="fa-solid fa-credit-card"></i> Cuenta CLABE Oficial (STP / GhostKey)</strong>
+                <strong style="color: var(--accent-primary); font-size: 0.85rem;" id="pm-bank-title"><i class="fa-solid fa-credit-card"></i> Cargando cuenta oficial...</strong>
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-main); padding: 8px 12px; border-radius: 8px;">
-                <span style="font-family: monospace; font-size: 0.95rem; font-weight: bold; letter-spacing: 1px;" id="pm-clabe-display">646180157012345678</span>
+                <span style="font-family: monospace; font-size: 0.95rem; font-weight: bold; letter-spacing: 1px;" id="pm-clabe-display">Consultando...</span>
                 <button type="button" id="btn-copy-clabe-pago" class="btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;"><i class="fa-solid fa-copy"></i> Copiar</button>
             </div>
+            <div id="pm-extra-details" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; display: none;"></div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;" id="pm-guide-text">Realiza la transferencia y haz clic en Confirmar para notificar al Administrador.</p>
         </div>
     `;
@@ -221,35 +222,52 @@ async function setupRechargeMode(balance, suggestedAmount) {
     async function loadAccountForTipo(tipo) {
         const clabeDisplay = document.getElementById('pm-clabe-display');
         const bankTitle = document.getElementById('pm-bank-title');
+        const extraDetails = document.getElementById('pm-extra-details');
         
+        if (clabeDisplay) clabeDisplay.textContent = 'Cargando...';
+        if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Obteniendo cuenta oficial...`;
+
         try {
             const snap = await getDocs(collection(db, "payment_methods"));
             let foundDoc = null;
+            let fallbackDoc = null;
             
             snap.forEach(dSnap => {
                 const dData = dSnap.data();
+                if (!fallbackDoc) fallbackDoc = { id: dSnap.id, ...dData };
                 if (!foundDoc && (dData.tipo === tipo || (!dData.tipo && tipo === 'transferencia'))) {
                     foundDoc = { id: dSnap.id, ...dData };
                 }
             });
 
-            if (foundDoc) {
-                selectedAccount = foundDoc;
-                if (clabeDisplay) clabeDisplay.textContent = foundDoc.clabe || '646180157012345678';
-                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${escapeHtml(foundDoc.banco || 'Cuenta Oficial GhostKey')}`;
+            // Use matching type or the first available method registered in Firestore
+            const activeDoc = foundDoc || fallbackDoc;
+
+            if (activeDoc && activeDoc.clabe) {
+                selectedAccount = activeDoc;
+                if (clabeDisplay) clabeDisplay.textContent = activeDoc.clabe;
+                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${escapeHtml(activeDoc.banco || 'Cuenta Oficial GhostKey')}`;
+                if (extraDetails) {
+                    let details = [];
+                    if (activeDoc.beneficiario) details.push(`Beneficiario: <strong>${escapeHtml(activeDoc.beneficiario)}</strong>`);
+                    if (activeDoc.concepto) details.push(`Concepto: <strong>${escapeHtml(activeDoc.concepto)}</strong>`);
+                    extraDetails.innerHTML = details.join(' | ');
+                    extraDetails.style.display = details.length > 0 ? 'block' : 'none';
+                }
             } else {
-                // Default fallback if no method configured in admin for this tipo
-                selectedAccount = {
-                    clabe: '646180157012345678',
-                    banco: tipo === 'transferencia' ? 'STP / GhostKey' : 'OXXO / STP GhostKey',
-                    beneficiario: 'GhostKey Oficial'
-                };
-                if (clabeDisplay) clabeDisplay.textContent = selectedAccount.clabe;
-                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${selectedAccount.banco}`;
+                selectedAccount = null;
+                if (clabeDisplay) clabeDisplay.textContent = 'No configurada';
+                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color:var(--warning);"></i> Sin método registrado`;
+                if (extraDetails) {
+                    extraDetails.innerHTML = 'Contacta al soporte para recargas de saldo.';
+                    extraDetails.style.display = 'block';
+                }
             }
         } catch (e) {
             console.error("Error loading account for tipo:", e);
-            selectedAccount = { clabe: '646180157012345678', banco: 'STP / GhostKey' };
+            selectedAccount = null;
+            if (clabeDisplay) clabeDisplay.textContent = 'Error al cargar';
+            if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> Error de conexión`;
         }
     }
 
@@ -322,7 +340,11 @@ async function setupRechargeMode(balance, suggestedAmount) {
     const copyClabeBtn = document.getElementById('btn-copy-clabe-pago');
     if (copyClabeBtn) {
         copyClabeBtn.onclick = () => {
-            const clabeText = selectedAccount ? selectedAccount.clabe : '646180157012345678';
+            if (!selectedAccount || !selectedAccount.clabe) {
+                alert("No hay cuenta CLABE disponible para copiar en este momento.");
+                return;
+            }
+            const clabeText = selectedAccount.clabe;
             navigator.clipboard.writeText(clabeText).then(() => {
                 copyClabeBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copiado`;
                 setTimeout(() => { copyClabeBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Copiar`; }, 2000);

@@ -346,7 +346,8 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                 }
             }
-            const totalPrice = unitPrice * current            const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
+            const totalPrice = unitPrice * currentQty;
+            const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
             if (userDocData && userDocData.balance < totalPrice) {
