@@ -626,9 +626,6 @@ if (addCartBtn) {
             alert("Error al añadir al carrito.");
         }
     });
-}l añadir al carrito.");
-        }
-    });
 }
 
 function checkAndDisplayStockNotice() {
