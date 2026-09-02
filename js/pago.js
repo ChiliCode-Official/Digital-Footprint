@@ -235,7 +235,8 @@ async function setupRechargeMode(balance, suggestedAmount) {
             snap.forEach(dSnap => {
                 const dData = dSnap.data();
                 if (!fallbackDoc) fallbackDoc = { id: dSnap.id, ...dData };
-                if (!foundDoc && (dData.tipo === tipo || (!dData.tipo && tipo === 'transferencia'))) {
+                const docTipo = (dData.tipo || 'transferencia').toLowerCase().trim();
+                if (!foundDoc && (docTipo === tipo.toLowerCase().trim())) {
                     foundDoc = { id: dSnap.id, ...dData };
                 }
             });
@@ -246,7 +247,11 @@ async function setupRechargeMode(balance, suggestedAmount) {
             if (activeDoc && activeDoc.clabe) {
                 selectedAccount = activeDoc;
                 if (clabeDisplay) clabeDisplay.textContent = activeDoc.clabe;
-                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${escapeHtml(activeDoc.banco || 'Cuenta Oficial GhostKey')}`;
+                const isExactType = foundDoc != null;
+                const bankLabel = activeDoc.banco || activeDoc.bank || 'Cuenta Oficial GhostKey';
+                if (bankTitle) {
+                    bankTitle.innerHTML = `<i class="fa-solid fa-credit-card"></i> ${escapeHtml(bankLabel)} ${!isExactType ? `<small style="font-size:0.75rem;opacity:0.8;">(${activeDoc.tipo || 'General'})</small>` : ''}`;
+                }
                 if (extraDetails) {
                     let details = [];
                     if (activeDoc.beneficiario) details.push(`Beneficiario: <strong>${escapeHtml(activeDoc.beneficiario)}</strong>`);
@@ -257,9 +262,9 @@ async function setupRechargeMode(balance, suggestedAmount) {
             } else {
                 selectedAccount = null;
                 if (clabeDisplay) clabeDisplay.textContent = 'No configurada';
-                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color:var(--warning);"></i> Sin método registrado`;
+                if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-circle-exclamation" style="color:var(--warning);"></i> Sin método registrado en Firebase`;
                 if (extraDetails) {
-                    extraDetails.innerHTML = 'Contacta al soporte para recargas de saldo.';
+                    extraDetails.innerHTML = 'El administrador aún no ha configurado una cuenta para este método.';
                     extraDetails.style.display = 'block';
                 }
             }
@@ -267,7 +272,7 @@ async function setupRechargeMode(balance, suggestedAmount) {
             console.error("Error loading account for tipo:", e);
             selectedAccount = null;
             if (clabeDisplay) clabeDisplay.textContent = 'Error al cargar';
-            if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> Error de conexión`;
+            if (bankTitle) bankTitle.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--danger);"></i> Error al conectar con Firebase`;
         }
     }
 

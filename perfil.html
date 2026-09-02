@@ -542,6 +542,7 @@
                         <button class="tab-btn" data-target="tab-admin-stock">Inventario / Stock</button>
                         <button class="tab-btn" data-target="tab-admin-users">Usuarios</button>
                         <button class="tab-btn" data-target="tab-admin-collections">Colecciones</button>
+                        <button class="tab-btn" data-target="tab-admin-metodos"><i class="fa-solid fa-credit-card"></i> Métodos de Pago</button>
                     </div>
 
                     <div id="tab-admin-pedidos" class="tab-content active">
@@ -670,6 +671,59 @@
                         <h4 style="margin-bottom: 1rem;">Colecciones Existentes</h4>
                         <div id="admin-collections-list" style="display: flex; flex-direction: column; gap: 15px;">
                             <!-- JS Injected -->
+                        </div>
+                    </div>
+
+                    <div id="tab-admin-metodos" class="tab-content">
+                        <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+                            <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-plus-circle"></i> Agregar Método de Pago Oficial</h4>
+                            <div class="admin-form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+                                <div>
+                                    <label class="gk-label" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Banco / Plataforma</label>
+                                    <input type="text" id="admin-pm-bank" placeholder="Ej: STP, BBVA, Nu, Banorte" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                                </div>
+                                <div>
+                                    <label class="gk-label" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Beneficiario</label>
+                                    <input type="text" id="admin-pm-beneficiario" placeholder="Nombre completo" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                                </div>
+                                <div>
+                                    <label class="gk-label" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Concepto Recomendado</label>
+                                    <input type="text" id="admin-pm-concepto" placeholder="Ej: Donación, Recarga" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                                </div>
+                                <div>
+                                    <label class="gk-label" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Tipo de Método</label>
+                                    <select id="admin-pm-tipo" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                                        <option value="transferencia">Transferencia (SPEI)</option>
+                                        <option value="efectivo">Efectivo / OXXO</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="gk-label" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Cuenta CLABE / Tarjeta</label>
+                                    <input type="text" id="admin-pm-clabe" placeholder="18 dígitos" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="createPaymentMethodAdmin()" style="margin-top: 15px; padding: 10px 20px;">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar Método de Pago
+                            </button>
+                        </div>
+
+                        <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-list-check"></i> Cuentas Registradas en Firebase</h4>
+                        <div class="table-responsive-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Banco</th>
+                                        <th>Tipo</th>
+                                        <th>CLABE</th>
+                                        <th>Beneficiario</th>
+                                        <th>Concepto</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-payment-methods-body">
+                                    <!-- JS Injected -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

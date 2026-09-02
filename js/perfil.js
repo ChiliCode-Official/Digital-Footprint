@@ -734,7 +734,86 @@ async function loadAdminData() {
             });
         } catch(e) { console.error('Admin collections error:', e); }
     }
+
+    // 6. Payment Methods (Cuentas oficiales de Firebase)
+    const tbodyPM = document.getElementById('admin-payment-methods-body');
+    if (tbodyPM) {
+        tbodyPM.innerHTML = '';
+        try {
+            const qPM = await getDocs(collection(db, 'payment_methods'));
+            if (qPM.empty) {
+                tbodyPM.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:1.5rem;">No hay métodos de pago registrados en Firebase. Agrega uno arriba.</td></tr>`;
+            } else {
+                qPM.forEach(pmDoc => {
+                    const pm = pmDoc.data();
+                    tbodyPM.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHtml(pm.banco || pm.bank || 'Transferencia')}</strong></td>
+                            <td><span class="status-badge" style="background:rgba(161,130,232,0.15);color:var(--accent-primary);">${escapeHtml(pm.tipo || 'transferencia')}</span></td>
+                            <td><code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;letter-spacing:1px;">${escapeHtml(pm.clabe || '-')}</code></td>
+                            <td>${escapeHtml(pm.beneficiario || '-')}</td>
+                            <td>${escapeHtml(pm.concepto || '-')}</td>
+                            <td>
+                                <button class="btn-secondary" style="padding:4px 8px;font-size:0.8rem;color:var(--danger);border-color:var(--danger);" onclick="deletePaymentMethodAdmin('${pmDoc.id}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        } catch(e) {
+            console.error('Admin payment methods error:', e);
+            tbodyPM.innerHTML = `<tr><td colspan="6" style="color:var(--danger);text-align:center;">Error: ${e.message}</td></tr>`;
+        }
+    }
 }
+
+window.createPaymentMethodAdmin = async function() {
+    const bank = document.getElementById('admin-pm-bank')?.value.trim();
+    const beneficiario = document.getElementById('admin-pm-beneficiario')?.value.trim();
+    const concepto = document.getElementById('admin-pm-concepto')?.value.trim() || 'Recarga de saldo';
+    const tipo = document.getElementById('admin-pm-tipo')?.value || 'transferencia';
+    const clabe = document.getElementById('admin-pm-clabe')?.value.trim();
+
+    if (!bank || !beneficiario || !clabe) {
+        alert("Por favor completa Banco, Beneficiario y Cuenta CLABE / Tarjeta.");
+        return;
+    }
+
+    try {
+        await addDoc(collection(db, 'payment_methods'), {
+            banco: bank,
+            beneficiario: beneficiario,
+            concepto: concepto,
+            tipo: tipo,
+            clabe: clabe,
+            timestamp: serverTimestamp()
+        });
+
+        alert("Método de pago agregado exitosamente a Firebase.");
+        if (document.getElementById('admin-pm-bank')) document.getElementById('admin-pm-bank').value = '';
+        if (document.getElementById('admin-pm-beneficiario')) document.getElementById('admin-pm-beneficiario').value = '';
+        if (document.getElementById('admin-pm-concepto')) document.getElementById('admin-pm-concepto').value = '';
+        if (document.getElementById('admin-pm-clabe')) document.getElementById('admin-pm-clabe').value = '';
+
+        loadAdminData();
+    } catch(e) {
+        console.error("Error creating payment method:", e);
+        alert("Error al guardar método de pago: " + e.message);
+    }
+};
+
+window.deletePaymentMethodAdmin = async function(id) {
+    if (!confirm("¿Deseas eliminar este método de pago oficial de Firebase?")) return;
+    try {
+        await deleteDoc(doc(db, 'payment_methods', id));
+        alert("Método de pago eliminado de Firebase.");
+        loadAdminData();
+    } catch(e) {
+        console.error("Error deleting payment method:", e);
+        alert("Error al eliminar: " + e.message);
+    }
+};
 
 // ─── Admin Actions ────────────────────────────────────────────────────────────
 window.approveRecharge = async function(reqId, uid, amount) {
