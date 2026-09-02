@@ -220,6 +220,17 @@ async function loadProductDetails() {
             }
         });
 
+        if (authMsg) {
+            authMsg.addEventListener('click', () => {
+                const modal = document.getElementById('auth-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                } else if (userProfileBtn) {
+                    userProfileBtn.click();
+                }
+            });
+        }
+
         // Load reviews
         loadProductReviews(productId);
 
