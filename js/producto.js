@@ -60,10 +60,8 @@ function getProductTotal() {
     if (isFollowersProduct()) {
         const qty = Math.max(0, Math.floor((Number(currentQty) || 0) / 100) * 100);
         if (qty < 300) return 0;
-        if (qty <= 500) return 25;
-        if (qty <= 1000) return 47;
-        const blocks = Math.ceil(qty / 1000);
-        return (blocks * 47) - ((blocks - 1) * 7);
+        if (qty <= 1000) return Number((25 + ((qty - 300) / 700) * 22).toFixed(2));
+        return Number((47 + ((qty - 1000) / 1000) * 40).toFixed(2));
     }
     return (Number(productData.price) || 0) * currentQty;
 }

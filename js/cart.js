@@ -6,10 +6,8 @@ function getProductTotalPrice(product, quantity, fallbackUnitPrice) {
     if (product?.pricingModel === 'instagram_followers' || /seguidores de instagram/i.test(product?.name || '')) {
         quantity = Math.floor(quantity / 100) * 100;
         if (quantity < 300) return 0;
-        if (quantity <= 500) return 25;
-        if (quantity <= 1000) return 47;
-        const blocks = Math.ceil(quantity / 1000);
-        return (blocks * 47) - ((blocks - 1) * 7);
+        if (quantity <= 1000) return Number((25 + ((quantity - 300) / 700) * 22).toFixed(2));
+        return Number((47 + ((quantity - 1000) / 1000) * 40).toFixed(2));
     }
     return (fallbackUnitPrice || 0) * quantity;
 }

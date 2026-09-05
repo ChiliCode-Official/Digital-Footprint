@@ -3591,8 +3591,14 @@ input:focus, select:focus, textarea:focus {
 @media (max-width: 768px) {
   html, body {
     height: auto !important;
+    min-height: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: var(--bg-main) !important;
+    overflow-x: hidden !important;
     overflow-y: auto !important;
   }
+  body { display: block !important; }
   .dashboard-container {
     display: flex;
     flex-direction: column;
