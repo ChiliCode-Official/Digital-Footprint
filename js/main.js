@@ -1,4 +1,4 @@
-import { db, auth, provider } from './firebase-config.js';
+﻿import { db, auth, provider } from './firebase-config.js';
 import {
     signInWithPopup,
     signInWithRedirect,
@@ -674,12 +674,24 @@ async function loadIndexProducts() {
                         <div class="gk-card-name">${escapeHtml(p.name)}</div>
                         <div class="gk-card-stars">${starsHtml} <span style="color:var(--text-muted); font-size:0.7rem;">(4.8)</span></div>
                         <div class="gk-card-price">${displayPrice}</div>
+                        <button class="gk-card-add-btn" data-buy-id="${d.id}" type="button" aria-label="Comprar directamente" title="Comprar directamente">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </button>
                     </div>
                 </a>
             `;
         });
 
         initWishlistButtons(currentUserWishlist);
+        // Compra directa estilo Eneba en Home
+        container.querySelectorAll(".gk-card-add-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const pid = btn.getAttribute("data-buy-id");
+                if (pid) window.location.href = `producto.html?id=${pid}&action=buy`;
+            });
+        });
     } catch (e) {
         console.error("Error loading products on index", e);
         if (heroSkeleton) heroSkeleton.style.display = 'none';

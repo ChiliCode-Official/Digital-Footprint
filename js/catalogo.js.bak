@@ -1,4 +1,4 @@
-﻿import { db, auth } from './firebase-config.js';
+import { db, auth } from './firebase-config.js';
 import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { initWishlistButtons } from './wishlist.js';
@@ -141,9 +141,6 @@ function renderProducts(products) {
                     <i class="fa-solid fa-eye"></i> Ver producto
                 </button>
             </div>
-            <button class="card__quick-buy-btn" data-buy-id="${prod.id}" type="button" aria-label="Comprar directamente" title="Comprar directamente">
-                <i class="fa-solid fa-cart-plus"></i>
-            </button>
             </div>
         `;
         catalogGrid.appendChild(card);
@@ -151,15 +148,6 @@ function renderProducts(products) {
 
     try {
         initWishlistButtons(currentUserWishlist);
-    // Compra rapida directa estilo Eneba
-    document.querySelectorAll(".card__quick-buy-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const pid = btn.getAttribute("data-buy-id");
-            if (pid) window.location.href = `producto.html?id=${pid}&action=buy`;
-        });
-    });
     } catch(e) { console.error('Wishlist init error:', e); }
 
     try {

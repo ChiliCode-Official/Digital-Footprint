@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -1257,6 +1257,121 @@
         .rating label:hover ~ label {
             color: #ffa723;
         }
+
+        /* =====================================================
+           UX MOVIL ESTILO ENEBA: Tarjetas Horizontales (Home)
+        ===================================================== */
+        @media (max-width: 768px) {
+            #products-container {
+                display: flex !important;
+                flex-direction: column !important;
+                overflow-x: visible !important;
+                gap: 10px !important;
+                padding-bottom: 10px !important;
+            }
+
+            .gk-card {
+                width: 100% !important;
+                min-width: 100% !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: stretch !important;
+                background: #151624 !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                border-radius: 12px !important;
+                overflow: hidden !important;
+                position: relative !important;
+                text-decoration: none !important;
+                color: #fff !important;
+                min-height: 115px !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+            }
+
+            .gk-card:active {
+                transform: scale(0.99) !important;
+                border-color: var(--accent-primary, #A182E8) !important;
+            }
+
+            /* Portada a la izquierda vertical 3:4 */
+            .gk-card-img-wrap {
+                width: 95px !important;
+                min-width: 95px !important;
+                max-width: 95px !important;
+                height: auto !important;
+                aspect-ratio: auto !important;
+                min-height: 115px !important;
+                position: relative !important;
+                flex-shrink: 0 !important;
+            }
+
+            .gk-card-img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+            }
+
+            /* Contenido a la derecha */
+            .gk-card-body {
+                flex: 1 !important;
+                padding: 10px 12px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                min-width: 0 !important;
+                padding-right: 45px !important; /* Espacio para el boton directo */
+            }
+
+            .gk-card-badge {
+                position: absolute !important;
+                top: 8px !important;
+                left: 8px !important;
+                z-index: 3 !important;
+                font-size: 0.65rem !important;
+                margin-bottom: 0 !important;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.5) !important;
+            }
+
+            .gk-card-name {
+                font-size: 0.88rem !important;
+                font-weight: 700 !important;
+                line-height: 1.25 !important;
+                margin-bottom: 4px !important;
+                color: #f8fafc !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2 !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            .gk-card-stars {
+                font-size: 0.68rem !important;
+                margin-bottom: 4px !important;
+            }
+
+            .gk-card-footer {
+                margin-top: auto !important;
+            }
+
+            .gk-card-price {
+                font-size: 1.15rem !important;
+                font-weight: 900 !important;
+                color: #fff !important;
+            }
+
+            /* Boton de compra rapida en la esquina inferior derecha */
+            .gk-card-add-btn {
+                position: absolute !important;
+                bottom: 10px !important;
+                right: 10px !important;
+                width: 38px !important;
+                height: 36px !important;
+                border-radius: 8px !important;
+                font-size: 0.95rem !important;
+                background: linear-gradient(135deg, var(--accent-primary, #9333ea), #6366f1) !important;
+                box-shadow: 0 3px 10px rgba(147, 51, 234, 0.4) !important;
+            }
+        }
     </style>
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
@@ -1754,3 +1869,4 @@
     <script src="js/pwa-install.js"></script>
 </body>
 </html>
+

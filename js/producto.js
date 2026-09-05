@@ -1,4 +1,4 @@
-import { auth, db } from './firebase-config.js';
+﻿import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, getDocs, collection, serverTimestamp, runTransaction, updateDoc, arrayUnion, arrayRemove, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { updateCartBadge } from './cart.js';
@@ -203,6 +203,16 @@ async function loadProductDetails() {
             if (user) {
                 if (authMsg) authMsg.style.display = 'none';
                 if (buyControls) buyControls.style.display = 'flex';
+                // Auto-scroll y foco si vino por accion directa de compra
+                if (urlParams.get("action") === "buy") {
+                    setTimeout(() => {
+                        const buyBtn = document.getElementById("buy-btn");
+                        if (buyBtn) {
+                            buyBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+                            buyBtn.classList.add("pulse-highlight");
+                        }
+                    }, 300);
+                }
                 
                 try {
                     const uRef = doc(db, 'users', user.uid);

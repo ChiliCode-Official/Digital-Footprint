@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   /* Colors */
   --bg-main: #0B0E14; /* Deep dark background */
   --bg-panel: #151A23; /* Slightly lighter for panels */
@@ -30,6 +30,38 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.gk-nav-logo img {
+  width: 36px !important;
+  height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  object-fit: contain !important;
+  display: block;
+}
+
+.gk-dock-logo-icon img {
+  width: 24px !important;
+  height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  object-fit: contain !important;
+  display: block;
+}
+
+.gk-footer-brand img {
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  object-fit: contain !important;
+  display: block;
 }
 
 html, body {
