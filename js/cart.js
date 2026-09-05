@@ -7,8 +7,9 @@ function getProductTotalPrice(product, quantity, fallbackUnitPrice) {
         quantity = Math.floor(quantity / 100) * 100;
         if (quantity < 300) return 0;
         if (quantity <= 500) return 25;
+        if (quantity <= 1000) return 47;
         const blocks = Math.ceil(quantity / 1000);
-        return blocks === 1 ? 47 : (blocks * 47) - ((blocks - 1) * 7);
+        return (blocks * 47) - ((blocks - 1) * 7);
     }
     return (fallbackUnitPrice || 0) * quantity;
 }
