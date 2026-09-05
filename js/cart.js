@@ -2,6 +2,16 @@ import { db, auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { doc, getDoc, collection, getDocs, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+function getProductTotalPrice(product, quantity, fallbackUnitPrice) {
+    if (product?.pricingModel === 'instagram_followers') {
+        if (quantity < 300) return 0;
+        if (quantity <= 500) return 25;
+        const blocks = Math.ceil(quantity / 1000);
+        return blocks === 1 ? 47 : (blocks * 47) - ((blocks - 1) * 7);
+    }
+    return (fallbackUnitPrice || 0) * quantity;
+}
+
 let currentUser = null;
 let cartItems = [];
 
@@ -145,7 +155,7 @@ async function loadCartContent() {
                     }
                 }
 
-                const itemTotal = unitPrice * qty;
+                const itemTotal = getProductTotalPrice(p, qty, unitPrice);
                 totalSum += itemTotal;
 
                 const sSnap = await getDoc(doc(db, 'products_stock', pid));

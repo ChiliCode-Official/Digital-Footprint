@@ -51,6 +51,18 @@ let userDocData = null;
 let isGiftMode = false;
 let currentQty = 1;
 
+function getProductTotal() {
+    if (!productData) return 0;
+    if (productData.pricingModel === 'instagram_followers') {
+        const qty = Math.max(0, Number(currentQty) || 0);
+        if (qty < 300) return 0;
+        if (qty <= 500) return 25;
+        const blocks = Math.ceil(qty / 1000);
+        return blocks === 1 ? 47 : (blocks * 47) - ((blocks - 1) * 7);
+    }
+    return (Number(productData.price) || 0) * currentQty;
+}
+
 if (btnGift) {
     btnGift.addEventListener('click', () => {
         if (!currentUser) {
@@ -341,7 +353,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                 }
             }
-            const totalPrice = unitPrice * currentQty;
+            const totalPrice = productData.pricingModel === 'instagram_followers' ? getProductTotal() : unitPrice * currentQty;
 
             document.getElementById('gift-step-1').style.display = 'none';
             document.getElementById('gift-step-2').style.display = 'block';
@@ -367,7 +379,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                 }
             }
-            const totalPrice = unitPrice * currentQty;
+            const totalPrice = productData.pricingModel === 'instagram_followers' ? getProductTotal() : unitPrice * currentQty;
             const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
@@ -499,7 +511,7 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     if (!isNaN(priceAttr)) unitPrice = priceAttr;
                 }
             }
-            const totalPrice = unitPrice * currentQty;
+            const totalPrice = productData.pricingModel === 'instagram_followers' ? getProductTotal() : unitPrice * currentQty;
             const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
@@ -682,7 +694,7 @@ function updateQtyUI() {
     if(qtyDisplay) qtyDisplay.textContent = currentQty;
     
     if(pPrice && productData) {
-        const total = productData.price * currentQty;
+        const total = getProductTotal();
         pPrice.textContent = `$${total.toFixed(2)}`;
     }
 
@@ -696,7 +708,7 @@ if(btnMinus) {
     btnMinus.addEventListener('click', () => {
         const minQ = productData ? (productData.minQuantity || 1) : 1;
         if (currentQty > minQ) {
-            currentQty--;
+            currentQty -= productData?.pricingModel === 'instagram_followers' ? 100 : 1;
         } else if (currentQty === minQ) {
             currentQty = 0;
         }
@@ -712,7 +724,7 @@ if(btnPlus) {
         } else if (currentQty < minQ) {
             currentQty = minQ;
         } else {
-            currentQty++;
+            currentQty += productData?.pricingModel === 'instagram_followers' ? 100 : 1;
         }
         updateQtyUI();
     });

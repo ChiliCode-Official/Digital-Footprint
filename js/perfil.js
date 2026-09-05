@@ -1018,3 +1018,15 @@ window.deleteProduct = async function(prodId) {
         loadAdminData();
     } catch(e) { console.error(e); }
 };
+
+window.createInstagramFollowersProduct = async function () {
+    const name = 'Seguidores de Instagram';
+    const description = 'Seguidores reales para Instagram con garantía de 7 días. Entrega estimada de 1 a 24 horas. Paquetes: 300 por $25 MXN, 500 por $25 MXN, 1,000 por $47 MXN. En cantidades superiores a 1,000 se aplica descuento de $7 MXN por cada bloque adicional de 1,000 seguidores.';
+    try {
+        const pRef = doc(collection(db, 'products'));
+        await setDoc(pRef, { name, price: 25, minQuantity: 300, category: 'metodos', image: 'https://i.imgur.com/1K17BQ8.png', description, pricingModel: 'instagram_followers', isFeatured: false, isStreaming: false, streamingOptions: '' });
+        await setDoc(doc(db, 'products_stock', pRef.id), { status: 'bajo_pedido', credentialsPool: '' });
+        alert('Producto de seguidores creado correctamente en la colección Métodos.');
+        loadAdminData();
+    } catch (e) { console.error(e); alert('No se pudo crear el producto: ' + e.message); }
+};

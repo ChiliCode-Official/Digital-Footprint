@@ -6,6 +6,16 @@ import { sendNotification } from './notifications.js';
 let currentUser = null;
 let userData = null;
 
+function getProductTotalPrice(product, quantity, fallbackUnitPrice) {
+    if (product?.pricingModel === 'instagram_followers') {
+        if (quantity < 300) return 0;
+        if (quantity <= 500) return 25;
+        const blocks = Math.ceil(quantity / 1000);
+        return blocks === 1 ? 47 : (blocks * 47) - ((blocks - 1) * 7);
+    }
+    return (fallbackUnitPrice || 0) * quantity;
+}
+
 // URL Params
 const urlParams = new URLSearchParams(window.location.search);
 const from = urlParams.get('from'); // 'cart', 'profile', 'product'
@@ -659,7 +669,7 @@ async function processCartPurchase() {
                 if (isNaN(unitPrice) || !Number.isFinite(unitPrice) || unitPrice < 0) {
                     throw new Error(`Precio inválido en producto: ${p.name}`);
                 }
-                calculatedTotal += (unitPrice * pQty);
+                calculatedTotal += getProductTotalPrice(p, pQty, unitPrice);
                 productsData.push({ id: pid, qty: pQty, price: unitPrice, name: p.name, duration: duration, notes: itemNotes });
             }
         }
@@ -793,7 +803,7 @@ async function processSinglePurchase() {
             throw new Error("Precio inválido en el producto.");
         }
         
-        const actualPrice = unitPrice * parsedQty;
+        const actualPrice = getProductTotalPrice(pData, parsedQty, unitPrice);
         
         if (currentBal < actualPrice) throw new Error("Saldo insuficiente.");
 
