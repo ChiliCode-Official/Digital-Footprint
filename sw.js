@@ -1,10 +1,16 @@
-const CACHE_NAME = 'ghostkey-pwa-cache-v3';
+const CACHE_NAME = 'ghostkey-pwa-cache-v4';
 const urlsToCache = [
   './index.html',
   './css/style.css',
   './css/mobile-dock.css',
   './js/dock.js',
-  './manifest.json'
+  './manifest.json',
+  './img/ghost-logo.png',
+  './img/icon-192.png',
+  './img/icon-512.png',
+  './img/favicon-32x32.png',
+  './img/favicon-16x16.png',
+  './img/apple-touch-icon.png'
 ];
 
 // Install Event

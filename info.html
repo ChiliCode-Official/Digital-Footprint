@@ -12,9 +12,10 @@
     <meta property="og:description" content="Compra cuentas premium, claves de juegos y saldo virtual.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ghostkey.online/">
-    <meta property="og:image" content="https://i.imgur.com/LbMnNUg.png">
+    <meta property="og:image" content="img/ghost-logo.png">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/ui-feedback.js"></script>
     <link rel="stylesheet" href="css/help-bubble.css">
 
     <link rel="stylesheet" href="css/mobile-dock.css">
@@ -61,12 +62,13 @@
             border-color: var(--accent-primary);
         }
     </style>
-<link rel="icon" type="image/png" href="https://i.imgur.com/LbMnNUg.png">    <!-- PWA Settings -->
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">    <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GhostKey">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/LbMnNUg.png">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -109,7 +111,7 @@
         .gk-dock-item.active { color: var(--accent-primary); }
     </style>
     <nav class="gk-navbar">
-        <a href="index.html" class="gk-nav-logo"><img src="https://i.imgur.com/LbMnNUg.png" alt="GhostKey"></a>
+        <a href="index.html" class="gk-nav-logo"><img src="img/ghost-logo.png" alt="GhostKey"></a>
         <div class="gk-search-wrap">
             <input id="gk-nav-search" type="text" placeholder="Buscar productos..." autocomplete="off">
             <button class="gk-search-btn-nav" id="gk-nav-search-btn" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -230,6 +232,15 @@
                         </div>
                     </div>
 
+                    <div style="background: linear-gradient(135deg, rgba(161,130,232,.14), rgba(16,185,129,.08)); border: 1px solid rgba(161,130,232,.35); border-radius: 14px; padding: 1.3rem; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--accent-primary); font-size: 1.05rem; font-weight: 800; margin-bottom: .8rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-shield-heart"></i> Garantías GhostKey</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; color: var(--text-main); font-size: .85rem; line-height: 1.5;">
+                            <div><strong>Garantía indicada en el producto</strong><br><span style="color:var(--text-muted);">Cada publicación debe especificar si incluye garantía y su duración.</span></div>
+                            <div><strong>Sin cambios no autorizados</strong><br><span style="color:var(--text-muted);">Modificar correo, contraseña o perfiles puede invalidar la garantía.</span></div>
+                            <div><strong>Soporte si algo falla</strong><br><span style="color:var(--text-muted);">Contacta soporte con tu número de pedido y evidencia del problema.</span></div>
+                        </div>
+                    </div>
+
                     <!-- Responsabilidad y Términos Legales -->
                     <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px;">
                         <h3 style="color: var(--danger); font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
@@ -316,7 +327,7 @@
             </h4>
             <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">¿Gana 3% en saldo cuando tus amigos compren usando tu link!</p>
             <div style="display:flex; gap:6px;">
-                <input type="text" id="ref-link-input" readonly value="Inicia sesión para ver tu enlace" style="flex:1; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:var(--bg-main); color:var(--text-main); font-size:0.8rem;">
+                <input type="text" id="friends-ref-link-input" readonly value="Inicia sesión para ver tu enlace" style="flex:1; padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); background:var(--bg-main); color:var(--text-main); font-size:0.8rem;">
                 <button class="btn-primary" id="copy-ref-btn" style="padding:6px 10px; font-size:0.8rem;"><i class="fa-solid fa-copy"></i></button>
             </div>
         </div>

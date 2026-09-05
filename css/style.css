@@ -73,6 +73,11 @@ body {
 .dashboard-container.no-right-panel.friends-panel-collapsed {
   grid-template-columns: var(--sidebar-width-pc) 1fr;
 }
+/* Feedback visual global: mantiene las animaciones existentes y evita alertas bloqueantes. */
+.gk-toast { position: fixed; left: 50%; bottom: 24px; z-index: 10000; max-width: min(92vw, 440px); padding: 13px 18px; border: 1px solid rgba(161,130,232,.55); border-radius: 14px; background: rgba(28,34,46,.96); color: var(--text-main); box-shadow: 0 12px 35px rgba(0,0,0,.42); font: 600 .9rem/1.35 'Inter', system-ui, sans-serif; opacity: 0; pointer-events: none; transform: translate(-50%, 14px); transition: opacity .25s ease, transform .25s ease; }
+.gk-toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 768px) { .gk-toast { bottom: 86px; } }
+
 /* --- GooeyNav (PC) --- */
 .sidebar {
   background-color: var(--bg-panel);

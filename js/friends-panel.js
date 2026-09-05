@@ -137,7 +137,7 @@ async function searchAndAddFriend(term, currentUser) {
 
 async function loadRealFriends(currentUser) {
     const friendsContainer = document.getElementById('friends-list');
-    const refInput = document.getElementById('ref-link-input');
+    const refInput = document.querySelector('#friends-panel #friends-ref-link-input, #friends-panel #ref-link-input');
     const referralBox = document.querySelector('.referral-box');
 
     // Update referral link

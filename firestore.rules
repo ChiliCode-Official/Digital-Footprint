@@ -19,9 +19,12 @@ service cloud.firestore {
     match /users/{userId} {
       // Users can read all users (needed for the friends panel to list users). 
       // Users can only write their own document (e.g. updating balance during a purchase).
-      allow read: if isAuthenticated();
-      allow create, delete: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      allow update: if isAuthenticated();
+      allow read: if isAdmin() || (isAuthenticated() && request.auth.uid == userId);
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if isAdmin();
+      allow update: if isAdmin() || (isAuthenticated() && request.auth.uid == userId
+        && request.resource.data.balance == resource.data.balance
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cart', 'wishlist', 'friends', 'referralCode']));
     }
 
     // Products collection (Catalog)
@@ -37,7 +40,7 @@ service cloud.firestore {
       // Anyone can read stock status
       allow read: if true;
       // Users need to be able to UPDATE stock when they make a purchase (to pull credentials).
-      allow update: if isAuthenticated();
+      allow update: if isAdmin();
       // Only admins can create or delete stock documents
       allow create, delete: if isAdmin();
     }
