@@ -7,7 +7,8 @@ let currentUser = null;
 let userData = null;
 
 function getProductTotalPrice(product, quantity, fallbackUnitPrice) {
-    if (product?.pricingModel === 'instagram_followers') {
+    if (product?.pricingModel === 'instagram_followers' || /seguidores de instagram/i.test(product?.name || '')) {
+        quantity = Math.floor(quantity / 100) * 100;
         if (quantity < 300) return 0;
         if (quantity <= 500) return 25;
         const blocks = Math.ceil(quantity / 1000);

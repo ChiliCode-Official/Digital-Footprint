@@ -544,7 +544,33 @@ async function loadClientData(uid) {
 }
 
 // ─── Load Admin Data ──────────────────────────────────────────────────────────
+const instagramFollowersDescription = `Seguidores reales para Instagram con garantía de 7 días. Entrega estimada de 1 a 24 horas.
+
+⌛Inicio: 0-30 Minutos
+⚡Velocidad: 100K/día
+♻️Recarga: 7 Días de Recarga
+⭐ Todos los tipos de banderas están funcionando ⭐
+
+🔗 Formato del Enlace: https://www.instagram.com/ghostkey.online/
+⚠ Nota:
+📌 Verifique cuidadosamente el formato del enlace antes de realizar el pedido.
+🔓 Asegúrese de que su cuenta sea pública, no privada.
+📌 Cuando el servicio esté ocupado, la velocidad de inicio puede cambiar.
+📌 No haga un segundo pedido en el mismo enlace hasta que el primero haya sido completado en el sistema.`;
+
+async function syncInstagramFollowersProduct() {
+    const snap = await getDocs(collection(db, 'products'));
+    const match = snap.docs.find(d => /seguidores de instagram/i.test(d.data().name || ''));
+    if (match) {
+        const data = match.data();
+        if (data.description !== instagramFollowersDescription || data.pricingModel !== 'instagram_followers') {
+            await updateDoc(doc(db, 'products', match.id), { description: instagramFollowersDescription, pricingModel: 'instagram_followers', minQuantity: 300, category: 'metodos' });
+        }
+    }
+}
+
 async function loadAdminData() {
+    await syncInstagramFollowersProduct().catch(e => console.warn('Instagram product sync:', e));
     // 1. Pending Orders
     const tbodyOrders = document.getElementById('admin-orders-body');
     if (tbodyOrders) {
@@ -958,6 +984,11 @@ window.openEditModal = async function(prodId) {
         set('edit-prod-img', p.image||'');
         set('edit-prod-desc', p.description||'');
         set('edit-prod-status', s.status||'disponible');
+        const editStatus = document.getElementById('edit-prod-status');
+        if (editStatus && (p.pricingModel === 'instagram_followers' || /seguidores de instagram/i.test(p.name || ''))) {
+            editStatus.innerHTML = '<option value="disponible">Disponible</option><option value="agotado">No disponible</option>';
+            editStatus.value = s.status === 'disponible' ? 'disponible' : 'agotado';
+        }
         set('edit-prod-pool', s.credentialsPool||'');
         const featEl = document.getElementById('edit-prod-featured'); if (featEl) featEl.checked = !!p.isFeatured;
         
@@ -1017,16 +1048,4 @@ window.deleteProduct = async function(prodId) {
         alert('Producto eliminado.');
         loadAdminData();
     } catch(e) { console.error(e); }
-};
-
-window.createInstagramFollowersProduct = async function () {
-    const name = 'Seguidores de Instagram';
-    const description = 'Seguidores reales para Instagram con garantía de 7 días. Entrega estimada de 1 a 24 horas. Paquetes: 300 por $25 MXN, 500 por $25 MXN, 1,000 por $47 MXN. En cantidades superiores a 1,000 se aplica descuento de $7 MXN por cada bloque adicional de 1,000 seguidores.';
-    try {
-        const pRef = doc(collection(db, 'products'));
-        await setDoc(pRef, { name, price: 25, minQuantity: 300, category: 'metodos', image: 'https://i.imgur.com/1K17BQ8.png', description, pricingModel: 'instagram_followers', isFeatured: false, isStreaming: false, streamingOptions: '' });
-        await setDoc(doc(db, 'products_stock', pRef.id), { status: 'bajo_pedido', credentialsPool: '' });
-        alert('Producto de seguidores creado correctamente en la colección Métodos.');
-        loadAdminData();
-    } catch (e) { console.error(e); alert('No se pudo crear el producto: ' + e.message); }
 };

@@ -51,10 +51,14 @@ let userDocData = null;
 let isGiftMode = false;
 let currentQty = 1;
 
+function isFollowersProduct() {
+    return productData?.pricingModel === 'instagram_followers' || /seguidores de instagram/i.test(productData?.name || '');
+}
+
 function getProductTotal() {
     if (!productData) return 0;
-    if (productData.pricingModel === 'instagram_followers') {
-        const qty = Math.max(0, Number(currentQty) || 0);
+    if (isFollowersProduct()) {
+        const qty = Math.max(0, Math.floor((Number(currentQty) || 0) / 100) * 100);
         if (qty < 300) return 0;
         if (qty <= 500) return 25;
         const blocks = Math.ceil(qty / 1000);
@@ -353,7 +357,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                 }
             }
-            const totalPrice = productData.pricingModel === 'instagram_followers' ? getProductTotal() : unitPrice * currentQty;
+            const totalPrice = isFollowersProduct() ? getProductTotal() : unitPrice * currentQty;
 
             document.getElementById('gift-step-1').style.display = 'none';
             document.getElementById('gift-step-2').style.display = 'block';
@@ -379,7 +383,7 @@ const btnNext1 = document.getElementById('btn-gift-next-1');
                     }
                 }
             }
-            const totalPrice = productData.pricingModel === 'instagram_followers' ? getProductTotal() : unitPrice * currentQty;
+            const totalPrice = isFollowersProduct() ? getProductTotal() : unitPrice * currentQty;
             const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
@@ -511,7 +515,7 @@ Visita GhostKey para ver tus regalos: ${siteUrl}`;
                     if (!isNaN(priceAttr)) unitPrice = priceAttr;
                 }
             }
-            const totalPrice = productData.pricingModel === 'instagram_followers' ? getProductTotal() : unitPrice * currentQty;
+            const totalPrice = isFollowersProduct() ? getProductTotal() : unitPrice * currentQty;
             const customerNotes = document.getElementById('customer-notes-input')?.value.trim() || '';
 
             // Check Balance
@@ -694,6 +698,7 @@ function updateQtyUI() {
     if(qtyDisplay) qtyDisplay.textContent = currentQty;
     
     if(pPrice && productData) {
+        if (isFollowersProduct() && currentQty > 0) currentQty = Math.floor(currentQty / 100) * 100;
         const total = getProductTotal();
         pPrice.textContent = `$${total.toFixed(2)}`;
     }
@@ -708,7 +713,7 @@ if(btnMinus) {
     btnMinus.addEventListener('click', () => {
         const minQ = productData ? (productData.minQuantity || 1) : 1;
         if (currentQty > minQ) {
-            currentQty -= productData?.pricingModel === 'instagram_followers' ? 100 : 1;
+            currentQty -= isFollowersProduct() ? 100 : 1;
         } else if (currentQty === minQ) {
             currentQty = 0;
         }
@@ -724,7 +729,7 @@ if(btnPlus) {
         } else if (currentQty < minQ) {
             currentQty = minQ;
         } else {
-            currentQty += productData?.pricingModel === 'instagram_followers' ? 100 : 1;
+            currentQty += isFollowersProduct() ? 100 : 1;
         }
         updateQtyUI();
     });
